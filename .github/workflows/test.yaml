@@ -35,8 +35,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           python -m pip install scons
-          unset PYTHONPATH
-          unset PYTHONHOME
+          pip install python-config
+          # unset PYTHONPATH
+          # unset PYTHONHOME
           # export PYTHONPATH='/home/mkjost/.local/lib/python3.8/site-packages'
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
