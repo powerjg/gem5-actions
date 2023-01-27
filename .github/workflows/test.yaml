@@ -17,14 +17,6 @@ jobs:
         run: |
           ls ${{ github.workspace }}
 
-      - name: check info
-        run: |
-              cat /proc/cpuinfo
-              if [ -f /.dockerenv ]; then
-                echo "I'm inside matrix ;(";
-              else
-                echo "I'm living in real world!";
-              fi
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -35,10 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           python -m pip install scons
-          pip install python-config
-          # unset PYTHONPATH
-          # unset PYTHONHOME
-          # export PYTHONPATH='/home/mkjost/.local/lib/python3.8/site-packages'
+          # pip install python-config
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Get changed files
@@ -59,14 +48,9 @@ jobs:
           done
 
       - name: build gem5
-        run: |
-          #     echo "nothing happens here"
-              scons build/ALL/gem5.opt -j 24
-          #     # scons build/ALL/gem5.fast -j4 --no-compress-debug --ignore-style
-      - name: run x86 tests without initial build
+        run: scons build/ALL/gem5.opt -j 24
+      - name: run x86 tests wit initial build
         run: |
               cd tests
-              ./main.py run gem5/x86-boot-tests -j24
-          #     # ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
-          # gcr.io/gem5-test/ubuntu-20.04_all-dependencies:v22-0
+              ./main.py run gem5/x86-boot-tests
       - run: echo "🍏 This job's status is ${{ job.status }}."
