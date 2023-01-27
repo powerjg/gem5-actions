@@ -49,7 +49,7 @@ jobs:
           done
 
       # - name: build gem5
-      #   run: scons build/ALL/gem5.opt -j 24 PYTHON_CONFIG=/usr/bin/python3-config
+      #   run: scons build/ALL/gem5.opt -j 24 PYTHON_CONFIG=/usr/bin/python3-config 
       - name: run x86 tests wit initial build
         run: |
               cd tests
