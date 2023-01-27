@@ -18,7 +18,7 @@ jobs:
 
       - name: check info
         run: |
-              cat cat /proc/cpuinfo
+              cat /proc/cpuinfo
               if [ -f /.dockerenv ]; then
                 echo "I'm inside matrix ;(";
               else
