@@ -1,0 +1,9 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: example-runnerdeploy2
+spec:
+  replicas: 8
+  template:
+    spec:
+      repository: mkjost0/gem5-actions
