@@ -4,6 +4,7 @@ on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: [self-hosted, linux, x64]
+    container: mkjost/simplewhale:latest
     strategy:
       matrix:
         python-version: [3.8]
