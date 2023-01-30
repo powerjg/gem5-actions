@@ -33,7 +33,7 @@ jobs:
           pip install -r requirements.txt
           pip install python-config
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          apt install zlib1g zlib1g-dev
+          apt-get install zlib1g-dev
 
       - name: Get changed files
         id: changed-files
