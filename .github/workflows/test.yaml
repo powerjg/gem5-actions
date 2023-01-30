@@ -19,7 +19,8 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
+          # ls ${{ github.workspace }}
+          ls
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
