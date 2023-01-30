@@ -37,39 +37,39 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           # apt-get install zlib1g-dev
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v19
+      # - name: Get changed files
+      #   id: changed-files
+      #   uses: tj-actions/changed-files@v19
 
       - name: Install black and reorder-python-imports
         run: pip install black reorder-python-imports
 
-      - name: Black and Sort changed files
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo $file
-            if [[ $file == *.py ]]; then
-              black $file --check
-              reorder-python-imports $file
-            fi
-          done
+      # - name: Black and Sort changed files
+      #   run: |
+      #     for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+      #       echo $file
+      #       if [[ $file == *.py ]]; then
+      #         black $file --check
+      #         reorder-python-imports $file
+      #       fi
+      #     done
 
-      - name: Run the build process with Docker
-        uses: addnab/docker-run-action@v3
-        with:
-          image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-          # options: -v ${{ github.workspace }}:/var/www
-          run: |
-            echo "entered here"
-            ls
-            python -m pip install scons
-            pip install -r requirements.txt
-            scons build/ALL/gem5.opt
-            # cd tests
-            # ./main.py run gem5/x86-boot-tests -j24 --skip-build
+      # - name: Run the build process with Docker
+      #   uses: addnab/docker-run-action@v3
+      #   with:
+      #     image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+      #     # options: -v ${{ github.workspace }}:/var/www
+      #     run: |
+      #       echo "entered here"
+      #       ls
+      #       python -m pip install scons
+      #       pip install -r requirements.txt
+      #       scons build/ALL/gem5.opt
+      #       # cd tests
+      #       # ./main.py run gem5/x86-boot-tests -j24 --skip-build
 
       - name: build gem5
-        run: python3 $(which scons) build/ALL/gem5.opt -j 24 PYTHON_CONFIG=/usr/bin/python3-config 
+        run: scons build/ALL/gem5.opt -j 8
       - name: run x86 tests wit initial build
         run: |
               cd tests
