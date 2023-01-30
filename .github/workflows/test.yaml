@@ -4,7 +4,7 @@ on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: [self-hosted, linux, x64]
-    container: mkjost/simplewhale:latest
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     strategy:
       matrix:
         python-version: [3.8]
