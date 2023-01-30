@@ -59,6 +59,9 @@ jobs:
           # options: -v ${{ github.workspace }}:/var/www
           run: |
             echo "entered here"
+            ls
+            python -m pip install scons
+            pip install -r requirements.txt
             scons build/ALL/gem5.opt
             # cd tests
             # ./main.py run gem5/x86-boot-tests -j24 --skip-build
