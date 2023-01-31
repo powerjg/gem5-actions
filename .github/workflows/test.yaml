@@ -71,9 +71,9 @@ jobs:
       #       # ./main.py run gem5/x86-boot-tests -j24 --skip-build
 
       - name: build gem5
-        run: scons build/ALL/gem5.opt -j 8
+        run: scons build/NULL/gem5.opt -j $(nproc)
       - name: run x86 tests wit initial build
         run: |
               cd tests
-              ./main.py run gem5/x86-boot-tests
+              ./main.py run gem5/memory -vvv --skip-build
       - run: echo "🍏 This job's status is ${{ job.status }}."

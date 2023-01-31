@@ -3,7 +3,7 @@ kind: RunnerDeployment
 metadata:
   name: example-runnerdeploy2
 spec:
-  replicas: 8
+  replicas: 2
   template:
     spec:
       repository: mkjost0/gem5-actions
