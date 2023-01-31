@@ -7,5 +7,15 @@ spec:
   template:
     spec:
       repository: mkjost0/gem5-actions
+      containers:
+      - name: runner
+        env: []
+        resources:
+          limits:
+            cpu: "16.0"
+            memory: "16Gi"
+          requests:
+            cpu: "8.0"
+            memory: "8Gi"
 
 # add image (new image with summerwind and gem5 info)

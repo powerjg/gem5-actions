@@ -36,8 +36,11 @@ jobs:
           python -m pip install scons
           pip install -r requirements.txt
           pip install python-config
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # apt-get install zlib1g-dev
+          scons build/ALL/gem5.opt -j $(nproc)
+          build/ALL/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
+          cd tests
+          ./main.py run gem5/x86-boot-tests
+
 
       # - name: Get changed files
       #   id: changed-files
@@ -74,6 +77,7 @@ jobs:
         run: scons build/ALL/gem5.opt -j $(nproc)
       - name: run normal x86 tests skip build
         run: |
+             pip install -r requirements.txt
              build/ALL/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
               # cd tests
               # ./main.py run gem5/x86-boot-tests
