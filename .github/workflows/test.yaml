@@ -72,8 +72,8 @@ jobs:
 
       - name: build gem5
         run: scons build/ALL/gem5.opt -j $(nproc)
-      - name: run normal x86 tests with build
+      - name: run normal x86 tests do not skip build
         run: |
               cd tests
-              ./main.py run gem5/x86-boot-tests --skip-build
+              ./main.py run gem5/x86-boot-tests
       - run: echo "🍏 This job's status is ${{ job.status }}."
