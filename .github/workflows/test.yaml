@@ -70,10 +70,11 @@ jobs:
       #       # cd tests
       #       # ./main.py run gem5/x86-boot-tests -j24 --skip-build
 
-      # - name: build gem5
-      #   run: scons build/ALL/gem5.opt -j $(nproc)
+      - name: build gem5
+        run: scons build/ALL/gem5.opt -j $(nproc)
       - name: run normal x86 tests skip build
         run: |
-              cd tests
-              ./main.py run gem5/x86-boot-tests
+             build/ALL/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
+              # cd tests
+              # ./main.py run gem5/x86-boot-tests
       - run: echo "🍏 This job's status is ${{ job.status }}."
