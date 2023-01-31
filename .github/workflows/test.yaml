@@ -75,5 +75,5 @@ jobs:
       - name: run x86 tests wit initial build
         run: |
               cd tests
-              ./main.py run gem5/memory
+              ./main.py run gem5/gem5_library_example_tests
       - run: echo "🍏 This job's status is ${{ job.status }}."
