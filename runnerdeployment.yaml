@@ -3,7 +3,9 @@ kind: RunnerDeployment
 metadata:
   name: example-runnerdeploy2
 spec:
-  replicas: 2
+  replicas: 4
   template:
     spec:
       repository: mkjost0/gem5-actions
+
+# add image (new image with summerwind and gem5 info)

@@ -72,7 +72,7 @@ jobs:
 
       # - name: build gem5
       #   run: scons build/ALL/gem5.opt -j $(nproc)
-      - name: run x86 tests wit initial build
+      - name: run gem5 library tests
         run: |
               cd tests
               ./main.py run gem5/gem5_library_example_tests
