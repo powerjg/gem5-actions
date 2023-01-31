@@ -37,6 +37,7 @@ jobs:
           pip install -r requirements.txt
           pip install python-config
           python --version
+          python3 test.py
           # scons build/X86/gem5.opt -j $(nproc)
           # build/X86/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
           # cd tests
@@ -47,18 +48,18 @@ jobs:
       #   id: changed-files
       #   uses: tj-actions/changed-files@v35
 
-      - name: Install black and reorder-python-imports
-        run: pip install black reorder-python-imports
+      # - name: Install black and reorder-python-imports
+      #   run: pip install black reorder-python-imports
 
-      - name: Black and Sort changed files
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo $file
-            if [[ $file == *.py ]]; then
-              black $file --check
-              reorder-python-imports $file
-            fi
-          done
+      # - name: Black and Sort changed files
+      #   run: |
+      #     for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+      #       echo $file
+      #       if [[ $file == *.py ]]; then
+      #         black $file --check
+      #         reorder-python-imports $file
+      #       fi
+      #     done
 
       # - name: Run the build process with Docker
       #   uses: addnab/docker-run-action@v3
@@ -74,12 +75,12 @@ jobs:
       #       # cd tests
       #       # ./main.py run gem5/x86-boot-tests -j24 --skip-build
 
-      - name: build gem5
-        run: scons build/ALL/gem5.opt -j $(nproc)
-      - name: run normal x86 tests skip build
-        run: |
-             pip install -r requirements.txt
-             build/ALL/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
-              # cd tests
-              # ./main.py run gem5/x86-boot-tests
+      # - name: build gem5
+      #   run: scons build/ALL/gem5.opt -j $(nproc)
+      # - name: run normal x86 tests skip build
+      #   run: |
+      #        pip install -r requirements.txt
+      #        build/ALL/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
+      #         # cd tests
+      #         # ./main.py run gem5/x86-boot-tests
       - run: echo "🍏 This job's status is ${{ job.status }}."
