@@ -70,10 +70,10 @@ jobs:
       #       # cd tests
       #       # ./main.py run gem5/x86-boot-tests -j24 --skip-build
 
-      # - name: build gem5
-      #   run: scons build/ALL/gem5.opt -j $(nproc)
-      - name: run gem5 library tests
+      - name: build gem5
+        run: scons build/ALL/gem5.opt -j $(nproc)
+      - name: run normal x86 tests with build
         run: |
               cd tests
-              ./main.py run gem5/gem5_library_example_tests
+              ./main.py run gem5/x86-boot-tests --skip-build
       - run: echo "🍏 This job's status is ${{ job.status }}."
