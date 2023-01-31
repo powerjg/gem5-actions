@@ -37,7 +37,7 @@ jobs:
           pip install -r requirements.txt
           pip install python-config
           scons build/X86/gem5.opt -j $(nproc)
-          build/ALL/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
+          build/X86/gem5.opt -re tests/gem5/configs/x86_boot_exit_run.py --cpu o3 --num-cpus 2 --mem-system mesi_two_level --dram-class DualChannelDDR4_2400 --boot-type init --resource-directory tests/gem5/resources --tick-exit 100000000
           cd tests
           ./main.py run gem5/x86-boot-tests
 
