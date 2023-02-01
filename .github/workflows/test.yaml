@@ -26,9 +26,9 @@ jobs:
 
       - name: Run gem5art tests
         run: |
-          mkdir -p .pyenv
-          python3 -m venv .pyenv
-          source .pyenv/bin/activate
+          # mkdir -p .pyenv
+          # python3 -m venv .pyenv
+          # source .pyenv/bin/activate
 
           # Install the packages
           pip install -e util/gem5art/artifact
