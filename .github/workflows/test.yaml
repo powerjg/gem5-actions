@@ -1,5 +1,5 @@
 name: GitHub Actions gem5 Test Run
-run-name: Using NULL ISA to run --help
+run-name: Running an X86 test
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -16,13 +16,11 @@ jobs:
 
       - name: Build and run gem5
         run: |
-          scons build/NULL/gem5.opt -j $(nproc)
-          build/NULL/gem5.opt --help
-          # ldd build/NULL/gem5.opt
+          scons build/X86/gem5.opt -j $(nproc)
 
       # double checking that steps are run chronologically
       - name: Run gem5 separately (memory_traffic.py)
         run: |
-          build/NULL/gem5.opt configs/examples/gem5_library/memory_traffic.py LinearGenerator 100
+          build/X86/gem5.opt configs/learning_gem5/part1/simple.py
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
