@@ -25,7 +25,7 @@ jobs:
       #     path: build/X86
 
       - name: Run gem5art tests
-        uses: |
+        run: |
           mkdir -p .pyenv
           python3 -m venv .pyenv
           source .pyenv/bin/activate
