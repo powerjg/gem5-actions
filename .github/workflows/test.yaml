@@ -24,11 +24,11 @@ jobs:
       #     name: assets-for-download
       #     path: build/X86
 
-      - name: Run gem5art tests
-        run: |
-          mkdir -p .pyenv
-          python3 -m venv .pyenv
-          source .pyenv/bin/activate
+      # - name: Run gem5art tests
+      #   run: |
+      #     mkdir -p .pyenv
+      #     python3 -m venv .pyenv
+      #     source .pyenv/bin/activate
 
       - name: Run gem5art tests
         run: |
