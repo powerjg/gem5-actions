@@ -1,5 +1,5 @@
 name: GitHub Actions gem5 Test Run
-run-name: Running an X86 test
+run-name: Testing gem5art
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -14,15 +14,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build and run gem5
-        run: |
-          scons build/X86/gem5.opt -j $(nproc)
+      # - name: Build and run gem5
+      #   run: |
+      #     scons build/X86/gem5.opt -j $(nproc)
 
-      - name: Step 3 - Use the Upload Artifact GitHub Action
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets-for-download
-          path: build/X86
+      # - name: Step 3 - Use the Upload Artifact GitHub Action
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: assets-for-download
+      #     path: build/X86
+
+      - name: Run gem5art tests
+        uses: |
+          mkdir -p .pyenv
+          python3 -m venv .pyenv
+          source .pyenv/bin/activate
+
+          # Install the packages
+          pip install -e util/gem5art/artifact
+          pip install -e util/gem5art/run
+          pip install -e util/gem5art/tasks
+
+          # Run the gem5art artificat tests.
+          cd util/gem5art/artifact
+          python3 -m unittest
+          mypy -p gem5art.artifact
+
+          # Run the gem5art run tests.
+          cd ../run
+          python3 -m unittest
+          mypy -p gem5art.run
+
+          # Run the gem5art task tests.
+          cd ../tasks
+          python3 -m unittest
+          mypy -p gem5art.tasks
 
       # double checking that steps are run chronologically
       - name: Run gem5 separately (memory_traffic.py)
