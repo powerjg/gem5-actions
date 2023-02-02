@@ -94,6 +94,7 @@ jobs:
 
       - name: nightlies long tests
         run: |
+          cd tests
           ./main.py run --length long -j $(nproc) -t8 -vv
 
       # still need to test kvm, gpu tests, and sst
