@@ -1,5 +1,5 @@
 name: GitHub Actions gem5 Test Run
-run-name: test download all artifacts
+run-name: Testing nightlies
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -14,9 +14,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download artifact
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
+      # - name: Download artifact
+      #   id: download-artifact
+      #   uses: dawidd6/action-download-artifact@v2
         # with:
         #   # Optional, the status or conclusion of a completed workflow to search for
         #   # Can be one of a workflow conclusion:
@@ -62,10 +62,10 @@ jobs:
         #   # default fail
         #   if_no_artifact_found: fail
 
-      - name: Check if artifact is in directory
-        run: |
-          ls
-          ls etc/usr/artifacts/
+      # - name: Check if artifact is in directory
+      #   run: |
+      #     ls
+      #     ls etc/usr/artifacts/
 
       # - name: Build and run gem5
       #   run: |
@@ -80,9 +80,23 @@ jobs:
       #     path: build/X86
 
       # # double checking that steps are run chronologically
-      - name: Run gem5 separately (memory_traffic.py)
+      # - name: Run gem5 separately (memory_traffic.py)
+      #   run: |
+      #     chmod u+x gem5.opt
+      #     ./gem5.opt configs/learning_gem5/part1/simple.py
+
+      - name: test nightly unit test opt
         run: |
-          chmod u+x gem5.opt
-          ./gem5.opt configs/learning_gem5/part1/simple.py
+          scons build/ALL/unittests.opt -j $(nproc) --ignore-style
+
+      - name: nightly unit test debug
+        run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
+
+      - name: nightlies long tests
+        run: |
+          ./main.py run --length long -j $(nproc) -t8 -vv
+
+      # still need to test kvm, gpu tests, and sst
+
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
