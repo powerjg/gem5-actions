@@ -1,5 +1,5 @@
 name: GitHub Actions gem5 Test Run
-run-name: test use gem5 artifact
+run-name: test download all artifacts
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -41,7 +41,7 @@ jobs:
           # will download all artifacts if not specified
           # and extract them into respective subdirectories
           # https://github.com/actions/download-artifact#download-all-artifacts
-          name: gem5-artifact
+          # name: gem5-artifact
           # Optional, a directory where to extract artifact(s), defaults to the current directory
           # path: extract_here
           # Optional, defaults to current repo
@@ -63,13 +63,15 @@ jobs:
           if_no_artifact_found: fail
 
       - name: Check if artifact is in directory
-        run: ls
+        run: |
+          ls
+          ls etc/usr/artifacts/
 
       # - name: Build and run gem5
       #   run: |
       #     scons build/X86/gem5.opt -j $(nproc)
 
-      # - name: 'Tar files'
+      # - name: Tar files to keep permissions intact
       #   run: tar -cvf gem5-artifact.tar build/X86
 
       # - uses: actions/upload-artifact@v3
