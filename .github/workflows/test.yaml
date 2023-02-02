@@ -14,14 +14,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: mkdir -p hello
+      # - run: mkdir -p hello
 
-      - run: echo hello > hello/world.txt
+      # - run: echo hello > hello/world.txt
 
-      - uses: actions/upload-artifact@v3
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: hello-artifact
+      #     path: hello/world.txt
+      - uses: actions/download-artifact@v3
         with:
           name: hello-artifact
-          path: hello/world.txt
+
+      - name: Display structure of downloaded files
+        run: ls -R
 
       # - name: Build and run gem5
       #   run: |
