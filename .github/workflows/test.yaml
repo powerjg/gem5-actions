@@ -145,8 +145,66 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: start gpu tests
+      # - name: start gpu tests
+      #   run: |
+      #     scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
+      #     || (rm -rf build && scons build/GCN3_X86/gem5.opt \
+      #     -j$(nproc) --ignore-style)
+
+      - name: square spu tests
         run: |
-          scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
-          || (rm -rf build && scons build/GCN3_X86/gem5.opt \
-          -j$(nproc) --ignore-style)
+          wget -qN http://dist.gem5.org/dist/develop/test-progs/square/square
+          mkdir -p tests/testing-results
+          build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c square
+
+      - name: HeteroSync sleepMutex
+        run: |
+          wget -qN http://dist.gem5.org/dist/develop/test-progs/heterosync/gcn3/allSyncPrims-1kernel
+          build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="sleepMutex 10 16 4"
+
+      - name: HeteroSync LFBarr
+        run: |
+          build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="lfTreeBarrUniq 10 16 4"
+
+  SST-Job:
+    runs-on: [self-hosted, linux, x64]
+    container: gcr.io/gem5-test/sst-env:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Run SST tests
+        run: |
+          scons build/RISCV/libgem5_opt.so -j$(nproc) --without-tcmalloc --ignore-style;
+          cd ext/sst
+          make clean
+          make -j $(nproc)
+          sst --add-lib-path=./ sst/example.py
+          cd -
+
+
+
+
+
+# build_and_run_systemc () {
+#     rm -rf "${gem5_root}/build/ARM"
+#     docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+#         "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+#         gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} bash -c "\
+# scons -j${compile_threads} --ignore-style build/ARM/gem5.opt; \
+# scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 \
+#     -j${compile_threads} build/ARM/libgem5_opt.so \
+# "
+#     docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+#         "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+#         gcr.io/gem5-test/systemc-env:${tag} bash -c "\
+# cd util/systemc/gem5_within_systemc; \
+# make -j${compile_threads}; \
+# ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c \
+#     ../../../tests/test-progs/hello/bin/arm/linux/hello; \
+# LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ \
+#     ./gem5.opt.sc m5out/config.ini; \
+# cd -; \
+# "
+# }
+# build_and_run_systemc
