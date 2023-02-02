@@ -124,6 +124,6 @@ jobs:
       # # double checking that steps are run chronologically
       - name: Run gem5 separately (memory_traffic.py)
         run: |
-          gem5.opt configs/learning_gem5/part1/simple.py
+          /gem5.opt configs/learning_gem5/part1/simple.py
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
