@@ -111,6 +111,7 @@ jobs:
     runs-on: [self-hosted, linux, x64]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    needs: Test-Upload
 
     steps:
     # checks out repository, should be more useful when
