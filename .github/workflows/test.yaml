@@ -14,10 +14,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - run: mkdir -p hello
-
-      # - run: echo hello > hello/world.txt
-
       - name: Download artifact
         id: download-artifact
         uses: dawidd6/action-download-artifact@v2
@@ -66,64 +62,25 @@ jobs:
           # default fail
           if_no_artifact_found: fail
 
-      - name: ls
+      - name: Check if artifact is in directory
         run: ls
+
       # - name: Build and run gem5
       #   run: |
       #     scons build/X86/gem5.opt -j $(nproc)
 
+      # - name: 'Tar files'
+      #   run: tar -cvf gem5-artifact.tar build/X86
+
       # - uses: actions/upload-artifact@v3
       #   with:
-      #     name: gem5-artifact
+      #     name: gem5-artifact.tar
       #     path: build/X86
 
-      # - name: Step 3 - Use the Upload Artifact GitHub Action
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: assets-for-download
-      #     path: build/X86
-
-      # - name: Run gem5art tests
-      #   run: |
-      #     mkdir -p .pyenv
-      #     python3 -m venv .pyenv
-      #     source .pyenv/bin/activate
-
-      # - name: Run gem5art tests
-      #   run: |
-      #     # Install the packages
-      #     pip install -e util/gem5art/artifact
-      #     pip install -e util/gem5art/run
-      #     pip install -e util/gem5art/tasks
-
-      # - name: Run gem5art tests
-      #   run: |
-      #     # Run the gem5art artificat tests.
-      #     cd util/gem5art/artifact
-      #     python3 -m unittest
-      #     mypy -p gem5art.artifact
-
-      # - name: Run gem5art tests
-      #   run: |
-      #     # Run the gem5art run tests.
-      #     cd ../run
-      #     python3 -m unittest
-      #     mypy -p gem5art.run
-
-      # - name: Run gem5art tests
-      #   run: |
-      #     # Run the gem5art task tests.
-      #     cd ../tasks
-      #     python3 -m unittest
-      #     mypy -p gem5art.tasks
-
-      # - name: Download a single artifact
-      #   uses: actions/download-artifact@v3 
-      #   with:
-      #     name: assets-for-download
       # # double checking that steps are run chronologically
       - name: Run gem5 separately (memory_traffic.py)
         run: |
+          chmod u+x gem5.opt
           ./gem5.opt configs/learning_gem5/part1/simple.py
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
