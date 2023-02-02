@@ -70,6 +70,8 @@ jobs:
           # default fail
           if_no_artifact_found: fail
 
+      - name: ls
+        run: ls
       # - name: Build and run gem5
       #   run: |
       #     scons build/X86/gem5.opt -j $(nproc)
