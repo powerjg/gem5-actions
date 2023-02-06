@@ -40,6 +40,7 @@ jobs:
           # mkdir -p .pyenv
           # python3 -m venv .pyenv
           # source .pyenv/bin/activate
+          cd git/jenkins-gem5-prod/
           # Install the packages
           pip install -e util/gem5art/artifact
           pip install -e util/gem5art/run
