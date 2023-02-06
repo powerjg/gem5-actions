@@ -37,9 +37,9 @@ jobs:
           set -e
           # Creating a virtual environment allows us to cleanly install the packages
           # within a Docker container.
-          mkdir -p .pyenv
-          python3 -m venv .pyenv
-          source .pyenv/bin/activate
+          # mkdir -p .pyenv
+          # python3 -m venv .pyenv
+          # source .pyenv/bin/activate
           # Install the packages
           pip install -e util/gem5art/artifact
           pip install -e util/gem5art/run
