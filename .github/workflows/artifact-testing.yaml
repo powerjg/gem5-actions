@@ -2,10 +2,10 @@ name: GitHub Actions gem5 Test Run
 run-name: Testing artifact usage
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on:
-#   schedule:
-#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being testde
-on: [push]
+on:
+  schedule:
+    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+# on: [push]
 jobs:
   Test-Upload:
     runs-on: [self-hosted, linux, x64]
