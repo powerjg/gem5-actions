@@ -9,6 +9,7 @@ jobs:
     runs-on: [self-hosted, linux, x64]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/clang-version-14:v22-1
+    
 
     steps:
     # checks out repository, should be more useful when
@@ -16,6 +17,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: docker-practice/actions-setup-docker@master
 
       # - name: gem5 art
       #   run: |
