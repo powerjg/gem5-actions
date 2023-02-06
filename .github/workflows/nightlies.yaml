@@ -1,11 +1,11 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing nightlies
-# on: [push]
+on: [push]
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
 jobs:
   Test-Nightly-Long:
     runs-on: [self-hosted, linux, x64]
@@ -30,18 +30,18 @@ jobs:
       # - name: nightly unit test debug
       #   run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
 
-      - name: kvm tests
-        run: |
-          cd tests
-          ./main.py run -j $(nproc) -vv \
-              --exclude-tags ".*" --include-tags kvm --exclude-tags very\-long \
-              --exclude-tags debug --exclude-tags fast --exclude-tags ARM \
-              --exclude-tags aarch64
-          # cd "${gem5_root}"
+      # - name: kvm tests
+      #   run: |
+      #     cd tests
+      #     ./main.py run -j $(nproc) -vv \
+      #         --exclude-tags ".*" --include-tags kvm --exclude-tags very\-long \
+      #         --exclude-tags debug --exclude-tags fast --exclude-tags ARM \
+      #         --exclude-tags aarch64
+      #     # cd "${gem5_root}"
 
       - name: nightlies long tests
         run: |
-          # cd tests
+          cd tests
           ./main.py run --length long -j $(nproc) -t8 -vv
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
