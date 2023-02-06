@@ -15,15 +15,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: gem5 art
-        run: |
-          # Move the docker base directory to tempfs.
-          sudo /etc/init.d/docker stop
-          sudo mv /var/lib/docker /tmpfs/
-          sudo ln -s /tmpfs/docker /var/lib/docker
-          sudo /etc/init.d/docker start
-          # Move the CWD to the gem5 checkout.
-          cd git/jenkins-gem5-prod/
+      # - name: gem5 art
+      #   run: |
+      #     # Move the docker base directory to tempfs.
+      #     sudo /etc/init.d/docker stop
+      #     sudo mv /var/lib/docker /tmpfs/
+      #     sudo ln -s /tmpfs/docker /var/lib/docker
+      #     sudo /etc/init.d/docker start
+      #     # Move the CWD to the gem5 checkout.
+      #     cd git/jenkins-gem5-prod/
 
       # need to add compiler checks and gem5 art
       - name: presubmit stage2
@@ -31,6 +31,31 @@ jobs:
           # PRE_COMMIT_HOME=/tmp/pre-commit-cache pre-commit run --from-ref HEAD~ --to-ref HEAD
           cd tests
           ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
+
+      - name: Testing
+        run: |
+          set -e
+          # Creating a virtual environment allows us to cleanly install the packages
+          # within a Docker container.
+          mkdir -p .pyenv
+          python3 -m venv .pyenv
+          source .pyenv/bin/activate
+          # Install the packages
+          pip install -e util/gem5art/artifact
+          pip install -e util/gem5art/run
+          pip install -e util/gem5art/tasks
+          # Run the gem5art artificat tests.
+          cd util/gem5art/artifact
+          python3 -m unittest
+          mypy -p gem5art.artifact
+          # Run the gem5art run tests.
+          cd ../run
+          python3 -m unittest
+          mypy -p gem5art.run
+          # Run the gem5art task tests.
+          cd ../tasks
+          python3 -m unittest
+          mypy -p gem5art.tasks
 
 
       # - name: Build and run gem5
