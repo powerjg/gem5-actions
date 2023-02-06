@@ -1,11 +1,11 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing nightlies
-# on: [push]
+on: [push]
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
 jobs:
   Test-Nightly-Long:
     runs-on: [self-hosted, linux, x64]
@@ -30,57 +30,66 @@ jobs:
       # - name: nightly unit test debug
       #   run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
 
-      - name: nightlies long tests
+      - name: kvm tests
         run: |
           cd tests
+          ./main.py run -j $(nproc) -vv \
+              --exclude-tags ".*" --include-tags kvm --exclude-tags very\-long \
+              --exclude-tags debug --exclude-tags fast --exclude-tags ARM \
+              --exclude-tags aarch64
+          # cd "${gem5_root}"
+
+      - name: nightlies long tests
+        run: |
+          # cd tests
           ./main.py run --length long -j $(nproc) -t8 -vv
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
-  GPU-Job:
-    runs-on: [self-hosted, linux, x64]
-    container: gcr.io/gem5-test/gcn-gpu:latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  # GPU-Job:
+  #   runs-on: [self-hosted, linux, x64]
+  #   container: gcr.io/gem5-test/gcn-gpu:latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: start gpu tests
-        run: |
-          scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
-          || (rm -rf build && scons build/GCN3_X86/gem5.opt \
-          -j$(nproc) --ignore-style)
+  #     - name: start gpu tests
+  #       run: |
+  #         scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
+  #         || (rm -rf build && scons build/GCN3_X86/gem5.opt \
+  #         -j$(nproc) --ignore-style)
 
-      - name: square spu tests
-        run: |
-          wget -qN http://dist.gem5.org/dist/develop/test-progs/square/square
-          mkdir -p tests/testing-results
-          build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c square
+  #     - name: square spu tests
+  #       run: |
+  #         wget -qN http://dist.gem5.org/dist/develop/test-progs/square/square
+  #         mkdir -p tests/testing-results
+  #         build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c square
 
-      - name: HeteroSync sleepMutex
-        run: |
-          wget -qN http://dist.gem5.org/dist/develop/test-progs/heterosync/gcn3/allSyncPrims-1kernel
-          build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="sleepMutex 10 16 4"
+  #     - name: HeteroSync sleepMutex
+  #       run: |
+  #         wget -qN http://dist.gem5.org/dist/develop/test-progs/heterosync/gcn3/allSyncPrims-1kernel
+  #         build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="sleepMutex 10 16 4"
 
-      - name: HeteroSync LFBarr
-        run: |
-          build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="lfTreeBarrUniq 10 16 4"
+  #     - name: HeteroSync LFBarr
+  #       run: |
+  #         build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="lfTreeBarrUniq 10 16 4"
 
-  SST-Job:
-    runs-on: [self-hosted, linux, x64]
-    container: gcr.io/gem5-test/sst-env:latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Run SST tests
-        run: |
-          scons build/RISCV/libgem5_opt.so -j$(nproc) --without-tcmalloc --ignore-style;
-          cd ext/sst
-          make clean
-          make -j $(nproc)
-          sst --add-lib-path=./ sst/example.py
-          cd -
+  # SST-Job:
+  #   runs-on: [self-hosted, linux, x64]
+  #   container: gcr.io/gem5-test/sst-env:latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Run SST tests
+  #       run: |
+  #         scons build/RISCV/libgem5_opt.so -j$(nproc) --without-tcmalloc --ignore-style;
+  #         cd ext/sst
+  #         make clean
+  #         make -j $(nproc)
+  #         sst --add-lib-path=./ sst/example.py
+  #         cd -
 
   SystemC-Job:
     runs-on: [self-hosted, linux, x64]
