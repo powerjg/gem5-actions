@@ -2,39 +2,39 @@ name: GitHub Actions gem5 Test Run
 run-name: Testing artifact usage
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being testde
-# on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being testde
+on: [push]
 jobs:
-  Test-Upload:
-    runs-on: [self-hosted, linux, x64]
-    # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  # Test-Upload:
+  #   runs-on: [self-hosted, linux, x64]
+  #   # running container with only a single arguement passes the image being used
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
 
-    steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #   steps:
+  #   # checks out repository, should be more useful when
+  #   # running checks on changed files
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Build and run gem5
-        run: |
-          scons build/X86/gem5.fast -j $(nproc)
+  #     - name: Build and run gem5
+  #       run: |
+  #         scons build/X86/gem5.fast -j $(nproc)
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: gem5-artifact
-          path: build/X86
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: gem5-artifact
+  #         path: build/X86
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  #     - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Test-Download:
     runs-on: [self-hosted, linux, x64]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: Test-Upload
+    # needs: Test-Upload
 
     steps:
     # checks out repository, should be more useful when
@@ -50,12 +50,12 @@ jobs:
 
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: build/X86
+        # working-directory: build/X86
 
       # double checking that steps are run chronologically
       - name: Run gem5 separately (memory_traffic.py)
         run: |
           chmod u+x build/X86/gem5.fast
-          /build/X86/gem5.fast configs/learning_gem5/part1/simple.py
+          build/X86/gem5.fast configs/learning_gem5/part1/simple.py
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

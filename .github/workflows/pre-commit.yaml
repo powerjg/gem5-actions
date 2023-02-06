@@ -1,7 +1,9 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing PreCommit tests
-on: [push]
-
+# on: [push]
+on:
+  schedule:
+    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being testde
 jobs:
   Test-PreCommit:
     runs-on: [self-hosted, linux, x64]
