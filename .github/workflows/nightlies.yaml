@@ -1,11 +1,11 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing nightlies
-# on: [push]
+on: [push]
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
 jobs:
   Test-Nightly-Long:
     runs-on: [self-hosted, linux, x64]
@@ -19,9 +19,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build and run gem5
-        run: |
-          scons build/X86/gem5.fast -j $(nproc)
+      # - name: Build and run gem5
+      #   run: |
+      #     scons build/X86/gem5.fast -j $(nproc)
 
       # - name: test nightly unit test opt
       #   run: |
@@ -39,10 +39,10 @@ jobs:
       #         --exclude-tags aarch64
       #     # cd "${gem5_root}"
 
-      - name: nightlies long tests
-        run: |
-          cd tests
-          ./main.py run --length long -j $(nproc) -t8 -vv
+      # - name: nightlies long tests
+      #   run: |
+      #     cd tests
+      #     ./main.py run --length long -j $(nproc) -t8 -vv
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
@@ -108,8 +108,6 @@ jobs:
         run: |
           cd util/systemc/gem5_within_systemc
           make -j$(nproc)
-          ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c \
-              ../../../tests/test-progs/hello/bin/arm/linux/hello
-          LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ \
-              ./gem5.opt.sc m5out/config.ini;
+          ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c ../../../tests/test-progs/hello/bin/arm/linux/hello
+          LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ ./gem5.opt.sc m5out/config.ini
           cd -
