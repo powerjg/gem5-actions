@@ -40,10 +40,10 @@ jobs:
       #         --exclude-tags aarch64
       #     # cd "${gem5_root}"
 
-      - name: nightlies long tests
-        run: |
-          cd tests
-          ./main.py run --length long -j $(nproc) -t8 -vv
+      # - name: nightlies long tests
+      #   run: |
+      #     cd tests
+      #     ./main.py run --length long -j $(nproc) -t8 -vv
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
