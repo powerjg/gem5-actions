@@ -1,14 +1,14 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing PreCommit tests
-# on: [push]
-on:
-  schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 jobs:
   Test-PreCommit:
     runs-on: [self-hosted, linux, x64]
     # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/clang-version-14:v22-1
+    # container: gcr.io/gem5-test/clang-version-14:v22-1
     
 
     steps:
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: docker/build-action@v1
+      # - uses: docker/build-action@v1
 
       # - name: gem5 art
       #   run: |
@@ -46,9 +46,9 @@ jobs:
           set -e
           # Creating a virtual environment allows us to cleanly install the packages
           # within a Docker container.
-          # mkdir -p .pyenv
-          # python3 -m venv .pyenv
-          # source .pyenv/bin/activate
+          mkdir -p .pyenv
+          python3 -m venv .pyenv
+          source .pyenv/bin/activate
           cd git/jenkins-gem5-prod/
           # Install the packages
           pip install -e util/gem5art/artifact
