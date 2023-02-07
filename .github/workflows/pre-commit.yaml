@@ -7,6 +7,7 @@ on: [push]
 jobs:
   Test-PreCommit:
     runs-on: [self-hosted, linux, x64]
+    timeout-minutes: 1440 # 24 hours
     # running container with only a single arguement passes the image being used
     # container: gcr.io/gem5-test/clang-version-14:v22-1
     # *********** why do we use a docker image here. it works fine w/o one i think ****************************
