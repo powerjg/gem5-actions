@@ -76,21 +76,21 @@ jobs:
   #       run: |
   #         build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="lfTreeBarrUniq 10 16 4"
 
-  # SST-Job:
-  #   runs-on: [self-hosted, linux, x64]
-  #   container: gcr.io/gem5-test/sst-env:latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Run SST tests
-  #       run: |
-  #         scons build/RISCV/libgem5_opt.so -j$(nproc) --without-tcmalloc --ignore-style;
-  #         cd ext/sst
-  #         make clean
-  #         make -j $(nproc)
-  #         sst --add-lib-path=./ sst/example.py
-  #         cd -
+  SST-Job:
+    runs-on: [self-hosted, linux, x64]
+    container: gcr.io/gem5-test/sst-env:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Run SST tests
+        run: |
+          scons build/RISCV/libgem5_opt.so -j$(nproc) --without-tcmalloc --ignore-style;
+          cd ext/sst
+          make clean
+          make -j $(nproc)
+          sst --add-lib-path=./ sst/example.py
+          cd -
 
   # SystemC-Job:
   #   runs-on: [self-hosted, linux, x64]
