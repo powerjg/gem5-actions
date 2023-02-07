@@ -47,7 +47,7 @@ jobs:
           set -e
           # Creating a virtual environment allows us to cleanly install the packages
           # within a Docker container.
-          cd git/jenkins-gem5-prod/
+          # cd git/jenkins-gem5-prod/
           # Install the packages
           pip install -e util/gem5art/artifact
           pip install -e util/gem5art/run
