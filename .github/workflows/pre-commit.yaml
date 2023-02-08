@@ -1,11 +1,11 @@
 name: GitHub Actions gem5 Test Run
-run-name: Testing PreCommit tests
-# on: [push]
-on:
-  schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+run-name: Testing gem5art tests
+on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 jobs:
-  Test-PreCommit:
+  Test-gem5art:
     runs-on: [self-hosted, linux, x64]
     timeout-minutes: 1440 # 24 hours
     # running container with only a single arguement passes the image being used
@@ -52,18 +52,28 @@ jobs:
           pip install -e util/gem5art/artifact
           pip install -e util/gem5art/run
           pip install -e util/gem5art/tasks
+
+      - name: Testing
+        run: |
           # Run the gem5art artificat tests.
           cd util/gem5art/artifact
           python3 -m unittest
           mypy -p gem5art.artifact
+
+      - name: test
+        run: |
           # Run the gem5art run tests.
           cd ../run
           python3 -m unittest
           mypy -p gem5art.run
+
+      - name: tests
+        run: |
           # Run the gem5art task tests.
           cd ../tasks
           python3 -m unittest
           mypy -p gem5art.tasks
+
 
 
       # - name: Build and run gem5

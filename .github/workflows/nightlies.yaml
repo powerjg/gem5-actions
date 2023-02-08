@@ -1,11 +1,11 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing GPU, SST, KVM, and SystemC
-on: [push]
+# on: [push]
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on:
-#   schedule:
-#     - cron:  '0 2 * * *'
+on:
+  schedule:
+    - cron:  '0 2 * * *'
 jobs:
   Test-Precommit:
     runs-on: [self-hosted, linux, x64]
