@@ -1,4 +1,4 @@
-name: GitHub Actions gem5 Test Run
+name: Github Artifacting Tests
 run-name: Testing artifact usage
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
