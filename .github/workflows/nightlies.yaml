@@ -1,11 +1,11 @@
 name: GitHub Actions gem5 Test Run
 run-name: Testing GPU, SST, KVM, and SystemC
-# on: [push]
+on: [push]
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
 jobs:
   Test-Precommit:
     runs-on: [self-hosted, linux, x64]
@@ -31,22 +31,22 @@ jobs:
       # - name: nightly unit test debug
       #   run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v19
+      # - name: Get changed files
+      #   id: changed-files
+      #   uses: tj-actions/changed-files@v19
 
       # - name: Install black and reorder-python-imports
       #   run: pip install black reorder-python-imports
 
-      - name: Black and Sort changed files
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo $file
-            if [[ $file == *.py ]]; then
-              black $file --check
-              reorder-python-imports $file
-            fi
-          done
+      # - name: Black and Sort changed files
+      #   run: |
+      #     for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+      #       echo $file
+      #       if [[ $file == *.py ]]; then
+      #         black $file --check
+      #         reorder-python-imports $file
+      #       fi
+      #     done
 
       # - name: kvm tests
       #   run: |
@@ -111,24 +111,24 @@ jobs:
   #         sst --add-lib-path=./ sst/example.py
   #         cd -
 
-  # SystemC-Job:
-  #   runs-on: [self-hosted, linux, x64]
-  #   container: gcr.io/gem5-test/systemc-env:latest
-  #   timeout-minutes: 1440 # 24 hours
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  SystemC-Job:
+    runs-on: [self-hosted, linux, x64]
+    container: gcr.io/gem5-test/systemc-env:latest
+    timeout-minutes: 1440 # 24 hours
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #     - name: systemc tests
-  #       run: |
-  #         scons -j$(nproc) --ignore-style build/ARM/gem5.opt
-  #         scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j$(nproc) build/ARM/libgem5_opt.so
+      - name: systemc tests
+        run: |
+          scons -j$(nproc) --ignore-style build/ARM/gem5.opt
+          scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j$(nproc) build/ARM/libgem5_opt.so
 
-  #     - name: systemc tests
-  #       run: |
-  #         cd util/systemc/gem5_within_systemc
-  #         make -j$(nproc)
-  #         ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c ../../../tests/test-progs/hello/bin/arm/linux/hello
-  #         LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ ./gem5.opt.sc m5out/config.ini
-  #         cd -
+      - name: systemc tests
+        run: |
+          cd util/systemc/gem5_within_systemc
+          make -j$(nproc)
+          ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c ../../../tests/test-progs/hello/bin/arm/linux/hello
+          LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ ./gem5.opt.sc m5out/config.ini
+          cd -
