@@ -23,6 +23,7 @@ jobs:
 
       - name: Run very-long tests
         run: |
+        cd tests
           ./main.py run --length very-long -j $(nproc) -t8 -vv
 
       # - name: nightly unit test debug
