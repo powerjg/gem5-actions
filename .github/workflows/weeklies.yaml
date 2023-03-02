@@ -52,6 +52,9 @@ jobs:
           cd gem5-resources
           git checkout develop
           cd ../
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       
       - name: create docker image
         run: |
