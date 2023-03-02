@@ -26,12 +26,35 @@ jobs:
           cd tests
           ./main.py run --length very-long -j $(nproc) -t8 -vv
 
+          mkdir -p tests/testing-results
+
       # - name: nightly unit test debug
       #   run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
+  GPU-Tests:
+    runs-on: [self-hosted, linux, x64]
+    container: gcr.io/gem5-test/gcn-gpu:latest
+    timeout-minutes: 1440 # 24 hours
 
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: start gpu tests
+        run: |
+        rm -rf ${gem5_root}/gem5-resources
+        rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
+
+      - name: git stuff
+        run: |
+          git clone https://gem5.googlesource.com/public/gem5-resources \
+          "${gem5_root}/gem5-resources"
+          cd "${gem5_root}/gem5-resources"
+          git checkout develop
+          cd "${gem5_root}" 
 
 
 

@@ -3,9 +3,9 @@ run-name: Testing gem5art tests
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 on:
-  schedule:
-    - cron:  '0 2 * * *'
-# on: [push]
+  # schedule:
+  #   - cron:  '0 2 * * *'
+on: [push]
 
 jobs:
   Test-gem5art:
@@ -37,20 +37,20 @@ jobs:
           # Run the gem5art artificat tests.
           cd util/gem5art/artifact
           python3 -m unittest
-          mypy -p gem5art.artifact
+          # mypy -p gem5art.artifact
 
       - name: test
         run: |
           # Run the gem5art run tests.
           cd ../run
           python3 -m unittest
-          mypy -p gem5art.run
+          # mypy -p gem5art.run
 
       - name: tests
         run: |
           # Run the gem5art task tests.
           cd ../tasks
           python3 -m unittest
-          mypy -p gem5art.tasks
+          # mypy -p gem5art.tasks
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

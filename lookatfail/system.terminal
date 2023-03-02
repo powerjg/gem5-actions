@@ -1,0 +1,187 @@
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd070]
+[    0.000000] Linux version 4.18.0+ (arm-employee@arm-computer) (gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04.1)) #1 SMP PREEMPT Wed Nov 6 14:10:00 GMT 2019
+[    0.000000] Machine model: V2P-CA15
+[    0.000000] Memory limited to 256MB
+[    0.000000] cma: Reserved 16 MiB at 0x000000008f000000
+[    0.000000] On node 0 totalpages: 65536
+[    0.000000]   DMA32 zone: 1024 pages used for memmap
+[    0.000000]   DMA32 zone: 0 pages reserved
+[    0.000000]   DMA32 zone: 65536 pages, LIFO batch:15
+[    0.000000] random: get_random_bytes called from start_kernel+0xa8/0x3e8 with crng_init=0
+[    0.000000] percpu: Embedded 23 pages/cpu @(____ptrval____) s53976 r8192 d32040 u94208
+[    0.000000] pcpu-alloc: s53976 r8192 d32040 u94208 alloc=23*4096
+[    0.000000] pcpu-alloc: [0] 0 
+[    0.000000] Detected PIPT I-cache on CPU0
+[    0.000000] CPU features: enabling workaround for ARM erratum 832075
+[    0.000000] CPU features: enabling workaround for ARM erratum 834220
+[    0.000000] CPU features: enabling workaround for EL2 vector hardening
+[    0.000000] CPU features: detected: Kernel page table isolation (KPTI)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 64512
+[    0.000000] Kernel command line: earlyprintk=pl011,0x1c090000 console=ttyAMA0 lpj=19988480 norandmaps rw loglevel=8 mem=256MB root=/dev/sda
+[    0.000000] Dentry cache hash table entries: 32768 (order: 6, 262144 bytes)
+[    0.000000] Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
+[    0.000000] Memory: 218388K/262144K available (6910K kernel code, 452K rwdata, 2312K rodata, 448K init, 217K bss, 27372K reserved, 16384K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] Preemptible hierarchical RCU implementation.
+[    0.000000] 	RCU restricting CPUs from NR_CPUS=256 to nr_cpu_ids=1.
+[    0.000000] 	Tasks RCU enabled.
+[    0.000000] RCU: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=1
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] GICv3: GIC: Using split EOI/Deactivate mode
+[    0.000000] GICv3: Distributor has Range Selector support
+[    0.000000] GICv3: no VLPI support, direct LPI support
+[    0.000000] ITS: No ITS available, not enabling LPIs
+[    0.000000] GICv3: CPU0: found redistributor 0 region 0:0x000000002f100000
+[    0.000000] clk_gem5_energy_ctrl: No cpu-map in DT! Falling back to old detection method!
+[    0.000000] clk_gem5_energy_ctrl: No clusters in DT! Falling back to using CPU topology!
+[    0.000001] sched_clock: 32 bits at 24MHz, resolution 41ns, wraps every 89478484971ns
+[    0.000086] arch_timer: cp15 and mmio timer(s) running at 25.16MHz (phys/phys).
+[    0.000089] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x5cdd39714, max_idle_ns: 440795202620 ns
+[    0.000093] sched_clock: 56 bits at 25MHz, resolution 39ns, wraps every 4398046511084ns
+[    0.000141] Console: colour dummy device 80x25
+[    0.000146] Calibrating delay loop (skipped) preset value.. 9994.24 BogoMIPS (lpj=19988480)
+[    0.000151] pid_max: default: 32768 minimum: 301
+[    0.000184] Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+[    0.000188] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes)
+[    0.024070] ASID allocator initialised with 128 entries
+[    0.032069] Hierarchical SRCU implementation.
+[    0.048080] smp: Bringing up secondary CPUs ...
+[    0.048084] smp: Brought up 1 node, 1 CPU
+[    0.048086] SMP: Total of 1 processors activated.
+[    0.048090] CPU features: detected: Privileged Access Never
+[    0.048093] CPU features: detected: User Access Override
+[    0.048096] CPU features: detected: 32-bit EL0 Support
+[    0.048099] CPU features: detected: Scalable Vector Extension
+[    0.048460] SVE: maximum available vector length 16 bytes per vector
+[    0.048463] SVE: default vector length 16 bytes per vector
+[    0.048466] CPU: All CPU(s) started at EL2
+[    0.048470] alternatives: patching kernel code
+[    0.049085] devtmpfs: initialized
+[    0.049846] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.049850] futex hash table entries: 256 (order: 2, 16384 bytes)
+[    0.050536] NET: Registered protocol family 16
+[    0.132159] cpuidle: using governor menu
+[    0.132244] vdso: 2 pages (1 code @ (____ptrval____), 1 data @ (____ptrval____))
+[    0.132248] hw-breakpoint: found 16 breakpoint and 16 watchpoint registers.
+[    0.132608] DMA: preallocated 256 KiB pool for atomic allocations
+[    0.132611] Serial: AMBA PL011 UART driver
+[    0.132787] OF: amba_device_add() failed (-2) for /watchdog@2a490000
+[    0.132966] OF: amba_device_add() failed (-2) for /watchdog@2b060000
+[    0.133057] 1c090000.uart: ttyAMA0 at MMIO 0x1c090000 (irq = 13, base_baud = 0) is a PL011 rev3
+[    0.133333] console [ttyAMA0] enabled
+[    0.133592] 1c0a0000.uart: ttyAMA1 at MMIO 0x1c0a0000 (irq = 14, base_baud = 0) is a PL011 rev3
+[    0.133780] 1c0b0000.uart: ttyAMA2 at MMIO 0x1c0b0000 (irq = 15, base_baud = 0) is a PL011 rev3
+[    0.133971] 1c0c0000.uart: ttyAMA3 at MMIO 0x1c0c0000 (irq = 16, base_baud = 0) is a PL011 rev3
+[    0.134109] OF: amba_device_add() failed (-2) for /kmi@1c060000
+[    0.134161] OF: amba_device_add() failed (-2) for /kmi@1c070000
+[    0.134213] OF: /watchdog@1c0f0000: could not find phandle
+[    0.134218] ERROR: could not get clock /watchdog@1c0f0000:apb_pclk(1)
+[    0.134224] OF: amba_device_add() failed (-2) for /watchdog@1c0f0000
+[    0.134276] OF: /rtc@1c170000: could not find phandle
+[    0.134281] ERROR: could not get clock /rtc@1c170000:apb_pclk(0)
+[    0.134287] OF: amba_device_add() failed (-2) for /rtc@1c170000
+[    0.144236] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
+[    0.148584] vgaarb: loaded
+[    0.148665] SCSI subsystem initialized
+[    0.152157] libata version 3.00 loaded.
+[    0.152222] usbcore: registered new interface driver usbfs
+[    0.152241] usbcore: registered new interface driver hub
+[    0.152256] usbcore: registered new device driver usb
+[    0.152282] pps_core: LinuxPPS API ver. 1 registered
+[    0.152286] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[    0.152297] PTP clock support registered
+[    0.152818] clocksource: Switched to clocksource arch_sys_counter
+[    0.155945] NET: Registered protocol family 2
+[    0.156102] tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes)
+[    0.156111] TCP established hash table entries: 2048 (order: 2, 16384 bytes)
+[    0.156128] TCP bind hash table entries: 2048 (order: 3, 32768 bytes)
+[    0.156176] TCP: Hash tables configured (established 2048 bind 2048)
+[    0.156192] UDP hash table entries: 256 (order: 1, 8192 bytes)
+[    0.156202] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes)
+[    0.156237] NET: Registered protocol family 1
+[    0.169565] RPC: Registered named UNIX socket transport module.
+[    0.169569] RPC: Registered udp transport module.
+[    0.169574] RPC: Registered tcp transport module.
+[    0.169578] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    0.169584] PCI: CLS 0 bytes, default 64
+[    0.169756] kvm [1]: SVE system without VHE unsupported.  Broken cpu?
+[    0.170114] workingset: timestamp_bits=62 max_order=16 bucket_order=0
+[    0.172506] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.175010] fuse init (API version 7.27)
+[    0.175481] io scheduler noop registered
+[    0.175556] io scheduler cfq registered (default)
+[    0.175561] io scheduler mq-deadline registered
+[    0.175565] io scheduler kyber registered
+[    0.175595] atomic64_test: passed
+[    0.175955] pci-host-generic 40000000.pci: host bridge /pci ranges:
+[    0.175962] pci-host-generic 40000000.pci:   No bus range found for /pci, using [bus 00-ff]
+[    0.175969] pci-host-generic 40000000.pci: Parsing ranges property...
+[    0.175978] pci-host-generic 40000000.pci:    IO 0x50000000..0x5000ffff -> 0x00000000
+[    0.175987] pci-host-generic 40000000.pci:   MEM 0x4000000000..0x403fffffff -> 0x00000000
+[    0.176007] pci-host-generic 40000000.pci: ECAM at [mem 0x40000000-0x4fffffff] for [bus 00-ff]
+[    0.176067] pci-host-generic 40000000.pci: PCI host bridge to bus 0000:00
+[    0.176073] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    0.176080] pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+[    0.176087] pci_bus 0000:00: root bus resource [mem 0x4000000000-0x403fffffff] (bus address [0x00000000-0x3fffffff])
+[    0.176094] pci_bus 0000:00: scanning bus
+[    0.176110] pci 0000:00:01.0: [8086:7111] type 00 class 0x010185
+[    0.176119] pci 0000:00:01.0: reg 0x10: [io  0x0000-0x0007]
+[    0.176126] pci 0000:00:01.0: reg 0x14: [io  0x0000-0x0003]
+[    0.176134] pci 0000:00:01.0: reg 0x18: [io  0x0000-0x0007]
+[    0.176141] pci 0000:00:01.0: reg 0x1c: [io  0x0000-0x0003]
+[    0.176148] pci 0000:00:01.0: reg 0x20: [io  0x0000-0x000f]
+[    0.176157] pci 0000:00:01.0: reg 0x30: [mem 0x4000000000-0x40000007ff pref]
+[    0.176403] pci_bus 0000:00: fixups for bus
+[    0.176409] pci_bus 0000:00: bus scan returning with max=00
+[    0.176417] pci 0000:00:01.0: BAR 6: assigned [mem 0x4000000000-0x40000007ff pref]
+[    0.176424] pci 0000:00:01.0: BAR 4: assigned [io  0x1000-0x100f]
+[    0.176432] pci 0000:00:01.0: BAR 0: assigned [io  0x1010-0x1017]
+[    0.176439] pci 0000:00:01.0: BAR 2: assigned [io  0x1018-0x101f]
+[    0.176446] pci 0000:00:01.0: BAR 1: assigned [io  0x1020-0x1023]
+[    0.176454] pci 0000:00:01.0: BAR 3: assigned [io  0x1024-0x1027]
+[    0.178043] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+[    0.188454] ata_piix 0000:00:01.0: assign IRQ: got 23
+[    0.188460] ata_piix 0000:00:01.0: version 2.13
+[    0.188467] ata_piix 0000:00:01.0: enabling device (0000 -> 0001)
+[    0.188489] ata_piix 0000:00:01.0: enabling bus mastering
+[    0.193268] scsi host0: ata_piix
+[    0.197440] scsi host1: ata_piix
+[    0.197496] ata1: PATA max UDMA/33 cmd 0x1010 ctl 0x1020 bmdma 0x1000 irq 23
+[    0.197501] ata2: PATA max UDMA/33 cmd 0x1018 ctl 0x1024 bmdma 0x1008 irq 23
+[    0.197684] libphy: Fixed MDIO Bus: probed
+[    0.197700] e1000: Intel(R) PRO/1000 Network Driver - version 7.3.21-k8-NAPI
+[    0.197705] e1000: Copyright (c) 1999-2006 Intel Corporation.
+[    0.197725] e1000e: Intel(R) PRO/1000 Network Driver - 3.2.6-k
+[    0.197730] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[    0.197750] igb: Intel(R) Gigabit Ethernet Network Driver - version 5.4.0-k
+[    0.197755] igb: Copyright (c) 2007-2014 Intel Corporation.
+[    0.197775] ixgbe: Intel(R) 10 Gigabit PCI Express Network Driver - version 5.1.0-k
+[    0.197780] ixgbe: Copyright (c) 1999-2016 Intel Corporation.
+[    0.201868] ixgbevf: Intel(R) 10 Gigabit PCI Express Virtual Function Network Driver - version 4.1.0-k
+[    0.201874] ixgbevf: Copyright (c) 2009 - 2015 Intel Corporation.
+[    0.205943] i40e: Intel(R) Ethernet Connection XL710 Network Driver - version 2.3.2-k
+[    0.205949] i40e: Copyright (c) 2013 - 2014 Intel Corporation.
+[    0.210432] ixgb: Intel(R) PRO/10GbE Network Driver - version 1.0.135-k2-NAPI
+[    0.210437] ixgb: Copyright (c) 1999-2008 Intel Corporation.
+[    0.210457] i40evf: Intel(R) 40-10 Gigabit Virtual Function Network Driver - version 3.2.2-k
+[    0.210462] Copyright (c) 2013 - 2015 Intel Corporation.
+[    0.214685] usbcore: registered new interface driver usb-storage
+[    0.214759] mousedev: PS/2 mouse device common for all mice
+[    0.214834] gem5 DVFS handler is disabled
+[    0.214838] gem5-energy-ctrl loaded at (____ptrval____)
+[    0.214843] gem5_energy_ctrl_mc: gem5_mc_init: DVFS handler in energy controller is disabled,                         ARM gem5 multi-cluster cpufreq driver                         will not be registered
+[    0.215118] usbcore: registered new interface driver usbhid
+[    0.215123] usbhid: USB HID core driver
+[    0.215168] NET: Registered protocol family 17
+[    0.356543] ata1.00: ATA-7: M5 IDE Disk, , max UDMA/66
+[    0.356549] ata1.00: 504 sectors, multi 0: LBA 
+[    0.356630] scsi 0:0:0:0: Direct-Access     ATA      M5 IDE Disk      n/a  PQ: 0 ANSI: 5
+[    0.356820] sd 0:0:0:0: Attached scsi generic sg0 type 0
+[    0.356912] sd 0:0:0:0: [sda] 504 512-byte logical blocks: (258 kB/252 KiB)
+[    0.356927] sd 0:0:0:0: [sda] Write Protect is off
+[    0.356933] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[    0.356957] sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[    0.357369] sd 0:0:0:0: [sda] Attached SCSI disk
+[    0.360775] VFS: Mounted root (squashfs filesystem) readonly on device 8:0.
+[    0.360786] devtmpfs: error mounting -2
+[    0.360863] Freeing unused kernel memory: 448K

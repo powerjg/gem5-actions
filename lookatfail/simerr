@@ -1,0 +1,26 @@
+build/ALL/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+build/ALL/base/vnc/vncserver.cc:163: warn: Sockets disabled, not accepting vnc client connections
+build/ALL/dev/serial/terminal.cc:174: warn: Sockets disabled, not accepting terminal connections
+build/ALL/base/remote_gdb.cc:416: warn: Sockets disabled, not accepting gdb connections
+build/ALL/dev/arm/energy_ctrl.cc:252: warn: Existing EnergyCtrl, but no enabled DVFSHandler found.
+build/ALL/dev/arm/gic_v3_distributor.cc:884: warn: Gicv3Distributor::write(): setting ARE_NS to 0 is not supported!
+build/ALL/dev/arm/gic_v3_distributor.cc:889: warn: Gicv3Distributor::write(): setting ARE_S to 0 is not supported!
+build/ALL/dev/arm/rv_ctrl.cc:176: warn: SCReg: Access to unknown device dcc0:site0:pos0:fn7:dev0
+build/ALL/sim/power_state.cc:105: warn: PowerState: Already in the requested power state, request ignored
+build/ALL/dev/arm/gic_v3_distributor.cc:913: warn: Gicv3Distributor::write(): setting ARE_NS to 0 is not supported!
+build/ALL/arch/arm/insts/pseudo.cc:172: warn: 	instruction 'csdb' unimplemented
+build/ALL/dev/arm/rv_ctrl.cc:122: warn: Tried to read RealView I/O at offset 0x60 that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:122: warn: Tried to read RealView I/O at offset 0x48 that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:198: warn: Tried to write RVIO at offset 0xa8 (data 0) that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:122: warn: Tried to read RealView I/O at offset 0x8 that doesn't exist
+build/ALL/dev/arm/rv_ctrl.cc:122: warn: Tried to read RealView I/O at offset 0x48 that doesn't exist
+build/ALL/dev/arm/energy_ctrl.cc:77: warn: EnergyCtrl: Disabled handler, ignoring read from reg 0
