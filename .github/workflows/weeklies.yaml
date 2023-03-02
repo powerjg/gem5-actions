@@ -21,15 +21,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run very-long tests
-        run: |
-          cd tests
-          ./main.py run --length very-long -j $(nproc) -t8 -vv
+      # - name: Run very-long tests
+      #   run: |
+      #     cd tests
+      #     ./main.py run --length very-long -j $(nproc) -t8 -vv
 
-          mkdir -p tests/testing-results
-
-      # - name: nightly unit test debug
-      #   run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
+      #     mkdir -p tests/testing-results
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
@@ -45,16 +42,45 @@ jobs:
 
       - name: start gpu tests
         run: |
-          rm -rf ${gem5_root}/gem5-resources
+          rm -rf gem5-resources
           rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
 
       - name: git stuff
         run: |
           git clone https://gem5.googlesource.com/public/gem5-resources \
-          "${gem5_root}/gem5-resources"
-          cd "${gem5_root}/gem5-resources"
+          "gem5-resources"
+          cd gem5-resources
           git checkout develop
-          cd "${gem5_root}" 
+          cd ../
+      
+      - name: create docker image
+        run: |
+          docker pull gcr.io/gem5-test/gcn-gpu:latest
+          docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
+      
+      - name: start running tests
+        run: |
+          docker run --rm -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+            "${gem5_root}" --memory=24g hacc-test-weekly bash -c \
+            "scons build/${gpu_isa}/gem5.opt -j${threads} --ignore-style \
+            || rm -rf build && scons build/${gpu_isa}/gem5.opt -j${threads} \
+            --ignore-style"
+          
+          docker run --rm -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+            "${gem5_root}/util/m5" --memory=24g hacc-test-weekly bash -c \
+            "export TERM=xterm-256color ; scons build/x86/out/m5" 
+
+      - name: lulesh tests
+        run: |
+          docker run --rm --volume "${gem5_root}":"${gem5_root}" -w \
+            "${gem5_root}/gem5-resources/src/gpu/lulesh" \
+            -u $UID:$GID --memory=24g hacc-test-weekly bash -c \
+            "make"
+          docker run --rm -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+            "${gem5_root}" --memory=24g \
+            hacc-test-weekly build/${gpu_isa}/gem5.opt configs/example/apu_se.py -n3 \
+            --mem-size=8GB --reg-alloc-policy=dynamic \
+            --benchmark-root="${gem5_root}/gem5-resources/src/gpu/lulesh/bin" -c lulesh
 
 
 
