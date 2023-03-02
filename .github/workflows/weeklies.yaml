@@ -52,13 +52,22 @@ jobs:
           cd gem5-resources
           git checkout develop
           cd ../
+      
+      - name: create docker image
+        run: |
+          docker pull gcr.io/gem5-test/gcn-gpu:latest
+          # docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      # - name: create docker image
-        run: |
-          docker pull gcr.io/gem5-test/gcn-gpu:latest
-          docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
+        with:
+          context: .
+          file: gem5-resources/src/gpu/halo-finder 
+          tags: hacc-test-weekly
+          # build-args: |
+          #     "NPM_TOKEN=${{ secrets.TOKEN }}"
+          # push: true
+
       
       - name: start running tests
         run: |
