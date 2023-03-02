@@ -45,8 +45,8 @@ jobs:
 
       - name: start gpu tests
         run: |
-        rm -rf ${gem5_root}/gem5-resources
-        rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
+          rm -rf ${gem5_root}/gem5-resources
+          rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
 
       - name: git stuff
         run: |

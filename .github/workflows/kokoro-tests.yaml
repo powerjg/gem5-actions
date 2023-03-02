@@ -2,7 +2,7 @@ name: Kokoro Tests
 run-name: Testing gem5art tests
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
+# on:
   # schedule:
   #   - cron:  '0 2 * * *'
 on: [push]
