@@ -8,18 +8,18 @@ run-name: Testing Weeklies
 on: [push]
 
 jobs:
-  Weeklies:
-    runs-on: [self-hosted, linux, x64]
-    # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 4320 # 3 days
+  # Weeklies:
+  #   runs-on: [self-hosted, linux, x64]
+  #   # running container with only a single arguement passes the image being used
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   timeout-minutes: 4320 # 3 days
 
-    steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #   steps:
+  #   # checks out repository, should be more useful when
+  #   # running checks on changed files
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
       # - name: Run very-long tests
       #   run: |
@@ -28,7 +28,7 @@ jobs:
 
       #     mkdir -p tests/testing-results
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      # - run: echo "🍏 This job's status is ${{ job.status }}."
 
   GPU-Tests:
     runs-on: [self-hosted, linux, x64]
@@ -45,13 +45,13 @@ jobs:
           rm -rf gem5-resources
           rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
 
-      - name: git stuff
-        run: |
-          git clone https://gem5.googlesource.com/public/gem5-resources \
-          "gem5-resources"
-          cd gem5-resources
-          git checkout develop
-          cd ../
+      # - name: git stuff
+      #   run: |
+      #     git clone https://gem5.googlesource.com/public/gem5-resources \
+      #     "gem5-resources"
+      #     cd gem5-resources
+      #     git checkout develop
+      #     cd ../
             
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
