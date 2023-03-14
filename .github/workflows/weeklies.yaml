@@ -59,7 +59,7 @@ jobs:
           chmod +x "$HOME/.docker/cli-plugins/docker-buildx"
           export DOCKER_CLI_EXPERIMENTAL=enabled
           docker context create buildx-build
-          docker buildx create --use buildx-build
+          docker buildx create buildx-build
             
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
