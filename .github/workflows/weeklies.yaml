@@ -63,7 +63,7 @@ jobs:
             
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-         env:
+        env:
           DOCKER_CONTEXT: buildx-build
     #   # - name: Set up Docker Buildx
     #   #   uses: docker/setup-buildx-action@v2
