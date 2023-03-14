@@ -32,7 +32,7 @@ jobs:
 
   GPU-Tests:
     runs-on: [self-hosted, linux, x64]
-    # container: gcr.io/gem5-test/gcn-gpu:latest
+    container: gcr.io/gem5-test/gcn-gpu:latest
     timeout-minutes: 1440 # 24 hours
 
     steps:
