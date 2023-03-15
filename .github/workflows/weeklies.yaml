@@ -1,4 +1,3 @@
-# This is a WIP file for recreating weekly.sh
 name: Weekly Tests
 run-name: Testing Weeklies
 #  allows us to repeat this daily at 2am
@@ -8,6 +7,7 @@ run-name: Testing Weeklies
     - cron:  '0 2 * * *'
 # on: [push]
 
+# This is a WIP file for recreating weekly.sh
 jobs:
   Weeklies:
     runs-on: [self-hosted, linux, x64]
