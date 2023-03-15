@@ -1,3 +1,6 @@
+# This file is an example of using artifacts in different runs, for us to utilize in 
+# separating jobs amongst different runners 
+
 name: Github Artifacting Tests
 run-name: Testing artifact usage
 #  allows us to repeat this daily at 2am
@@ -5,7 +8,7 @@ run-name: Testing artifact usage
 on:
   schedule:
     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
-# on: [push]
+
 jobs:
   Test-Upload:
     runs-on: [self-hosted, linux, x64]

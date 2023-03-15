@@ -1,3 +1,4 @@
+# This replaces nightly.sh. Currently KVM tests are failing
 name: Nightly Tests
 run-name: Automated - Running Nightly Tests
 #  allows us to repeat this daily at 2am
@@ -7,26 +8,6 @@ on:
     - cron:  '0 2 * * *'
 
 jobs:
-  Unit-Tests:
-    runs-on: [self-hosted, linux, x64]
-    # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 1440 # 24 hours
-
-    steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: test nightly unit test opt
-        run: |
-          scons build/ALL/unittests.opt -j $(nproc) --ignore-style
-
-      - name: nightly unit test debug
-        run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
-
   Long-Tests:
     runs-on: [self-hosted, linux, x64]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
