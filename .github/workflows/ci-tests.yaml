@@ -1,5 +1,4 @@
 # This replaces presubmit.sh, and is missing the gem5art tests
-
 name: CI Tests
 run-name: CI-Tests
 #  allows us to repeat this daily at 2am
