@@ -393,7 +393,7 @@ std::map<Addr, HardBreakpoint *> hardBreakMap;
 BaseRemoteGDB::BaseRemoteGDB(System *_system, int _port) :
         incomingConnectionEvent(nullptr), incomingDataEvent(nullptr),
         _port(_port), fd(-1), sys(_system),
-        connectEvent(this), disconnectEvent(this), trapEvent(this),
+        connectEvent(*this), disconnectEvent(*this), trapEvent(this),
         singleStepEvent(*this)
 {}
 
@@ -417,7 +417,7 @@ BaseRemoteGDB::listen()
         return;
     }
 
-    while (!listener.listen(_port, true)) {
+    while (!listener.listen(_port)) {
         DPRINTF(GDBMisc, "Can't bind port %d\n", _port);
         _port++;
     }
@@ -438,7 +438,7 @@ BaseRemoteGDB::connect()
 
     pollQueue.remove(incomingConnectionEvent);
 
-    int sfd = listener.accept(true);
+    int sfd = listener.accept();
 
     if (sfd != -1) {
         if (isAttached())

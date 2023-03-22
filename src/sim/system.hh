@@ -87,8 +87,8 @@ class System : public SimObject, public PCEventScope
         /**
          * Create a system port with a name and an owner.
          */
-        SystemPort(const std::string &_name, SimObject *_owner)
-            : RequestPort(_name, _owner)
+        SystemPort(const std::string &_name)
+            : RequestPort(_name)
         { }
 
         bool
@@ -152,19 +152,16 @@ class System : public SimObject, public PCEventScope
         class const_iterator
         {
           private:
-            const Threads &threads;
+            Threads const* threads;
             int pos;
 
             friend class Threads;
 
             const_iterator(const Threads &_threads, int _pos) :
-                threads(_threads), pos(_pos)
+                threads(&_threads), pos(_pos)
             {}
 
           public:
-            const_iterator(const const_iterator &) = default;
-            const_iterator &operator = (const const_iterator &) = default;
-
             using iterator_category = std::forward_iterator_tag;
             using value_type = ThreadContext *;
             using difference_type = int;
@@ -181,16 +178,16 @@ class System : public SimObject, public PCEventScope
             const_iterator
             operator ++ (int)
             {
-                return const_iterator(threads, pos++);
+                return const_iterator(*threads, pos++);
             }
 
-            reference operator * () { return threads.thread(pos).context; }
-            pointer operator -> () { return &threads.thread(pos).context; }
+            reference operator * () { return threads->thread(pos).context; }
+            pointer operator -> () { return &threads->thread(pos).context; }
 
             bool
             operator == (const const_iterator &other) const
             {
-                return &threads == &other.threads && pos == other.pos;
+                return threads == other.threads && pos == other.pos;
             }
 
             bool

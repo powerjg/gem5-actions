@@ -526,7 +526,9 @@ for variant_path in variant_paths:
         if env['GCC'] or env['CLANG']:
             env.Append(CCFLAGS=['-fsanitize=%s' % sanitizers,
                                  '-fno-omit-frame-pointer'],
-                        LINKFLAGS='-fsanitize=%s' % sanitizers)
+                        LINKFLAGS=['-fsanitize=%s' % sanitizers,
+                                   '-static-libasan'])
+
             if main["BIN_TARGET_ARCH"] == "x86_64":
                 # Sanitizers can enlarge binary size drammatically, north of
                 # 2GB.  This can prevent successful linkage due to symbol
@@ -607,9 +609,9 @@ for variant_path in variant_paths:
 
     if not GetOption('without_tcmalloc'):
         with gem5_scons.Configure(env) as conf:
-            if conf.CheckLib('tcmalloc'):
+            if conf.CheckLib('tcmalloc_minimal'):
                 conf.env.Append(CCFLAGS=conf.env['TCMALLOC_CCFLAGS'])
-            elif conf.CheckLib('tcmalloc_minimal'):
+            elif conf.CheckLib('tcmalloc'):
                 conf.env.Append(CCFLAGS=conf.env['TCMALLOC_CCFLAGS'])
             else:
                 warning("You can get a 12% performance improvement by "

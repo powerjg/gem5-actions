@@ -164,7 +164,7 @@ VncServer::listen(int port)
         return;
     }
 
-    while (!listener.listen(port, true)) {
+    while (!listener.listen(port)) {
         DPRINTF(VNC,
                 "can't bind address vnc server port %d in use PID %d\n",
                 port, getpid());
@@ -190,7 +190,7 @@ VncServer::accept()
     if (!listener.islistening())
         panic("%s: cannot accept a connection if not listening!", name());
 
-    int fd = listener.accept(true);
+    int fd = listener.accept();
     if (fd < 0) {
         warn("%s: failed to accept VNC connection!", name());
         return;

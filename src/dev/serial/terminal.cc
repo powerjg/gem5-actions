@@ -87,6 +87,10 @@ Terminal::ListenEvent::ListenEvent(Terminal *t, int fd, int e)
 void
 Terminal::ListenEvent::process(int revent)
 {
+    // As a consequence of being called from the PollQueue, we might
+    // have been called from a different thread. Migrate to "our"
+    // thread.
+    EventQueue::ScopedMigration migrate(term->eventQueue());
     term->accept();
 }
 
@@ -171,7 +175,7 @@ Terminal::listen(int port)
         return;
     }
 
-    while (!listener.listen(port, true)) {
+    while (!listener.listen(port)) {
         DPRINTF(Terminal,
                 ": can't bind address terminal port %d inuse PID %d\n",
                 port, getpid());
@@ -191,7 +195,7 @@ Terminal::accept()
     if (!listener.islistening())
         panic("%s: cannot accept a connection if not listening!", name());
 
-    int fd = listener.accept(true);
+    int fd = listener.accept();
     if (data_fd != -1) {
         char message[] = "terminal already attached!\n";
         atomic_write(fd, message, sizeof(message));

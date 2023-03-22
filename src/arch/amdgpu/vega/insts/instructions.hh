@@ -31934,6 +31934,40 @@ namespace VegaISA
         void completeAcc(GPUDynInstPtr) override;
     }; // Inst_DS__DS_WRITE_B8
 
+    class Inst_DS__DS_WRITE_B8_D16_HI : public Inst_DS
+    {
+      public:
+        Inst_DS__DS_WRITE_B8_D16_HI(InFmt_DS*);
+        ~Inst_DS__DS_WRITE_B8_D16_HI();
+
+        int
+        getNumOperands() override
+        {
+            return numDstRegOperands() + numSrcRegOperands();
+        } // getNumOperands
+
+        int numDstRegOperands() override { return 0; }
+        int numSrcRegOperands() override { return 2; }
+
+        int
+        getOperandSize(int opIdx) override
+        {
+            switch (opIdx) {
+              case 0: //vgpr_a
+                return 4;
+              case 1: //vgpr_d0
+                return 1;
+              default:
+                fatal("op idx %i out of bounds\n", opIdx);
+                return -1;
+            }
+        } // getOperandSize
+
+        void execute(GPUDynInstPtr) override;
+        void initiateAcc(GPUDynInstPtr) override;
+        void completeAcc(GPUDynInstPtr) override;
+    }; // Inst_DS__DS_WRITE_B8_D16_HI
+
     class Inst_DS__DS_WRITE_B16 : public Inst_DS
     {
       public:
@@ -42581,6 +42615,8 @@ namespace VegaISA
         } // getOperandSize
 
         void execute(GPUDynInstPtr) override;
+        void initiateAcc(GPUDynInstPtr) override;
+        void completeAcc(GPUDynInstPtr) override;
     }; // Inst_FLAT__FLAT_ATOMIC_SMIN
 
     class Inst_FLAT__FLAT_ATOMIC_UMIN : public Inst_FLAT
@@ -42655,6 +42691,8 @@ namespace VegaISA
         } // getOperandSize
 
         void execute(GPUDynInstPtr) override;
+        void initiateAcc(GPUDynInstPtr) override;
+        void completeAcc(GPUDynInstPtr) override;
     }; // Inst_FLAT__FLAT_ATOMIC_SMAX
 
     class Inst_FLAT__FLAT_ATOMIC_UMAX : public Inst_FLAT
@@ -42766,6 +42804,8 @@ namespace VegaISA
         } // getOperandSize
 
         void execute(GPUDynInstPtr) override;
+        void initiateAcc(GPUDynInstPtr) override;
+        void completeAcc(GPUDynInstPtr) override;
     }; // Inst_FLAT__FLAT_ATOMIC_OR
 
     class Inst_FLAT__FLAT_ATOMIC_XOR : public Inst_FLAT

@@ -2,6 +2,7 @@
  * Copyright (c) 2016 RISC-V Foundation
  * Copyright (c) 2016 The University of Virginia
  * Copyright (c) 2020 Barkhausen Institut
+ * Copyright (c) 2022 Google LLC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +35,7 @@
 #include <set>
 #include <sstream>
 
+#include "arch/riscv/faults.hh"
 #include "arch/riscv/interrupts.hh"
 #include "arch/riscv/mmu.hh"
 #include "arch/riscv/pagetable.hh"
@@ -285,21 +287,33 @@ void ISA::clear()
     miscRegFile[MISCREG_VENDORID] = 0;
     miscRegFile[MISCREG_ARCHID] = 0;
     miscRegFile[MISCREG_IMPID] = 0;
+
+    MISA misa = 0;
+    STATUS status = 0;
+
+    // default config arch isa string is rv64(32)imafdc
+    misa.rvi = misa.rvm = misa.rva = misa.rvf = misa.rvd = misa.rvc = 1;
+    // default privlege modes if MSU
+    misa.rvs = misa.rvu = 1;
+
+    // mark FS is initial
+    status.fs = INITIAL;
+
     // rv_type dependent init.
     switch (rv_type) {
         case RV32:
-            miscRegFile[MISCREG_ISA] = (1ULL << MXL_OFFSETS[RV32]) | 0x14112D;
-            miscRegFile[MISCREG_STATUS] = (1ULL << FS_OFFSET);
-            break;
+          misa.rv32_mxl = 1;
+          break;
         case RV64:
-            miscRegFile[MISCREG_ISA] = (2ULL << MXL_OFFSETS[RV64]) | 0x14112D;
-            miscRegFile[MISCREG_STATUS] = (2ULL << UXL_OFFSET) |
-                                          (2ULL << SXL_OFFSET) |
-                                          (1ULL << FS_OFFSET);
-            break;
+          misa.rv64_mxl = 2;
+          status.uxl = status.sxl = 2;
+          break;
         default:
-            panic("%s: Unknown rv_type: %d", name(), (int)rv_type);
+          panic("%s: Unknown rv_type: %d", name(), (int)rv_type);
     }
+
+    miscRegFile[MISCREG_ISA] = misa;
+    miscRegFile[MISCREG_STATUS] = status;
     miscRegFile[MISCREG_MCOUNTEREN] = 0x7;
     miscRegFile[MISCREG_SCOUNTEREN] = 0x7;
     // don't set it to zero; software may try to determine the supported
@@ -423,10 +437,10 @@ ISA::readMiscReg(RegIndex idx)
       case MISCREG_SEPC:
       case MISCREG_MEPC:
         {
-            auto misa = readMiscRegNoEffect(MISCREG_ISA);
+            MISA misa = readMiscRegNoEffect(MISCREG_ISA);
             auto val = readMiscRegNoEffect(idx);
             // if compressed instructions are disabled, epc[1] is set to 0
-            if ((misa & ISA_EXT_C_MASK) == 0)
+            if (misa.rvc == 0)
                 return mbits(val, 63, 2);
             // epc[0] is always 0
             else
@@ -508,7 +522,7 @@ ISA::setMiscReg(RegIndex idx, RegVal val)
 {
     if (idx >= MISCREG_CYCLE && idx <= MISCREG_HPMCOUNTER31) {
         // Ignore writes to HPM counters for now
-        warn("Ignoring write to %s.\n", CSRData.at(idx).name);
+        warn("Ignoring write to miscreg %s.\n", MiscRegNames[idx]);
     } else {
         switch (idx) {
 
@@ -543,6 +557,8 @@ ISA::setMiscReg(RegIndex idx, RegVal val)
                 // qemu seems to update the tables when
                 // pmp addr regs are written (with the assumption
                 // that cfg regs are already written)
+                RegVal res = 0;
+                RegVal old_val = readMiscRegNoEffect(idx);
 
                 for (int i=0; i < regSize; i++) {
 
@@ -553,10 +569,15 @@ ISA::setMiscReg(RegIndex idx, RegVal val)
                     // Form pmp_index using the index i and
                     // PMPCFG register number
                     uint32_t pmp_index = i+(4*(idx-MISCREG_PMPCFG0));
-                    mmu->getPMP()->pmpUpdateCfg(pmp_index,cfg_val);
+                    bool result = mmu->getPMP()->pmpUpdateCfg(pmp_index,cfg_val);
+                    if (result) {
+                        res |= ((RegVal)cfg_val << (8*i));
+                    } else {
+                        res |= (old_val & (0xFF << (8*i)));
+                    }
                 }
 
-                setMiscRegNoEffect(idx, val);
+                setMiscRegNoEffect(idx, res);
             }
             break;
           case MISCREG_PMPADDR00 ... MISCREG_PMPADDR15:
@@ -567,9 +588,9 @@ ISA::setMiscReg(RegIndex idx, RegVal val)
                 auto mmu = dynamic_cast<RiscvISA::MMU *>
                               (tc->getMMUPtr());
                 uint32_t pmp_index = idx-MISCREG_PMPADDR00;
-                mmu->getPMP()->pmpUpdateAddr(pmp_index, val);
-
-                setMiscRegNoEffect(idx, val);
+                if (mmu->getPMP()->pmpUpdateAddr(pmp_index, val)) {
+                    setMiscRegNoEffect(idx, val);
+                }
             }
             break;
 
@@ -608,15 +629,16 @@ ISA::setMiscReg(RegIndex idx, RegVal val)
             break;
           case MISCREG_ISA:
             {
-                auto cur_val = readMiscRegNoEffect(idx);
+                MISA cur_misa = (MISA)readMiscRegNoEffect(MISCREG_ISA);
+                MISA new_misa = (MISA)val;
                 // only allow to disable compressed instructions
                 // if the following instruction is 4-byte aligned
-                if ((val & ISA_EXT_C_MASK) == 0 &&
+                if (new_misa.rvc == 0 &&
                         bits(tc->pcState().as<RiscvISA::PCState>().npc(),
                             2, 0) != 0) {
-                    val |= cur_val & ISA_EXT_C_MASK;
+                    new_misa.rvc = new_misa.rvc | cur_misa.rvc;
                 }
-                setMiscRegNoEffect(idx, val);
+                setMiscRegNoEffect(idx, new_misa);
             }
             break;
           case MISCREG_STATUS:
@@ -721,6 +743,12 @@ void
 ISA::globalClearExclusive()
 {
     tc->getCpuPtr()->wakeup(tc->threadId());
+}
+
+void
+ISA::resetThread()
+{
+    Reset().invoke(tc);
 }
 
 } // namespace RiscvISA
