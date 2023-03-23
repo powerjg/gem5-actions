@@ -2,10 +2,10 @@ name: Weekly Tests
 run-name: Testing Weeklies
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
-# on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
+on: [push]
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -22,18 +22,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run very-long tests
-        run: |
-          cd tests
-          ./main.py run --length very-long -j $(nproc) -t8 -vv
+      # - name: Run very-long tests
+      #   run: |
+      #     cd tests
+      #     ./main.py run --length very-long -j $(nproc) -t8 -vv
 
-          mkdir -p tests/testing-results
+      #     mkdir -p tests/testing-results
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
   GPU-Tests:
     runs-on: [self-hosted, linux, x64]
-    container: gcr.io/gem5-test/gcn-gpu:latest
+    # container: gcr.io/gem5-test/gcn-gpu:latest
     timeout-minutes: 1440 # 24 hours
 
     steps:

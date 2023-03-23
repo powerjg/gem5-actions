@@ -3,9 +3,9 @@ run-name: CI-Tests
 
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on: [push]
-  # schedule:
-  #   - cron:  '0 2 * * *'
+on:
+  schedule:
+    - cron:  '0 2 * * *'
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:
@@ -21,9 +21,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-        
-      - name: test
-        run: docker run hello-world 
 
       # - name: test nightly unit test opt
       #   run: |
