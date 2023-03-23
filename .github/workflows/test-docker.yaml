@@ -1,5 +1,5 @@
 name: docker
-run-name: cocker test
+run-name: docker test
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 
@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
       - name: Set up Docker Buildx
         # uses: docker/setup-buildx-action@v2
-        uses: docker/build-push-action@v3
+        uses: docker/setup-buildx-action@v2
         # with:
         #   context: ./gem5-resources/src/gpu/halo-finder 
         #   # file: gem5-resources/src/gpu/halo-finder 
