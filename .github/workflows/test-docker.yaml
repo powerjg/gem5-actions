@@ -1,0 +1,34 @@
+name: docker
+run-name: cocker test
+#  allows us to repeat this daily at 2am
+#  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+
+on: [push]
+
+# This is a WIP file for recreating weekly.sh
+jobs:
+  Docker:
+    runs-on: [self-hosted, linux, x64]
+    # running container with only a single arguement passes the image being used
+    # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    timeout-minutes: 4320 # 3 days
+
+    steps:
+    # checks out repository, should be more useful when
+    # running checks on changed files
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Docker Buildx
+        # uses: docker/setup-buildx-action@v2
+        uses: docker/build-push-action@v3
+        # with:
+        #   context: ./gem5-resources/src/gpu/halo-finder 
+        #   # file: gem5-resources/src/gpu/halo-finder 
+        #   tags: hacc-test-weekly
+        #   # build-args: |
+        #   #     "NPM_TOKEN=${{ secrets.TOKEN }}"
+        #   push: true
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+
