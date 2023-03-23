@@ -32,7 +32,7 @@ jobs:
       #     endpoint: builders
       - name: test echo
         # run: echo ${{ env.GEM5ROOT_PATH }}
-        run: echo ${GEM5ROOT_PATH}
+        run: echo GEM5ROOT_PATH
       # - run: docker context create mycontext
       # - run: docker context use mycontext
       # - name: Set up Docker Buildx
