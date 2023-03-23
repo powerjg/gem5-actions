@@ -3,10 +3,10 @@ run-name: docker test
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 
-# on: [push]
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -22,12 +22,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Docker Buildx
-        # uses: docker/setup-buildx-action@v2
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-          endpoint: builders
+      # - name: Set up Docker Buildx
+      #   # uses: docker/setup-buildx-action@v2
+      #   uses: docker/setup-buildx-action@v1
+      #   with:
+      #     version: latest
+      #     endpoint: builders
+      - name: test echo
+        run: echo "hello world"
       # - run: docker context create mycontext
       # - run: docker context use mycontext
       # - name: Set up Docker Buildx
