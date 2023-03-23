@@ -54,26 +54,26 @@ jobs:
           git checkout develop
           cd ../
 
-      - name: Install Docker Buildx
-        run: |
-          mkdir -p "$HOME/.docker/cli-plugins"
-          curl -SsL "https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64" -o "$HOME/.docker/cli-plugins/docker-buildx"
-          chmod +x "$HOME/.docker/cli-plugins/docker-buildx"
-          export DOCKER_CLI_EXPERIMENTAL=enabled
-          docker context create buildx-build
-          docker buildx create buildx-build
+      # - name: Install Docker Buildx
+      #   run: |
+      #     mkdir -p "$HOME/.docker/cli-plugins"
+      #     curl -SsL "https://github.com/docker/buildx/releases/download/v0.7.1/buildx-v0.7.1.linux-amd64" -o "$HOME/.docker/cli-plugins/docker-buildx"
+      #     chmod +x "$HOME/.docker/cli-plugins/docker-buildx"
+      #     export DOCKER_CLI_EXPERIMENTAL=enabled
+      #     docker context create buildx-build
+      #     docker buildx create buildx-build
       
-      - name: Set up Docker Context for Buildx
-        id: buildx-context
-        run: |
-          docker context create builders
+      # - name: Set up Docker Context for Buildx
+      #   id: buildx-context
+      #   run: |
+      #     docker context create builders
           
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-          endpoint: builders
+      # - name: Set up Docker Buildx
+      #   id: buildx
+      #   uses: docker/setup-buildx-action@v1
+      #   with:
+      #     version: latest
+      #     endpoint: builders
       # - name: Set up Docker Buildx
       #   uses: docker/setup-buildx-action@v2
       #   env:
@@ -82,21 +82,21 @@ jobs:
       #   #   uses: docker/setup-buildx-action@v2
       #   # - name: Build and push
       #   #   uses: docker/build-push-action@v3
-        # - name: create docker imaged
-      #   run: |
-      #     docker pull gcr.io/gem5-test/gcn-gpu:latest
-      #     # docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
+      - name: create docker images
+        run: |
+          docker pull gcr.io/gem5-test/gcn-gpu:latest
+          docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
 
-      - name: Set up Docker Buildx
-        # uses: docker/setup-buildx-action@v2
-        uses: docker/build-push-action@v3
-        with:
-          context: ./gem5-resources/src/gpu/halo-finder 
-          # file: gem5-resources/src/gpu/halo-finder 
-          tags: hacc-test-weekly
-          # build-args: |
-          #     "NPM_TOKEN=${{ secrets.TOKEN }}"
-          push: true
+      # - name: Set up Docker Buildx
+      #   # uses: docker/setup-buildx-action@v2
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: ./gem5-resources/src/gpu/halo-finder 
+      #     # file: gem5-resources/src/gpu/halo-finder 
+      #     tags: hacc-test-weekly
+      #     # build-args: |
+      #     #     "NPM_TOKEN=${{ secrets.TOKEN }}"
+      #     push: true
 
       
       - name: start running tests
