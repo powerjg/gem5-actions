@@ -15,7 +15,7 @@ jobs:
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 4320 # 3 days
     env:
-      GEM5ROOT: /runner/_work/gem5-actions/gem5-actions
+      GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
 
     steps:
     # checks out repository, should be more useful when
@@ -47,7 +47,7 @@ jobs:
         run: |
           rm -rf gem5-resources
           rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
-          echo $GEM5ROOT
+          echo $GEM5ROOT_PATH
 
       - name: Check out gem5 resources
         run: |
