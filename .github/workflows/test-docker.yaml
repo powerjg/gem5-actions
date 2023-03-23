@@ -48,5 +48,5 @@ jobs:
         #   #     "NPM_TOKEN=${{ secrets.TOKEN }}"
         #   push: true
 
-      - run: echo "🍏 This job's status is ${{ GEM5ROOT_PATH }}."
+      - run: echo "🍏 This job's status is ${GEM5ROOT_PATH}."
 
