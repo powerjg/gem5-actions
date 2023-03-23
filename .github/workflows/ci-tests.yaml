@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
         
-      -name: test
+      - name: test
         run: docker run hello-world 
 
       # - name: test nightly unit test opt
