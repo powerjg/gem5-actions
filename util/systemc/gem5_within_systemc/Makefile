@@ -39,7 +39,8 @@ VARIANT = opt
 SYSTEMC_INC = /opt/systemc/include
 SYSTEMC_LIB = /opt/systemc/lib-linux64
 
-CXXFLAGS = -I../../../build/$(ARCH) -L../../../build/$(ARCH) -I../../../ext/
+# CXXFLAGS = -I../../../build/$(ARCH) -L../../../build/$(ARCH) -I../../../ext/
+CXXFLAGS = -I../../../build/$(ARCH) -L../../../build/$(ARCH)
 CXXFLAGS += -I$(SYSTEMC_INC) -L$(SYSTEMC_LIB)
 CXXFLAGS += -std=c++17
 CXXFLAGS += -g -DTRACING_ON
