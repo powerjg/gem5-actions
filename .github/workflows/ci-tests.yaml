@@ -1,5 +1,6 @@
 name: CI Tests
 run-name: CI-Tests
+using: 'docker'
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 on: [push]
