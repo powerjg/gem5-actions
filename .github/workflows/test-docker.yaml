@@ -10,7 +10,7 @@ on: [push]
 
 # This is a WIP file for recreating weekly.sh
 jobs:
-  Docker:
+  Docker1:
     runs-on: [self-hosted, linux, x64]
     # running container with only a single arguement passes the image being used
     # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
@@ -46,7 +46,7 @@ jobs:
     # running container with only a single arguement passes the image being used
     # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 4320 # 3 days
-    needs: Docker
+    needs: Docker1
     env:
       GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
       - run: echo "🍏 This job's status is ${GEM5ROOT_PATH}." 
