@@ -19,12 +19,19 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      # - name: Set up Docker Buildx
+      #   # uses: docker/setup-buildx-action@v2
+      #   uses: docker/setup-buildx-action@v1
+      #     with:
+      #       version: latest
+      #       endpoint: builders
+      - run: docker context create mycontext
+      - run: docker context use mycontext
       - name: Set up Docker Buildx
-        # uses: docker/setup-buildx-action@v2
         uses: docker/setup-buildx-action@v1
-          with:
-            version: latest
-            endpoint: builders
+        with:
+          buildkitd-flags: --debug
+          endpoint: mycontext
         # with:
         #   context: ./gem5-resources/src/gpu/halo-finder 
         #   # file: gem5-resources/src/gpu/halo-finder 
