@@ -47,7 +47,7 @@ jobs:
         run: |
           rm -rf gem5-resources
           rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
-          pwd
+          echo $GEM5ROOT
 
       - name: Check out gem5 resources
         run: |
@@ -89,7 +89,7 @@ jobs:
         run: |
           docker pull gcr.io/gem5-test/gcn-gpu:latest
           docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
-          pwd
+          
 
       # - name: Set up Docker Buildx
       #   # uses: docker/setup-buildx-action@v2
