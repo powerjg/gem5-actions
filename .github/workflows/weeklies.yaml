@@ -45,6 +45,7 @@ jobs:
         run: |
           rm -rf gem5-resources
           rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
+          pwd
 
       - name: Check out gem5 resources
         run: |
@@ -86,6 +87,7 @@ jobs:
         run: |
           docker pull gcr.io/gem5-test/gcn-gpu:latest
           docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
+          pwd
 
       # - name: Set up Docker Buildx
       #   # uses: docker/setup-buildx-action@v2
@@ -103,8 +105,8 @@ jobs:
         run: |
           docker run --rm -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
             "${gem5_root}" --memory=24g hacc-test-weekly bash -c \
-            "scons build/${gpu_isa}/gem5.opt -j${threads} --ignore-style \
-            || rm -rf build && scons build/${gpu_isa}/gem5.opt -j${threads} \
+            "scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
+            || rm -rf build && scons build/GCN3_X86/gem5.opt -j$(nproc) \
             --ignore-style"
           
           docker run --rm -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
@@ -119,6 +121,6 @@ jobs:
             "make"
           docker run --rm -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
             "${gem5_root}" --memory=24g \
-            hacc-test-weekly build/${gpu_isa}/gem5.opt configs/example/apu_se.py -n3 \
+            hacc-test-weekly build/GCN3_X86/gem5.opt configs/example/apu_se.py -n3 \
             --mem-size=8GB --reg-alloc-policy=dynamic \
             --benchmark-root="${gem5_root}/gem5-resources/src/gpu/lulesh/bin" -c lulesh
