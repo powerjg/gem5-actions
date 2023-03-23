@@ -16,7 +16,7 @@ jobs:
     # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 4320 # 3 days
     env:
-      GEM5ROOT_PATH: ${/runner/_work/gem5-actions/gem5-actions}
+      GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
 
     steps:
     # checks out repository, should be more useful when
@@ -48,5 +48,5 @@ jobs:
         #   #     "NPM_TOKEN=${{ secrets.TOKEN }}"
         #   push: true
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "🍏 This job's status is ${{ GEM5ROOT_PATH }}."
 
