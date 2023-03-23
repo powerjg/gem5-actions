@@ -21,9 +21,9 @@ jobs:
     steps:
     # checks out repository, should be more useful when
     # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      # - uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0
       # - name: Set up Docker Buildx
       #   # uses: docker/setup-buildx-action@v2
       #   uses: docker/setup-buildx-action@v1
@@ -31,7 +31,8 @@ jobs:
       #     version: latest
       #     endpoint: builders
       - name: test echo
-        run: echo ${{ env.GEM5ROOT_PATH }}."
+        # run: echo ${{ env.GEM5ROOT_PATH }}
+        run: echo ${GEM5ROOT_PATH}
       # - run: docker context create mycontext
       # - run: docker context use mycontext
       # - name: Set up Docker Buildx
