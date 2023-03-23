@@ -2,10 +2,10 @@ name: Weekly Tests
 run-name: Testing Weeklies
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
-# on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
+on: [push]
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -105,14 +105,14 @@ jobs:
       
       - name: start running tests
         run: |
-          docker run --rm -u $UID:$GID --volume "$GEM5ROOT":"$GEM5ROOT" -w \
-            "$GEM5ROOT" --memory=24g hacc-test-weekly bash -c \
+          docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
+            "${GEM5ROOT_PATH}" --memory=24g hacc-test-weekly bash -c \
             "scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
             || rm -rf build && scons build/GCN3_X86/gem5.opt -j$(nproc) \
             --ignore-style"
           
-          docker run --rm -u $UID:$GID --volume "$GEM5ROOT":"$GEM5ROOT" -w \
-            "$GEM5ROOT"/util/m5 --memory=24g hacc-test-weekly bash -c \
+          docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
+            "${GEM5ROOT_PATH}"/util/m5 --memory=24g hacc-test-weekly bash -c \
             "export TERM=xterm-256color ; scons build/x86/out/m5" 
 
       - name: lulesh tests
