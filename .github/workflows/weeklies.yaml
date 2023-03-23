@@ -15,7 +15,7 @@ jobs:
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 4320 # 3 days
     env:
-      GEM5_ROOT: /runner/_work/gem5-actions/gem5-actions
+      GEM5ROOT: /runner/_work/gem5-actions/gem5-actions
 
     steps:
     # checks out repository, should be more useful when
@@ -105,24 +105,24 @@ jobs:
       
       - name: start running tests
         run: |
-          docker run --rm -u $UID:$GID --volume $GEM5-ROOT:$GEM5-ROOT -w \
-            $GEM5-ROOT --memory=24g hacc-test-weekly bash -c \
+          docker run --rm -u $UID:$GID --volume $GEM5ROOT:$GEM5ROOT -w \
+            $GEM5ROOT --memory=24g hacc-test-weekly bash -c \
             "scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
             || rm -rf build && scons build/GCN3_X86/gem5.opt -j$(nproc) \
             --ignore-style"
           
-          docker run --rm -u $UID:$GID --volume $GEM5-ROOT:$GEM5-ROOT -w \
-            $GEM5-ROOT/util/m5 --memory=24g hacc-test-weekly bash -c \
+          docker run --rm -u $UID:$GID --volume $GEM5ROOT:$GEM5ROOT -w \
+            $GEM5ROOT/util/m5 --memory=24g hacc-test-weekly bash -c \
             "export TERM=xterm-256color ; scons build/x86/out/m5" 
 
       - name: lulesh tests
         run: |
-          docker run --rm --volume $GEM5-ROOT:$GEM5-ROOT -w \
-            $GEM5-ROOT/gem5-resources/src/gpu/lulesh \
+          docker run --rm --volume $GEM5ROOT:$GEM5ROOT -w \
+            $GEM5ROOT/gem5-resources/src/gpu/lulesh \
             -u $UID:$GID --memory=24g hacc-test-weekly bash -c \
             "make"
-          docker run --rm -u $UID:$GID --volume $GEM5-ROOT:$GEM5-ROOT -w \
-            $GEM5-ROOT --memory=24g \
+          docker run --rm -u $UID:$GID --volume $GEM5ROOT:$GEM5ROOT -w \
+            $GEM5ROOT --memory=24g \
             hacc-test-weekly build/GCN3_X86/gem5.opt configs/example/apu_se.py -n3 \
             --mem-size=8GB --reg-alloc-policy=dynamic \
-            --benchmark-root=$GEM5-ROOT/gem5-resources/src/gpu/lulesh/bin -c lulesh
+            --benchmark-root=$GEM5ROOT/gem5-resources/src/gpu/lulesh/bin -c lulesh
