@@ -49,6 +49,8 @@ jobs:
     needs: Docker1
     env:
       GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
+      
+    steps:
       - run: echo "🍏 This job's status is ${GEM5ROOT_PATH}." 
 
       - name: start running tests
