@@ -105,14 +105,14 @@ jobs:
       
       - name: start running tests
         run: |
-          docker run --rm -u $UID:$GID --volume $GEM5ROOT:$GEM5ROOT -w \
-            $GEM5ROOT --memory=24g hacc-test-weekly bash -c \
+          docker run --rm -u $UID:$GID --volume "$GEM5ROOT":"$GEM5ROOT" -w \
+            "$GEM5ROOT" --memory=24g hacc-test-weekly bash -c \
             "scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
             || rm -rf build && scons build/GCN3_X86/gem5.opt -j$(nproc) \
             --ignore-style"
           
-          docker run --rm -u $UID:$GID --volume $GEM5ROOT:$GEM5ROOT -w \
-            $GEM5ROOT/util/m5 --memory=24g hacc-test-weekly bash -c \
+          docker run --rm -u $UID:$GID --volume "$GEM5ROOT":"$GEM5ROOT" -w \
+            "$GEM5ROOT"/util/m5 --memory=24g hacc-test-weekly bash -c \
             "export TERM=xterm-256color ; scons build/x86/out/m5" 
 
       - name: lulesh tests
