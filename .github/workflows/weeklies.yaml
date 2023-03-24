@@ -81,7 +81,7 @@ jobs:
       - name: lulesh tests
         run: | # build LULESH
           docker run --rm --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
-            "${GEM5ROOT_PATH}/gem5-resources/src/gpu/lulesh \
+            ${GEM5ROOT_PATH}/gem5-resources/src/gpu/lulesh \
             -u $UID:$GID --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
             "make"
           docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
