@@ -3,10 +3,10 @@ run-name: docker test
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 
-on: [push]
-# on:
-#   schedule:
-#     - cron:  '0 2 * * *'
+# on: [push]
+on:
+  schedule:
+    - cron:  '0 2 * * *'
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -49,7 +49,7 @@ jobs:
     needs: Docker1
     env:
       GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
-      
+
     steps:
       - run: echo "🍏 This job's status is ${GEM5ROOT_PATH}." 
 

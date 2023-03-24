@@ -2,10 +2,10 @@ name: Weekly Tests
 run-name: Testing Weeklies
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
-# on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
+on: [push]
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -36,9 +36,13 @@ jobs:
   GPU-Tests:
     runs-on: [self-hosted, linux, x64]
     # container: gcr.io/gem5-test/gcn-gpu:latest
-    timeout-minutes: 1440 # 24 hours
+    timeout-minutes: 4320 # 3 days
     env:
+      # need to not hard code this
       GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
+      # The per-container Docker memory limit.
+      docker_mem_limit: 24g
+      gpu_isa: GCN3_X86
 
     steps:
       - uses: actions/checkout@v3
@@ -52,7 +56,7 @@ jobs:
 
       - name: Check out gem5 resources
         run: |
-          git clone https://gem5.googlesource.com/public/gem5-resources \
+          git clone https://gem5.googlesource.com/public/gem5-resources 
           "gem5-resources"
           cd gem5-resources
           git checkout develop
@@ -71,28 +75,28 @@ jobs:
       - name: start running tests
         run: |
           docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
-            "${GEM5ROOT_PATH}" --memory=24g hacc-test-weekly bash -c \
-            "scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
-            || rm -rf build && scons build/GCN3_X86/gem5.opt -j$(nproc) \
+            "${GEM5ROOT_PATH}" --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
+            "scons build/${gpu_isa}/gem5.opt -j$(nproc) --ignore-style \
+            || rm -rf build && scons build/${gpu_isa}/gem5.opt -j$(nproc) \
             --ignore-style"
         # Some of the apps we test use m5ops (and x86), so compile them for x86
         # Note: setting TERM in the environment is necessary as scons fails for m5ops if
         # it is not set.
           docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
-            ${GEM5ROOT_PATH}/util/m5 --memory=24g hacc-test-weekly bash -c \
+            ${GEM5ROOT_PATH}/util/m5 --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
             "export TERM=xterm-256color ; scons build/x86/out/m5" 
 
       - name: lulesh tests
         run: | # build LULESH
           docker run --rm --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
             "${GEM5ROOT_PATH}/gem5-resources/src/gpu/lulesh \
-            -u $UID:$GID --memory=24g hacc-test-weekly bash -c \
+            -u $UID:$GID --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
             "make"
         # LULESH is heavily used in the HPC community on GPUs, and does a good job of
         # stressing several GPU compute and memory components
           docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
-            "${GEM5ROOT_PATH}" --memory=24g \
-            hacc-test-weekly build/GCN3_X86/gem5.opt configs/example/apu_se.py -n3 \
+            "${GEM5ROOT_PATH}" --memory="${docker_mem_limit}" \
+            hacc-test-weekly build/${gpu_isa}/gem5.opt configs/example/apu_se.py -n3 \
             --mem-size=8GB --reg-alloc-policy=dynamic \
             --benchmark-root=${GEM5ROOT_PATH}/gem5-resources/src/gpu/lulesh/bin -c lulesh
       
@@ -201,7 +205,7 @@ jobs:
             --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
             "export GEM5_PATH=${GEM5ROOT_PATH} ; make gem5-fusion"
         # run Color (Max) (use same input dataset as BC for faster testing)
-          docker run --rm -v ${gem5_root}:${gem5_root} -w ${gem5_root} -u $UID:$GID \
+          docker run --rm -v ${GEM5ROOT_PATH}:${GEM5ROOT_PATH} -w ${GEM5ROOT_PATH} -u $UID:$GID \
             --memory="${docker_mem_limit}" hacc-test-weekly \
             ${GEM5ROOT_PATH}/build/${gpu_isa}/gem5.opt \
             ${GEM5ROOT_PATH}/configs/example/apu_se.py -n3 --mem-size=8GB \
@@ -255,77 +259,68 @@ jobs:
       - name: build Pagerank Default variant
         run: | 
           docker run --rm -v "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
-            ${gem5_root}/gem5-resources/src/gpu/pannotia/pagerank -u $UID:$GID \
+            ${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/pagerank -u $UID:$GID \
             --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
-            "export GEM5_PATH=${gem5_root} ; make gem5-fusion"
+            "export GEM5_PATH=${GEM5ROOT_PATH} ; make gem5-fusion"
         # get PageRank input dataset
           wget http://dist.gem5.org/dist/develop/datasets/pannotia/pagerank/coAuthorsDBLP.graph
         # run PageRank (Default)
-          docker run --rm -v ${gem5_root}:${gem5_root} -w ${gem5_root} -u $UID:$GID \
+          docker run --rm -v "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w "${GEM5ROOT_PATH}" -u $UID:$GID \
             --memory="${docker_mem_limit}" hacc-test-weekly \
-            ${gem5_root}/build/${gpu_isa}/gem5.opt \
-            ${gem5_root}/configs/example/apu_se.py -n3 --mem-size=8GB \
+            ${GEM5ROOT_PATH}/build/${gpu_isa}/gem5.opt \
+            ${GEM5ROOT_PATH}/configs/example/apu_se.py -n3 --mem-size=8GB \
             --reg-alloc-policy=dynamic \
-            --benchmark-root=${gem5_root}/gem5-resources/src/gpu/pannotia/pagerank/bin \
+            --benchmark-root=${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/pagerank/bin \
             -c pagerank.gem5 --options="coAuthorsDBLP.graph 1"
         # build PageRank SPMV variant
-docker run --rm -v ${gem5_root}:${gem5_root} -w \
-       ${gem5_root}/gem5-resources/src/gpu/pannotia/pagerank -u $UID:$GID \
-       --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
-       "export GEM5_PATH=${gem5_root} ; export VARIANT=SPMV ; make gem5-fusion"
-# run PageRank (SPMV)
-docker run --rm -v ${gem5_root}:${gem5_root} -w ${gem5_root} -u $UID:$GID \
-       --memory="${docker_mem_limit}" hacc-test-weekly \
-       ${gem5_root}/build/${gpu_isa}/gem5.opt \
-       ${gem5_root}/configs/example/apu_se.py -n3 --mem-size=8GB \
-       --reg-alloc-policy=dynamic \
-       --benchmark-root=${gem5_root}/gem5-resources/src/gpu/pannotia/pagerank/bin \
-       -c pagerank_spmv.gem5 --options="coAuthorsDBLP.graph 1"
+          docker run --rm -v "${GEM5ROOT_PATH}:"${GEM5ROOT_PATH} -w \
+            ${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/pagerank -u $UID:$GID \
+            --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
+            "export GEM5_PATH=${GEM5ROOT_PATH} ; export VARIANT=SPMV ; make gem5-fusion"
+        # run PageRank (SPMV)
+          docker run --rm -v ${GEM5ROOT_PATH}:${GEM5ROOT_PATH} -w ${GEM5ROOT_PATH} -u $UID:$GID \
+            --memory="${docker_mem_limit}" hacc-test-weekly \
+            ${GEM5ROOT_PATH}/build/${gpu_isa}/gem5.opt \
+            ${GEM5ROOT_PATH}/configs/example/apu_se.py -n3 --mem-size=8GB \
+            --reg-alloc-policy=dynamic \
+            --benchmark-root=${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/pagerank/bin \
+            -c pagerank_spmv.gem5 --options="coAuthorsDBLP.graph 1"
 
+      - name: build SSSP CSR variant
+        run: | 
+          docker run --rm -v ${GEM5ROOT_PATH}:${GEM5ROOT_PATH} -w \
+            ${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/sssp -u $UID:$GID \
+            --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
+            "export GEM5_PATH=${GEM5ROOT_PATH} ; make gem5-fusion"
+        # run SSSP (CSR) (use same input dataset as BC for faster testing)
+          docker run --rm -v ${GEM5ROOT_PATH}:${GEM5ROOT_PATH} -w ${GEM5ROOT_PATH} -u $UID:$GID \
+            --memory="${docker_mem_limit}" hacc-test-weekly \
+            ${GEM5ROOT_PATH}/build/${gpu_isa}/gem5.opt \
+            ${GEM5ROOT_PATH}/configs/example/apu_se.py -n3 --mem-size=8GB \
+            --reg-alloc-policy=dynamic \
+            --benchmark-root=${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/sssp/bin \
+            -c sssp.gem5 --options="1k_128k.gr 0"
+        # build SSSP ELL variant
+          docker run --rm -v ${GEM5ROOT_PATH}:${GEM5ROOT_PATH} -w \
+            ${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/sssp -u $UID:$GID \
+            --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
+            "export GEM5_PATH=${GEM5ROOT_PATH} ; export VARIANT=ELL ; make gem5-fusion"
+        # run SSSP (ELL) (use same input dataset as BC for faster testing)
+          docker run --rm -v ${GEM5ROOT_PATH}:${GEM5ROOT_PATH} -w ${GEM5ROOT_PATH} -u $UID:$GID \
+            --memory="${docker_mem_limit}" hacc-test-weekly \
+            ${GEM5ROOT_PATH}/build/${gpu_isa}/gem5.opt \
+            ${GEM5ROOT_PATH}/configs/example/apu_se.py -n3 --mem-size=8GB \
+            --reg-alloc-policy=dynamic \
+            --benchmark-root=${GEM5ROOT_PATH}/gem5-resources/src/gpu/pannotia/sssp/bin \
+            -c sssp_ell.gem5 --options="1k_128k.gr 0"
 
-
-
-
-
-# build SSSP CSR variant
-docker run --rm -v ${gem5_root}:${gem5_root} -w \
-       ${gem5_root}/gem5-resources/src/gpu/pannotia/sssp -u $UID:$GID \
-       --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
-       "export GEM5_PATH=${gem5_root} ; make gem5-fusion"
-# run SSSP (CSR) (use same input dataset as BC for faster testing)
-docker run --rm -v ${gem5_root}:${gem5_root} -w ${gem5_root} -u $UID:$GID \
-       --memory="${docker_mem_limit}" hacc-test-weekly \
-       ${gem5_root}/build/${gpu_isa}/gem5.opt \
-       ${gem5_root}/configs/example/apu_se.py -n3 --mem-size=8GB \
-       --reg-alloc-policy=dynamic \
-       --benchmark-root=${gem5_root}/gem5-resources/src/gpu/pannotia/sssp/bin \
-       -c sssp.gem5 --options="1k_128k.gr 0"
-# build SSSP ELL variant
-docker run --rm -v ${gem5_root}:${gem5_root} -w \
-       ${gem5_root}/gem5-resources/src/gpu/pannotia/sssp -u $UID:$GID \
-       --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
-       "export GEM5_PATH=${gem5_root} ; export VARIANT=ELL ; make gem5-fusion"
-# run SSSP (ELL) (use same input dataset as BC for faster testing)
-docker run --rm -v ${gem5_root}:${gem5_root} -w ${gem5_root} -u $UID:$GID \
-       --memory="${docker_mem_limit}" hacc-test-weekly \
-       ${gem5_root}/build/${gpu_isa}/gem5.opt \
-       ${gem5_root}/configs/example/apu_se.py -n3 --mem-size=8GB \
-       --reg-alloc-policy=dynamic \
-       --benchmark-root=${gem5_root}/gem5-resources/src/gpu/pannotia/sssp/bin \
-       -c sssp_ell.gem5 --options="1k_128k.gr 0"
-
-
-
-
-
-
-
-# Delete the gem5 resources repo we created -- need to do in docker because of
-# cachefiles DNNMark creates
-docker run --rm --volume "${gem5_root}":"${gem5_root}" -w \
-       "${gem5_root}" --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
-       "rm -rf ${gem5_root}/gem5-resources"
-# Delete the gem5 m5out folder we created
-rm -rf ${gem5_root}/m5out
-# delete Pannotia datasets we downloaded and output files it created
-rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
+      - name: Delete the gem5 resources repo we created
+      # need to do in docker because of cachefiles DNNMark creates
+        run: | 
+          docker run --rm --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
+            "${GEM5ROOT_PATH}" --memory="${docker_mem_limit}" hacc-test-weekly bash -c \
+            "rm -rf ${GEM5ROOT_PATH}/gem5-resources"
+        # Delete the gem5 m5out folder we created
+          rm -rf ${GEM5ROOT_PATH}/m5out
+        # delete Pannotia datasets we downloaded and output files it created
+          rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
