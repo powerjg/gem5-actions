@@ -56,7 +56,7 @@ jobs:
 
       - name: Check out gem5 resources
         run: |
-          git clone https://gem5.googlesource.com/public/gem5-resources 
+          git clone https://gem5.googlesource.com/public/gem5-resources \
           "gem5-resources"
           cd gem5-resources
           git checkout develop
