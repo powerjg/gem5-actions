@@ -72,6 +72,7 @@ jobs:
           docker pull gcr.io/gem5-test/gcn-gpu:latest
           docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
 
+
       - name: start running tests
         run: |
           docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
