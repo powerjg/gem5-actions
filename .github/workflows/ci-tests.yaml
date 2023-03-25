@@ -3,9 +3,10 @@ run-name: CI-Tests
 
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+# on:
+#   schedule:
+on: [push]
+#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:

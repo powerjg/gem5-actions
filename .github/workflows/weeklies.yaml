@@ -6,6 +6,9 @@ run-name: Testing Weeklies
 #   schedule:
 #     - cron:  '0 2 * * *'
 on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
 # This is a WIP file for recreating weekly.sh
 jobs:
