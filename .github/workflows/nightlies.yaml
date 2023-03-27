@@ -1,11 +1,10 @@
 name: Nightly Tests
 run-name: Automated - Running Nightly Tests
-#  allows us to repeat this daily at 2am
+#  allows us to repeat this daily at 3am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 on:
   schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
-# on: [push]
+    - cron:  '0 3 * * *'
 
 # This replaces nightly.sh. Currently KVM tests are failing
 jobs:

@@ -172,22 +172,21 @@ build_and_run_systemc () {
     rm -rf "${gem5_root}/build/ARM"
     docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
         "${gem5_root}" --memory="${docker_mem_limit}" --rm \
-        gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} bash -c "snap install protobuf; ls /usr/local/lib"
-# scons -j${compile_threads} --ignore-style build/ARM/gem5.opt; \
-# scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 \
-#     -j${compile_threads} build/ARM/libgem5_opt.so \
-
-
-#     docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
-#         "${gem5_root}" --memory="${docker_mem_limit}" --rm \
-#         gcr.io/gem5-test/systemc-env:${tag} bash -c "\
-# cd util/systemc/gem5_within_systemc; \
-# make -j${compile_threads}; \
-# ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c \
-#     ../../../tests/test-progs/hello/bin/arm/linux/hello; \
-# LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ \
-#     ./gem5.opt.sc m5out/config.ini; \
-# cd -; \
-# "
+        gcr.io/gem5-test/ubuntu-22.04_min-dependencies bash -c "\
+scons -j${compile_threads} --ignore-style build/ARM/gem5.opt; \
+scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 \
+    -j${compile_threads} build/ARM/libgem5_opt.so \
+"
+    docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+        "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+        gcr.io/gem5-test/systemc-env:${tag} bash -c "\
+cd util/systemc/gem5_within_systemc; \
+make -j${compile_threads}; \
+../../../build/ARM/gem5.opt ../../../configs/example/se.py -c \
+    ../../../tests/test-progs/hello/bin/arm/linux/hello; \
+LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ \
+    ./gem5.opt.sc m5out/config.ini; \
+cd -; \
+"
 }
 build_and_run_systemc
