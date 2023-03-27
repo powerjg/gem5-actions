@@ -101,7 +101,7 @@ jobs:
 
   SystemC-Tests:
     runs-on: [self-hosted, linux, x64]
-    container: gcr.io/gem5-test/systemc-env:latest
+    container: gcr.io/gem5-test/ubuntu-22.04_min-dependencies
     timeout-minutes: 1440 # 24 hours
 
     steps:
@@ -114,10 +114,24 @@ jobs:
           scons -j$(nproc) --ignore-style build/ARM/gem5.opt
           scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j$(nproc) build/ARM/libgem5_opt.so
 
+      
+
+
+SystemC-Tests2:
+    runs-on: [self-hosted, linux, x64]
+    container: gcr.io/gem5-test/systemc-env:latest
+    timeout-minutes: 1440 # 24 hours
+    needs: SystemC-Tests
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: systemc tests
-        run: |
-          cd util/systemc/gem5_within_systemc
-          make -j$(nproc)
-          ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c ../../../tests/test-progs/hello/bin/arm/linux/hello
-          LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ ./gem5.opt.sc m5out/config.ini
-          cd -
+          run: |
+            cd util/systemc/gem5_within_systemc
+            make -j$(nproc)
+            ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c ../../../tests/test-progs/hello/bin/arm/linux/hello
+            LD_LIBRARY_PATH=../../../build/ARM/:/opt/systemc/lib-linux64/ ./gem5.opt.sc m5out/config.ini
+            cd -
