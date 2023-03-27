@@ -3,39 +3,39 @@ run-name: CI-Tests
 
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-# on: [push]
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+# on:
+#   schedule:
+on: [push]
+    # - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:
-  Unit-Tests:
-    runs-on: [self-hosted, linux, x64]
-    # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 1440 # 24 hours
+  # Unit-Tests:
+  #   runs-on: [self-hosted, linux, x64]
+  #   # running container with only a single arguement passes the image being used
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   timeout-minutes: 1440 # 24 hours
 
-    steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #   steps:
+  #   # checks out repository, should be more useful when
+  #   # running checks on changed files
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: test nightly unit test opt
-        run: |
-          scons build/ALL/unittests.opt -j $(nproc) --ignore-style
+  #     - name: test nightly unit test opt
+  #       run: |
+  #         scons build/ALL/unittests.opt -j $(nproc) --ignore-style
 
-      - name: nightly unit test debug
-        run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
+  #     - name: nightly unit test debug
+  #       run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
       
-      - name: Run Pre Commit Tests
-        run: |
-          cd tests
-          ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
+  #     - name: Run Pre Commit Tests
+  #       run: |
+  #         cd tests
+  #         ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  #     - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Compiler-Tests:
     runs-on: [self-hosted, linux, x64]
@@ -48,10 +48,11 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Run Pre Commit Tests
+      - name: Compiler Tests
         run: |
           cd tests
-          ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
+          chmod u+x compiler-tests.sh
+          ./compiler-tests.sh -j $(nproc)
 
       # upload test dir
       - uses: actions/upload-artifact@v3
