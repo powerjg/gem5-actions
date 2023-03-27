@@ -117,7 +117,7 @@ jobs:
       
 
 
-SystemC-Testing:
+  SystemC-Testing:
     runs-on: [self-hosted, linux, x64]
     container: gcr.io/gem5-test/systemc-env:latest
     timeout-minutes: 1440 # 24 hours
