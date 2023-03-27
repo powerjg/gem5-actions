@@ -6,7 +6,7 @@ run-name: CI-Tests
 # on:
 #   schedule:
 on: [push]
-#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+    # - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:
@@ -35,10 +35,26 @@ jobs:
           cd tests
           ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
 
-      - name: Run Compiler Tests
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+
+  Compiler-Tests:
+    runs-on: [self-hosted, linux, x64]
+    timeout-minutes: 1440 # 24 hours
+
+    steps:
+    # checks out repository, should be more useful when
+    # running checks on changed files
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Run Pre Commit Tests
         run: |
           cd tests
-          chmod u+x compiler-tests.sh
-          ./compiler-tests.sh -j $(nproc)
+          ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      # upload test dir
+      - uses: actions/upload-artifact@v3
+        with:
+          name: compiler-test-artifact
+          path: /runner/_work/gem5-actions/gem5-actions/.compile-test-out

@@ -18,6 +18,7 @@ jobs:
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 4320 # 3 days
     env:
+    # currently hard coded
       GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
 
     steps:
@@ -27,13 +28,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Run very-long tests
-      #   run: |
-      #     cd tests
-      #     ./main.py run --length very-long -j $(nproc) -t8 -vv
+      - name: Run very-long tests
+        run: |
+          cd tests
+          ./main.py run --length very-long -j $(nproc) -t8 -vv
 
-      #     mkdir -p tests/testing-results
+          mkdir -p tests/testing-results
 
+      # upload testing results
+      - uses: actions/download-artifact@v3
+        with:
+          name: weekly-testing-results
+          path: tests/testing-results
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
   GPU-Tests:

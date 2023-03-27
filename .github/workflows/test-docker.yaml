@@ -3,10 +3,10 @@ run-name: docker test
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 
-# on: [push]
-on:
-  schedule:
-    - cron:  '0 2 * * *'
+on: [push]
+# on:
+#   schedule:
+#     - cron:  '0 2 * * *'
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -16,7 +16,7 @@ jobs:
     # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 4320 # 3 days
     env:
-      GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
+      GEM5ROOT_PATH: pwd
 
     steps:
       - uses: actions/checkout@v3
@@ -25,38 +25,6 @@ jobs:
 
       - name: start gpu tests
         run: |
-          rm -rf gem5-resources
-          rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
+          echo ${GEM5ROOT_PATH}
 
-      - name: Check out gem5 resources
-        run: |
-          git clone https://gem5.googlesource.com/public/gem5-resources \
-          "gem5-resources"
-          cd gem5-resources
-          git checkout develop
-          cd ../
-
-      - name: create docker images
-        run: |
-          docker pull gcr.io/gem5-test/gcn-gpu:latest
-          docker build -t hacc-test-weekly gem5-resources/src/gpu/halo-finder  
-
-  Docker2:
-    runs-on: [self-hosted, linux, x64]
-    # running container with only a single arguement passes the image being used
-    # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 4320 # 3 days
-    needs: Docker1
-    env:
-      GEM5ROOT_PATH: /runner/_work/gem5-actions/gem5-actions
-
-    steps:
-      - run: echo "🍏 This job's status is ${GEM5ROOT_PATH}." 
-
-      - name: start running tests
-        run: |
-          docker run --rm -u $UID:$GID --volume "${GEM5ROOT_PATH}":"${GEM5ROOT_PATH}" -w \
-            "${GEM5ROOT_PATH}" --memory=24g hacc-test-weekly bash -c \
-            "scons build/GCN3_X86/gem5.opt -j$(nproc) --ignore-style \
-            || rm -rf build && scons build/GCN3_X86/gem5.opt -j$(nproc) \
-            --ignore-style"
+  
