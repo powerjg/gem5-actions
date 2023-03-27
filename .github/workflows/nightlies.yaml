@@ -105,7 +105,7 @@ jobs:
       - name: systemc tests
         run: |
           which protoc
-          sudo apt-get install libprotobuf-dev python-protobuf protobuf-compiler libgoogle-perftools-dev
+          apt-get install libprotobuf-dev python-protobuf protobuf-compiler libgoogle-perftools-dev
           scons -j$(nproc) --ignore-style build/ARM/gem5.opt
           scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j$(nproc) build/ARM/libgem5_opt.so
 
