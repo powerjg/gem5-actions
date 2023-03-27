@@ -4,9 +4,9 @@ run-name: docker test
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 
 # on: [push]
-# on:
-#   schedule:
-#     - cron:  '0 2 * * *'
+on:
+  schedule:
+    - cron:  '0 2 * * *'
 
 # This is a WIP file for recreating weekly.sh
 jobs:
