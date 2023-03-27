@@ -129,7 +129,7 @@ SystemC-Tests2:
           fetch-depth: 0
 
       - name: systemc tests
-          run: |
+        run: |
             cd util/systemc/gem5_within_systemc
             make -j$(nproc)
             ../../../build/ARM/gem5.opt ../../../configs/example/se.py -c ../../../tests/test-progs/hello/bin/arm/linux/hello
