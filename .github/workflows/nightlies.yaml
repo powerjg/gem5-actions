@@ -94,7 +94,9 @@ jobs:
 
   SystemC-Tests:
     runs-on: [self-hosted, linux, x64]
-    container: gcr.io/gem5-test/systemc-env:latest
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+
+    # container: gcr.io/gem5-test/systemc-env:latest
     timeout-minutes: 1440 # 24 hours
 
     steps:
@@ -104,8 +106,6 @@ jobs:
 
       - name: systemc tests
         run: |
-          which protoc
-          apt-get install libprotobuf-dev python-protobuf protobuf-compiler libgoogle-perftools-dev
           scons -j$(nproc) --ignore-style build/ARM/gem5.opt
           scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j$(nproc) build/ARM/libgem5_opt.so
 
