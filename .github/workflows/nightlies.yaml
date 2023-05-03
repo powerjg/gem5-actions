@@ -2,10 +2,10 @@ name: Nightly Tests
 run-name: Automated - Running Nightly Tests
 #  allows us to repeat this daily at 3am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on:
-#   schedule:
-#     - cron:  '0 3 * * *'
-on: [push]
+on:
+  schedule:
+    - cron:  '0 3 * * *'
+# on: [push]
 
 # This replaces nightly.sh. Currently KVM tests are failing
 jobs:
@@ -114,7 +114,7 @@ jobs:
           scons -j$(nproc) --ignore-style build/ARM/gem5.opt
           scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j$(nproc) build/ARM/libgem5_opt.so
 
-      
+
 
 
   SystemC-Testing:
