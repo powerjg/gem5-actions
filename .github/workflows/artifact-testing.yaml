@@ -9,7 +9,7 @@ on: [push]
 # separating jobs amongst different runners 
 jobs:
   Test-Upload:
-    # runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
 
