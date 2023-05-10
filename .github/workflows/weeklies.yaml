@@ -1,10 +1,10 @@
 name: Weekly Tests
-run-name: Testing Weeklies
+run-name: Testing Weeklies on VM
 #  allows us to repeat this daily at 4am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 4 * * *'
+on: [push]
+  # schedule:
+  #   - cron:  '0 4 * * *'
 
 # This is a WIP file for recreating weekly.sh
 jobs:
@@ -26,8 +26,9 @@ jobs:
 
       - name: Run very-long tests
         run: |
+          nproc
           cd tests
-          ./main.py run --length very-long -j $(nproc) -t8 -vv
+          ./main.py run --length very-long -j $(nproc) -vv
 
           mkdir -p tests/testing-results
 
