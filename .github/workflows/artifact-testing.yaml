@@ -1,78 +1,15 @@
-# name: Github Artifacting Tests
-# run-name: Testing artifact usage
-# #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on: [push]
-#   # schedule:
-#   #   - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
-
-# # This file is an example of using artifacts in different runs, for us to utilize in
-# # separating jobs amongst different runners
-# jobs:
-#   Test-Upload:
-#     runs-on: ubuntu-latest
-#     # running container with only a single arguement passes the image being used
-#     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-
-#     steps:
-#     # checks out repository, should be more useful when
-#     # running checks on changed files
-#       - uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       - name: Build and run gem5
-#         run: |
-#           scons build/ALL/gem5.opt -j $(nproc)
-
-#       - uses: actions/upload-artifact@v3
-#         with:
-#           name: gem5-artifact
-#           path: build/ALL
-
-#       - run: echo "🍏 This job's status is ${{ job.status }}."
-
-#   Test-Download:
-#     runs-on: [self-hosted, linux, x64]
-#     # running container with only a single arguement passes the image being used
-#     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-#     needs: Test-Upload
-
-#     steps:
-#     # checks out repository, should be more useful when
-#     # running checks on changed files
-#       - uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       - uses: actions/download-artifact@v3
-#         with:
-#           name: gem5-artifact
-#           path: build/ALL
-
-#       - name: Display structure of downloaded files
-#         run: ls -R
-#         # working-directory: build/X86
-
-#       # double checking that steps are run chronologically
-#       - name: Run gem5 separately (memory_traffic.py)
-#         run: |
-#           chmod u+x build/ALL/gem5.opt
-#           ./main.py run --length=long gem5/cpu_tests/ --skip-build
-
-#       - run: echo "🍏 This job's status is ${{ job.status }}."
-
-
-name: GitHub Actions gem5 Test Run
+name: Github Artifacting Tests
 run-name: Testing artifact usage
-#  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on:
-#   schedule:
-#     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being testde
 on: [push]
+  # schedule:
+  #   - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+
+# This file is an example of using artifacts in different runs, for us to utilize in
+# separating jobs amongst different runners
 jobs:
   Test-Upload:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, build]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
 
@@ -85,16 +22,17 @@ jobs:
 
       - name: Build and run gem5
         run: |
-          scons build/X86/gem5.fast -j $(nproc)
+          scons build/ALL/gem5.opt -j $(nproc)
+
       - uses: actions/upload-artifact@v3
         with:
           name: gem5-artifact
-          path: build/X86
+          path: build/ALL
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Test-Download:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, build]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: Test-Upload
@@ -109,7 +47,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: gem5-artifact
-          path: build/X86
+          path: build/ALL
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -118,6 +56,7 @@ jobs:
       # double checking that steps are run chronologically
       - name: Run gem5 separately (memory_traffic.py)
         run: |
-          chmod u+x build/X86/gem5.fast
-          build/X86/gem5.fast configs/learning_gem5/part1/simple.py
+          chmod u+x build/ALL/gem5.opt
+          ./main.py run --length=long gem5/cpu_tests/ --skip-build
+
       - run: echo "🍏 This job's status is ${{ job.status }}."

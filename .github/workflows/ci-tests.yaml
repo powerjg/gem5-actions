@@ -5,12 +5,12 @@ run-name: CI-Tests
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 on:
   schedule:
-    - cron:  '0 2 * * *'
+    - cron:  '0 12 * * *'
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:
   Unit-Tests:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, run]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 1440 # 24 hours
@@ -24,20 +24,20 @@ jobs:
 
       - name: test nightly unit test opt
         run: |
-          scons build/ALL/unittests.opt -j $(nproc) --ignore-style
+          scons build/ALL/unittests.opt --ignore-style
 
       - name: nightly unit test debug
-        run: scons build/ALL/unittests.opt -j $(nproc) --ignore-style
-      
+        run: scons build/ALL/unittests.opt --ignore-style
+
       - name: Run Pre Commit Tests
         run: |
           cd tests
-          ./main.py run -j4 -t4 gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
+          ./main.py run gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Compiler-Tests:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, build]
     timeout-minutes: 1440 # 24 hours
 
     steps:
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Compiler Tests
         run: |
           cd tests
