@@ -37,21 +37,21 @@ jobs:
   #     - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Compiler-Tests:
-    runs-on: [self-hosted, linux, x64, build]
+    runs-on: [self-hosted, linux, x64, testing]
     # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 1440 # 24 hours
 
     steps:
     # checks out repository, should be more useful when
     # running checks on changed files
-      # - uses: actions/checkout@v3
-      #   with:
-      #     fetch-depth: 0
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Compiler Tests
         run: |
           cd tests
-          # chmod u+x compiler-tests.sh
+          chmod u+x compiler-tests.sh
           ./compiler-tests.sh -j $(nproc)
 
       # upload test dir
