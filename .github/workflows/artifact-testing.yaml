@@ -1,9 +1,9 @@
 name: Github Artifacting Tests
 run-name: Testing artifact usage
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on: [push]
-  # schedule:
-  #   - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+on:
+  schedule:
+    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
 # This file is an example of using artifacts in different runs, for us to utilize in
 # separating jobs amongst different runners
@@ -57,6 +57,7 @@ jobs:
       - name: Run gem5 separately (memory_traffic.py)
         run: |
           chmod u+x build/ALL/gem5.opt
+          cd tests
           ./main.py run --length=long gem5/cpu_tests/ --skip-build
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

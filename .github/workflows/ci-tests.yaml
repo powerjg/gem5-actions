@@ -5,7 +5,7 @@ run-name: CI-Tests
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 on:
   schedule:
-    - cron:  '0 12 * * *'
+    - cron:  '0 */12 * * *'
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:
