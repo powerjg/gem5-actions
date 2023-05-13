@@ -51,7 +51,7 @@ jobs:
       - name: Compiler Tests
         run: |
           cd tests
-          chmod u+x compiler-tests.sh
+          # chmod u+x compiler-tests.sh
           ./compiler-tests.sh -j $(nproc)
 
       # upload test dir
