@@ -38,6 +38,7 @@ jobs:
 
   Compiler-Tests:
     runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 1440 # 24 hours
 
     steps:

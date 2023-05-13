@@ -30,6 +30,7 @@
 # System includes
 import argparse
 import math
+import hashlib
 
 # gem5 related
 import m5
@@ -125,6 +126,16 @@ def addRunFSOptions(parser):
         help="type of memory to use",
     )
 
+    # These are the models that are both supported in gem5 and supported
+    # by the versions of ROCm supported by gem5 in full system mode. For
+    # other gfx versions there is some support in syscall emulation mode.
+    parser.add_argument(
+        "--gpu-device",
+        default="Vega10",
+        choices=["Vega10", "MI100"],
+        help="GPU model to run: Vega10 (gfx900) or MI100 (gfx908)",
+    )
+
 
 def runGpuFSSystem(args):
     """
@@ -144,6 +155,11 @@ def runGpuFSSystem(args):
     args.num_scalar_cache = int(
         math.ceil(float(n_cu) / args.cu_per_scalar_cache)
     )
+
+    # Verify MMIO trace is valid
+    mmio_md5 = hashlib.md5(open(args.gpu_mmio_trace, "rb").read()).hexdigest()
+    if mmio_md5 != "c4ff3326ae8a036e329b8b595c83bd6d":
+        m5.util.panic("MMIO file does not match gem5 resources")
 
     system = makeGpuFSSystem(args)
 

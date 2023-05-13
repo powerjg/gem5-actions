@@ -1021,6 +1021,15 @@ PM4PacketProcessor::serialize(CheckpointOut &cp) const
     Addr offset[num_queues];
     bool processing[num_queues];
     bool ib[num_queues];
+    uint32_t me[num_queues];
+    uint32_t pipe[num_queues];
+    uint32_t queue[num_queues];
+    bool privileged[num_queues];
+    uint32_t hqd_active[num_queues];
+    uint32_t hqd_vmid[num_queues];
+    Addr aql_rptr[num_queues];
+    uint32_t doorbell[num_queues];
+    uint32_t hqd_pq_control[num_queues];
 
     int i = 0;
     for (auto iter : queues) {
@@ -1040,6 +1049,15 @@ PM4PacketProcessor::serialize(CheckpointOut &cp) const
         offset[i] = q->offset();
         processing[i] = q->processing();
         ib[i] = q->ib();
+        me[i] = q->me();
+        pipe[i] = q->pipe();
+        queue[i] = q->queue();
+        privileged[i] = q->privileged();
+        hqd_active[i] = q->getMQD()->hqd_active;
+        hqd_vmid[i] = q->getMQD()->hqd_vmid;
+        aql_rptr[i] = q->getMQD()->aqlRptr;
+        doorbell[i] = q->getMQD()->doorbell;
+        hqd_pq_control[i] = q->getMQD()->hqd_pq_control;
         i++;
     }
 
@@ -1055,6 +1073,15 @@ PM4PacketProcessor::serialize(CheckpointOut &cp) const
     SERIALIZE_ARRAY(offset, num_queues);
     SERIALIZE_ARRAY(processing, num_queues);
     SERIALIZE_ARRAY(ib, num_queues);
+    SERIALIZE_ARRAY(me, num_queues);
+    SERIALIZE_ARRAY(pipe, num_queues);
+    SERIALIZE_ARRAY(queue, num_queues);
+    SERIALIZE_ARRAY(privileged, num_queues);
+    SERIALIZE_ARRAY(hqd_active, num_queues);
+    SERIALIZE_ARRAY(hqd_vmid, num_queues);
+    SERIALIZE_ARRAY(aql_rptr, num_queues);
+    SERIALIZE_ARRAY(doorbell, num_queues);
+    SERIALIZE_ARRAY(hqd_pq_control, num_queues);
 }
 
 void
@@ -1077,6 +1104,15 @@ PM4PacketProcessor::unserialize(CheckpointIn &cp)
     Addr offset[num_queues];
     bool processing[num_queues];
     bool ib[num_queues];
+    uint32_t me[num_queues];
+    uint32_t pipe[num_queues];
+    uint32_t queue[num_queues];
+    bool privileged[num_queues];
+    uint32_t hqd_active[num_queues];
+    uint32_t hqd_vmid[num_queues];
+    Addr aql_rptr[num_queues];
+    uint32_t doorbell[num_queues];
+    uint32_t hqd_pq_control[num_queues];
 
     UNSERIALIZE_ARRAY(id, num_queues);
     UNSERIALIZE_ARRAY(mqd_base, num_queues);
@@ -1089,6 +1125,15 @@ PM4PacketProcessor::unserialize(CheckpointIn &cp)
     UNSERIALIZE_ARRAY(offset, num_queues);
     UNSERIALIZE_ARRAY(processing, num_queues);
     UNSERIALIZE_ARRAY(ib, num_queues);
+    UNSERIALIZE_ARRAY(me, num_queues);
+    UNSERIALIZE_ARRAY(pipe, num_queues);
+    UNSERIALIZE_ARRAY(queue, num_queues);
+    UNSERIALIZE_ARRAY(privileged, num_queues);
+    UNSERIALIZE_ARRAY(hqd_active, num_queues);
+    UNSERIALIZE_ARRAY(hqd_vmid, num_queues);
+    UNSERIALIZE_ARRAY(aql_rptr, num_queues);
+    UNSERIALIZE_ARRAY(doorbell, num_queues);
+    UNSERIALIZE_ARRAY(hqd_pq_control, num_queues);
 
     for (int i = 0; i < num_queues; i++) {
         QueueDesc *mqd = new QueueDesc();
@@ -1100,7 +1145,9 @@ PM4PacketProcessor::unserialize(CheckpointIn &cp)
         mqd->ibBase = ib_base[i];
         mqd->ibRptr = ib_rptr[i];
 
-        newQueue(mqd, offset[i], nullptr, id[i]);
+        PM4MapQueues* pkt = new PM4MapQueues;
+        memset(pkt, 0, sizeof(PM4MapQueues));
+        newQueue(mqd, offset[i], pkt, id[i]);
 
         queues[id[i]]->ib(false);
         queues[id[i]]->wptr(wptr[i]);
@@ -1109,6 +1156,13 @@ PM4PacketProcessor::unserialize(CheckpointIn &cp)
         queues[id[i]]->offset(offset[i]);
         queues[id[i]]->processing(processing[i]);
         queues[id[i]]->ib(ib[i]);
+        queues[id[i]]->setPkt(me[i], pipe[i], queue[i], privileged[i]);
+        queues[id[i]]->getMQD()->hqd_active = hqd_active[i];
+        queues[id[i]]->getMQD()->hqd_vmid = hqd_vmid[i];
+        queues[id[i]]->getMQD()->aqlRptr = aql_rptr[i];
+        queues[id[i]]->getMQD()->doorbell = doorbell[i];
+        queues[id[i]]->getMQD()->hqd_pq_control = hqd_pq_control[i];
+
         DPRINTF(PM4PacketProcessor, "PM4 queue %d, rptr: %p wptr: %p\n",
                 queues[id[i]]->id(), queues[id[i]]->rptr(),
                 queues[id[i]]->wptr());

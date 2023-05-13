@@ -39,15 +39,24 @@ docker_mem_limit="24g"
 # branch)
 tag="latest"
 
-# We assume the first two arguments are the number of threads followed by the
-# GPU ISA to test. These default to 1 and GCN3_X86 is no argument is given.
+# We assume the first three arguments are the number of threads to use for
+# compilation followed by the GPU ISA to test, and finally, the number of
+# "run threads", the maximum number of tests to be run at once. By default the
+# number of compile threads 1 and the GPU ISA is GCN3_X86. The number of
+# "run threads" is equal to the number of compile threads by default.
 threads=1
 gpu_isa=GCN3_X86
+run_threads=1
 if [[ $# -eq 1 ]]; then
     threads=$1
+    run_threads=${threads}
 elif [[ $# -eq 2 ]]; then
     threads=$1
     gpu_isa=$2
+elif [[ $# -eq 3 ]]; then
+    threads=$1
+    gpu_isa=$2
+    run_threads=$3
 else
     if [[ $# -gt 0 ]]; then
         echo "Invalid number of arguments: $#"
@@ -64,7 +73,7 @@ fi
 docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
     "${gem5_root}"/tests --memory="${docker_mem_limit}" --rm \
     gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} \
-        ./main.py run --length very-long -j${threads} -t${threads} -vv
+        ./main.py run --length very-long -j${threads} -t${run_threads} -vv
 
 mkdir -p tests/testing-results
 
@@ -389,3 +398,39 @@ rm -rf ${gem5_root}/m5out
 
 # delete Pannotia datasets we downloaded and output files it created
 rm -f coAuthorsDBLP.graph 1k_128k.gr result.out
+
+# Run tests to ensure the DRAMSys integration is still functioning correctly.
+if [ -d "${gem5_root}/ext/dramsys/DRAMSys" ]; then
+    rm -r "${gem5_root}/ext/dramsys/DRAMSys"
+fi
+
+cd "${gem5_root}/ext/dramsys"
+git clone --recursive git@github.com:tukl-msd/DRAMSys.git DRAMSys
+cd DRAMSys
+git checkout -b gem5 09f6dcbb91351e6ee7cadfc7bc8b29d97625db8f
+cd "${gem5_root}"
+
+rm -rf "${gem5_root}/build/ALL"
+
+docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+    "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+    gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} \
+       scons build/ALL/gem5.opt -j${threads}
+
+docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+    "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+    gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} \
+       ./build/ALL/gem5.opt \
+       configs/example/gem5_library/dramsys/arm-hello-dramsys.py
+
+docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+    "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+    gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} \
+       ./build/ALL/gem5.opt \
+       configs/example/gem5_library/dramsys/dramsys-traffic.py
+
+docker run -u $UID:$GID --volume "${gem5_root}":"${gem5_root}" -w \
+    "${gem5_root}" --memory="${docker_mem_limit}" --rm \
+    gcr.io/gem5-test/ubuntu-22.04_all-dependencies:${tag} \
+       ./build/ALL/gem5.opt \
+       configs/example/dramsys.py

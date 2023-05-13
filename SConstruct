@@ -1,6 +1,6 @@
 # -*- mode:python -*-
 
-# Copyright (c) 2013, 2015-2020 ARM Limited
+# Copyright (c) 2013, 2015-2020, 2023 ARM Limited
 # All rights reserved.
 #
 # The license below extends only to copyright in the software and shall
@@ -145,6 +145,9 @@ AddOption('--gprof', action='store_true',
           help='Enable support for the gprof profiler')
 AddOption('--pprof', action='store_true',
           help='Enable support for the pprof profiler')
+AddOption('--no-duplicate-sources', action='store_false', default=True,
+          dest='duplicate_sources',
+          help='Do not create symlinks to sources in the build directory')
 
 # Inject the built_tools directory into the python path.
 sys.path[1:1] = [ Dir('#build_tools').abspath ]
@@ -167,6 +170,10 @@ from gem5_scons.util import compareVersions, readCommand
 SetOption('warn', 'no-duplicate-environment')
 
 Export('MakeAction')
+
+# Patch re.compile to support inline flags anywhere within a RE
+# string. Required to use PLY with Python 3.11+.
+gem5_scons.patch_re_compile_for_inline_flags()
 
 ########################################################################
 #
@@ -264,6 +271,8 @@ main.Append(CPPPATH=[Dir('ext')])
 
 # Add shared top-level headers
 main.Prepend(CPPPATH=Dir('include'))
+if not GetOption('duplicate_sources'):
+    main.Prepend(CPPPATH=Dir('src'))
 
 
 ########################################################################
@@ -479,6 +488,17 @@ for variant_path in variant_paths:
             '-fno-builtin-malloc', '-fno-builtin-calloc',
             '-fno-builtin-realloc', '-fno-builtin-free'])
 
+        if compareVersions(env['CXXVERSION'], "9") < 0:
+            # `libstdc++fs`` must be explicitly linked for `std::filesystem``
+            # in GCC version 8. As of GCC version 9, this is not required.
+            #
+            # In GCC 7 the `libstdc++fs`` library explicit linkage is also
+            # required but the `std::filesystem` is under the `experimental`
+            # namespace(`std::experimental::filesystem`).
+            #
+            # Note: gem5 does not support GCC versions < 7.
+            env.Append(LIBS=['stdc++fs'])
+
     elif env['CLANG']:
         if compareVersions(env['CXXVERSION'], "6") < 0:
             error('clang version 6 or newer required.\n'
@@ -495,6 +515,18 @@ for variant_path in variant_paths:
             conf.CheckCxxFlag('-Wno-defaulted-function-deleted')
 
         env.Append(TCMALLOC_CCFLAGS=['-fno-builtin'])
+
+        if compareVersions(env['CXXVERSION'], "11") < 0:
+            # `libstdc++fs`` must be explicitly linked for `std::filesystem``
+            # in clang versions 6 through 10.
+            #
+            # In addition, for these versions, the
+            # `std::filesystem` is under the `experimental`
+            # namespace(`std::experimental::filesystem`).
+            #
+            # Note: gem5 does not support clang versions < 6.
+            env.Append(LIBS=['stdc++fs'])
+
 
         # On Mac OS X/Darwin we need to also use libc++ (part of XCode) as
         # opposed to libstdc++, as the later is dated.
@@ -774,11 +806,13 @@ Build variables for {dir}:
             build_dir = os.path.relpath(root, ext_dir)
             SConscript(os.path.join(root, 'SConscript'),
                        variant_dir=os.path.join(variant_ext, build_dir),
-                       exports=exports)
+                       exports=exports,
+                       duplicate=GetOption('duplicate_sources'))
 
     # The src/SConscript file sets up the build rules in 'env' according
     # to the configured variables.  It returns a list of environments,
     # one for each variant build (debug, opt, etc.)
-    SConscript('src/SConscript', variant_dir=variant_path, exports=exports)
+    SConscript('src/SConscript', variant_dir=variant_path, exports=exports,
+               duplicate=GetOption('duplicate_sources'))
 
 atexit.register(summarize_warnings)

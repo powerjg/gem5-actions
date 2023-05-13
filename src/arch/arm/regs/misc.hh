@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2022 Arm Limited
+ * Copyright (c) 2010-2023 Arm Limited
  * All rights reserved
  *
  * The license below extends only to copyright in the software and shall
@@ -93,7 +93,6 @@ namespace ArmISA
         MISCREG_NMRR_MAIR1_NS,
         MISCREG_NMRR_MAIR1_S,
         MISCREG_PMXEVTYPER_PMCCFILTR,
-        MISCREG_SCTLR_RST,
         MISCREG_SEV_MAILBOX,
         MISCREG_TLBINEEDSYNC,
 
@@ -1231,6 +1230,12 @@ namespace ArmISA
             return *this;
         }
         chain
+        reset(uint64_t res_val) const
+        {
+            entry._reset = res_val;
+            return *this;
+        }
+        chain
         res0(uint64_t mask) const
         {
             entry._res0 = mask;
@@ -1746,7 +1751,6 @@ namespace ArmISA
         "nmrr_mair1_ns",
         "nmrr_mair1_s",
         "pmxevtyper_pmccfiltr",
-        "sctlr_rst",
         "sev_mailbox",
         "tlbi_needsync",
 

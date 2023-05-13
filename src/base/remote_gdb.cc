@@ -390,12 +390,14 @@ std::map<Addr, HardBreakpoint *> hardBreakMap;
 
 }
 
-BaseRemoteGDB::BaseRemoteGDB(System *_system, int _port) :
+BaseRemoteGDB::BaseRemoteGDB(System *_system,
+        ListenSocketConfig _listen_config) :
         incomingConnectionEvent(nullptr), incomingDataEvent(nullptr),
-        _port(_port), fd(-1), sys(_system),
-        connectEvent(*this), disconnectEvent(*this), trapEvent(this),
-        singleStepEvent(*this)
-{}
+        fd(-1), sys(_system), connectEvent(*this), disconnectEvent(*this),
+        trapEvent(this), singleStepEvent(*this)
+{
+    listener = _listen_config.build(name());
+}
 
 BaseRemoteGDB::~BaseRemoteGDB()
 {
@@ -417,28 +419,22 @@ BaseRemoteGDB::listen()
         return;
     }
 
-    while (!listener.listen(_port)) {
-        DPRINTF(GDBMisc, "Can't bind port %d\n", _port);
-        _port++;
-    }
+    listener->listen();
 
     incomingConnectionEvent =
-            new IncomingConnectionEvent(this, listener.getfd(), POLLIN);
+            new IncomingConnectionEvent(this, listener->getfd(), POLLIN);
     pollQueue.schedule(incomingConnectionEvent);
-
-    ccprintf(std::cerr, "%d: %s: listening for remote gdb on port %d\n",
-             curTick(), name(), _port);
 }
 
 void
 BaseRemoteGDB::connect()
 {
-    panic_if(!listener.islistening(),
+    panic_if(!listener->islistening(),
              "Can't accept GDB connections without any threads!");
 
     pollQueue.remove(incomingConnectionEvent);
 
-    int sfd = listener.accept();
+    int sfd = listener->accept();
 
     if (sfd != -1) {
         if (isAttached())
@@ -448,12 +444,12 @@ BaseRemoteGDB::connect()
     }
 }
 
-int
-BaseRemoteGDB::port() const
+const ListenSocket &
+BaseRemoteGDB::hostSocket() const
 {
-    panic_if(!listener.islistening(),
-             "Remote GDB port is unknown until listen() has been called.\n");
-    return _port;
+    panic_if(!listener->islistening(),
+             "Remote GDB socket is unknown until listen() has been called.");
+    return *listener;
 }
 
 void
@@ -516,7 +512,7 @@ BaseRemoteGDB::addThreadContext(ThreadContext *_tc)
         assert(selectThreadContext(_tc->contextId()));
 
     // Now that we have a thread, we can start listening.
-    if (!listener.islistening())
+    if (!listener->islistening())
         listen();
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2022 Arm Limited
+ * Copyright (c) 2010-2023 Arm Limited
  * All rights reserved
  *
  * The license below extends only to copyright in the software and shall
@@ -91,8 +91,6 @@ ISA::ISA(const Params &p) : BaseISA(p), system(NULL),
     _regClasses.push_back(&ccRegClass);
     _regClasses.push_back(&miscRegClass);
 
-    miscRegs[MISCREG_SCTLR_RST] = 0;
-
     // Hook up a dummy device if we haven't been configured with a
     // real PMU. By using a dummy device, we don't need to check that
     // the PMU exist every time we try to access a PMU register.
@@ -133,421 +131,16 @@ ISA::ISA(const Params &p) : BaseISA(p), system(NULL),
 void
 ISA::clear()
 {
-    const Params &p(params());
-
     // Invalidate cached copies of miscregs in the TLBs
     if (tc) {
         getMMUPtr(tc)->invalidateMiscReg();
     }
 
-    SCTLR sctlr_rst = miscRegs[MISCREG_SCTLR_RST];
-    memset(miscRegs, 0, sizeof(miscRegs));
-
-    initID32(p);
-
-    // We always initialize AArch64 ID registers even
-    // if we are in AArch32. This is done since if we
-    // are in SE mode we don't know if our ArmProcess is
-    // AArch32 or AArch64
-    initID64(p);
-
-    // Start with an event in the mailbox
-    miscRegs[MISCREG_SEV_MAILBOX] = 1;
-
-    // Separate Instruction and Data TLBs
-    miscRegs[MISCREG_TLBTR] = 1;
-
-    MVFR0 mvfr0 = 0;
-    mvfr0.advSimdRegisters = 2;
-    mvfr0.singlePrecision = 2;
-    mvfr0.doublePrecision = 2;
-    mvfr0.vfpExceptionTrapping = 0;
-    mvfr0.divide = 1;
-    mvfr0.squareRoot = 1;
-    mvfr0.shortVectors = 1;
-    mvfr0.roundingModes = 1;
-    miscRegs[MISCREG_MVFR0] = mvfr0;
-
-    MVFR1 mvfr1 = 0;
-    mvfr1.flushToZero = 1;
-    mvfr1.defaultNaN = 1;
-    mvfr1.advSimdLoadStore = 1;
-    mvfr1.advSimdInteger = 1;
-    mvfr1.advSimdSinglePrecision = 1;
-    mvfr1.advSimdHalfPrecision = 1;
-    mvfr1.vfpHalfPrecision = 1;
-    miscRegs[MISCREG_MVFR1] = mvfr1;
-
-    // Reset values of PRRR and NMRR are implementation dependent
-
-    // @todo: PRRR and NMRR in secure state?
-    miscRegs[MISCREG_PRRR_NS] =
-        (1 << 19) | // 19
-        (0 << 18) | // 18
-        (0 << 17) | // 17
-        (1 << 16) | // 16
-        (2 << 14) | // 15:14
-        (0 << 12) | // 13:12
-        (2 << 10) | // 11:10
-        (2 << 8)  | // 9:8
-        (2 << 6)  | // 7:6
-        (2 << 4)  | // 5:4
-        (1 << 2)  | // 3:2
-        0;          // 1:0
-
-    miscRegs[MISCREG_NMRR_NS] =
-        (1 << 30) | // 31:30
-        (0 << 26) | // 27:26
-        (0 << 24) | // 25:24
-        (3 << 22) | // 23:22
-        (2 << 20) | // 21:20
-        (0 << 18) | // 19:18
-        (0 << 16) | // 17:16
-        (1 << 14) | // 15:14
-        (0 << 12) | // 13:12
-        (2 << 10) | // 11:10
-        (0 << 8)  | // 9:8
-        (3 << 6)  | // 7:6
-        (2 << 4)  | // 5:4
-        (0 << 2)  | // 3:2
-        0;          // 1:0
-
-    if (FullSystem && system->highestELIs64()) {
-        // Initialize AArch64 state
-        clear64(p);
-        return;
+    for (auto idx = 0; idx < NUM_MISCREGS; idx++) {
+        miscRegs[idx] = lookUpMiscReg[idx].reset();
     }
 
-    // Initialize AArch32 state...
-    clear32(p, sctlr_rst);
-}
-
-void
-ISA::clear32(const ArmISAParams &p, const SCTLR &sctlr_rst)
-{
-    CPSR cpsr = 0;
-    cpsr.mode = MODE_USER;
-
-    if (FullSystem) {
-        miscRegs[MISCREG_MVBAR] = system->resetAddr();
-    }
-
-    miscRegs[MISCREG_CPSR] = cpsr;
-    updateRegMap(cpsr);
-
-    SCTLR sctlr = 0;
-    sctlr.te = (bool) sctlr_rst.te;
-    sctlr.nmfi = (bool) sctlr_rst.nmfi;
-    sctlr.v = (bool) sctlr_rst.v;
-    sctlr.u = 1;
-    sctlr.xp = 1;
-    sctlr.rao2 = 1;
-    sctlr.rao3 = 1;
-    sctlr.rao4 = 0xf;  // SCTLR[6:3]
-    sctlr.uci = 1;
-    sctlr.dze = 1;
-    miscRegs[MISCREG_SCTLR_NS] = sctlr;
-    miscRegs[MISCREG_SCTLR_RST] = sctlr_rst;
-    miscRegs[MISCREG_HCPTR] = 0;
-
-    miscRegs[MISCREG_CPACR] = 0;
-
-    miscRegs[MISCREG_FPSID] = p.fpsid;
-
-    if (release->has(ArmExtension::LPAE)) {
-        TTBCR ttbcr = miscRegs[MISCREG_TTBCR_NS];
-        ttbcr.eae = 0;
-        miscRegs[MISCREG_TTBCR_NS] = ttbcr;
-        // Enforce consistency with system-level settings
-        miscRegs[MISCREG_ID_MMFR0] = (miscRegs[MISCREG_ID_MMFR0] & ~0xf) | 0x5;
-    }
-
-    if (release->has(ArmExtension::SECURITY)) {
-        miscRegs[MISCREG_SCTLR_S] = sctlr;
-        miscRegs[MISCREG_SCR] = 0;
-        miscRegs[MISCREG_VBAR_S] = 0;
-    } else {
-        // we're always non-secure
-        miscRegs[MISCREG_SCR] = 1;
-    }
-
-    //XXX We need to initialize the rest of the state.
-}
-
-void
-ISA::clear64(const ArmISAParams &p)
-{
-    CPSR cpsr = 0;
-    Addr rvbar = system->resetAddr();
-    switch (system->highestEL()) {
-        // Set initial EL to highest implemented EL using associated stack
-        // pointer (SP_ELx); set RVBAR_ELx to implementation defined reset
-        // value
-      case EL3:
-        cpsr.mode = MODE_EL3H;
-        miscRegs[MISCREG_RVBAR_EL3] = rvbar;
-        break;
-      case EL2:
-        cpsr.mode = MODE_EL2H;
-        miscRegs[MISCREG_RVBAR_EL2] = rvbar;
-        break;
-      case EL1:
-        cpsr.mode = MODE_EL1H;
-        miscRegs[MISCREG_RVBAR_EL1] = rvbar;
-        break;
-      default:
-        panic("Invalid highest implemented exception level");
-        break;
-    }
-
-    // Initialize rest of CPSR
-    cpsr.daif = 0xf;  // Mask all interrupts
-    cpsr.ss = 0;
-    cpsr.il = 0;
-    miscRegs[MISCREG_CPSR] = cpsr;
-    updateRegMap(cpsr);
-
-    // Initialize other control registers
-    miscRegs[MISCREG_MPIDR_EL1] = 0x80000000;
-    if (release->has(ArmExtension::SECURITY)) {
-        miscRegs[MISCREG_SCTLR_EL3] = 0x30c50830;
-        miscRegs[MISCREG_SCR_EL3]   = 0x00000030;  // RES1 fields
-    } else if (release->has(ArmExtension::VIRTUALIZATION)) {
-        // also  MISCREG_SCTLR_EL2 (by mapping)
-        miscRegs[MISCREG_HSCTLR] = 0x30c50830;
-    } else {
-        // also  MISCREG_SCTLR_EL1 (by mapping)
-        miscRegs[MISCREG_SCTLR_NS] = 0x30d00800 | 0x00050030; // RES1 | init
-        // Always non-secure
-        miscRegs[MISCREG_SCR_EL3] = 1;
-    }
-}
-
-void
-ISA::initID32(const ArmISAParams &p)
-{
-    // Initialize configurable default values
-
-    uint32_t midr;
-    if (p.midr != 0x0)
-        midr = p.midr;
-    else if (highestELIs64)
-        // Cortex-A57 TRM r0p0 MIDR
-        midr = 0x410fd070;
-    else
-        // Cortex-A15 TRM r0p0 MIDR
-        midr = 0x410fc0f0;
-
-    miscRegs[MISCREG_MIDR] = midr;
-    miscRegs[MISCREG_MIDR_EL1] = midr;
-    miscRegs[MISCREG_VPIDR] = midr;
-
-    miscRegs[MISCREG_ID_ISAR0] = p.id_isar0;
-    miscRegs[MISCREG_ID_ISAR1] = p.id_isar1;
-    miscRegs[MISCREG_ID_ISAR2] = p.id_isar2;
-    miscRegs[MISCREG_ID_ISAR3] = p.id_isar3;
-    miscRegs[MISCREG_ID_ISAR4] = p.id_isar4;
-    miscRegs[MISCREG_ID_ISAR5] = p.id_isar5;
-    miscRegs[MISCREG_ID_ISAR6] = p.id_isar6;
-
-    miscRegs[MISCREG_ID_MMFR0] = p.id_mmfr0;
-    miscRegs[MISCREG_ID_MMFR1] = p.id_mmfr1;
-    miscRegs[MISCREG_ID_MMFR2] = p.id_mmfr2;
-    miscRegs[MISCREG_ID_MMFR3] = p.id_mmfr3;
-    miscRegs[MISCREG_ID_MMFR4] = p.id_mmfr4;
-
-    /** MISCREG_ID_ISAR5 */
-    // Crypto
-    miscRegs[MISCREG_ID_ISAR5] = insertBits(
-        miscRegs[MISCREG_ID_ISAR5], 19, 4,
-        release->has(ArmExtension::CRYPTO) ? 0x1112 : 0x0);
-    // RDM
-    miscRegs[MISCREG_ID_ISAR5] = insertBits(
-        miscRegs[MISCREG_ID_ISAR5], 27, 24,
-        release->has(ArmExtension::FEAT_RDM) ? 0x1 : 0x0);
-    // FCMA
-    miscRegs[MISCREG_ID_ISAR5] = insertBits(
-        miscRegs[MISCREG_ID_ISAR5], 31, 28,
-        release->has(ArmExtension::FEAT_FCMA) ? 0x1 : 0x0);
-
-    /** ID_ISAR6 */
-    miscRegs[MISCREG_ID_ISAR6] = insertBits(
-        miscRegs[MISCREG_ID_ISAR6], 3, 0,
-        release->has(ArmExtension::FEAT_JSCVT) ? 0x1 : 0x0);
-}
-
-void
-ISA::initID64(const ArmISAParams &p)
-{
-    // Initialize configurable id registers
-    miscRegs[MISCREG_ID_AA64AFR0_EL1] = p.id_aa64afr0_el1;
-    miscRegs[MISCREG_ID_AA64AFR1_EL1] = p.id_aa64afr1_el1;
-    miscRegs[MISCREG_ID_AA64DFR0_EL1] =
-        (p.id_aa64dfr0_el1 & 0xfffffffffffff0ffULL) |
-        (p.pmu ?             0x0000000000000100ULL : 0); // Enable PMUv3
-
-    miscRegs[MISCREG_ID_AA64DFR1_EL1] = p.id_aa64dfr1_el1;
-    miscRegs[MISCREG_ID_AA64ISAR0_EL1] = p.id_aa64isar0_el1;
-    miscRegs[MISCREG_ID_AA64ISAR1_EL1] = p.id_aa64isar1_el1;
-    miscRegs[MISCREG_ID_AA64MMFR0_EL1] = p.id_aa64mmfr0_el1;
-    miscRegs[MISCREG_ID_AA64MMFR1_EL1] = p.id_aa64mmfr1_el1;
-    miscRegs[MISCREG_ID_AA64MMFR2_EL1] = p.id_aa64mmfr2_el1;
-
-    miscRegs[MISCREG_ID_DFR0_EL1] =
-        (p.pmu ? 0x03000000ULL : 0); // Enable PMUv3
-
-    miscRegs[MISCREG_ID_DFR0] = miscRegs[MISCREG_ID_DFR0_EL1];
-
-    // SVE
-    miscRegs[MISCREG_ID_AA64ZFR0_EL1] = 0;  // SVEver 0
-    if (release->has(ArmExtension::SECURITY)) {
-        miscRegs[MISCREG_ZCR_EL3] = sveVL - 1;
-    } else if (release->has(ArmExtension::VIRTUALIZATION)) {
-        miscRegs[MISCREG_ZCR_EL2] = sveVL - 1;
-    } else {
-        miscRegs[MISCREG_ZCR_EL1] = sveVL - 1;
-    }
-
-    // SME
-
-    // Set up the SME SMIDR
-    // [63:32] RES0
-    // [31:24] Implementer - default this to Arm Limited
-    // [23:16] SMCU Revision - set to 0 as we don't model an SMCU
-    // [15]    SMPS - We don't do priorities in gem5, so disable
-    // [14:12] RES0
-    // [11:0]  Affinity - we implement per-CPU SME, so set to 0 (no SMCU)
-    miscRegs[MISCREG_SMIDR_EL1] = 0 | // Affinity
-        0 << 15 |                     // SMPS
-        0x41 << 24;                   // Implementer
-
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] = 0;
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0x1UL << 32; // F32F32
-    // The following BF16F32 is actually not implemented due to a lack
-    // of BF16 support in gem5's fplib. However, as per the SME spec the
-    // _only_ allowed value is 0x1.
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0x1UL << 34; // BF16F32
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0x1UL << 35; // F16F32
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0xFUL << 36; // I8I32
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0x1UL << 48; // F64F64
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0xFUL << 52; // I16I64
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0x0UL << 56; // SMEver
-    miscRegs[MISCREG_ID_AA64SMFR0_EL1] |= 0x1UL << 32; // FA64
-
-    // We want to support FEAT_SME_FA64. Therefore, we enable it in all
-    // SMCR_ELx registers by default. Runtime software might change this
-    // later, but given that gem5 doesn't disable instructions based on
-    // this flag we default to the most representative value.
-    miscRegs[MISCREG_SMCR_EL3] = 0x1 << 31;
-    miscRegs[MISCREG_SMCR_EL2] = 0x1 << 31;
-    miscRegs[MISCREG_SMCR_EL1] = 0x1 << 31;
-
-    // Set the vector default vector length
-    if (release->has(ArmExtension::SECURITY)) {
-        miscRegs[MISCREG_SMCR_EL3] |= ((smeVL - 1) & 0xF);
-    } else if (release->has(ArmExtension::VIRTUALIZATION)) {
-        miscRegs[MISCREG_SMCR_EL2] |= ((smeVL - 1) & 0xF);
-    } else {
-        miscRegs[MISCREG_SMCR_EL1] |= ((smeVL - 1) & 0xF);
-    }
-
-    // Enforce consistency with system-level settings...
-
-    // EL3
-    miscRegs[MISCREG_ID_AA64PFR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64PFR0_EL1], 15, 12,
-        release->has(ArmExtension::SECURITY) ? 0x2 : 0x0);
-    // EL2
-    miscRegs[MISCREG_ID_AA64PFR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64PFR0_EL1], 11, 8,
-        release->has(ArmExtension::VIRTUALIZATION) ? 0x2 : 0x0);
-    // SVE
-    miscRegs[MISCREG_ID_AA64PFR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64PFR0_EL1], 35, 32,
-        release->has(ArmExtension::FEAT_SVE) ? 0x1 : 0x0);
-    // SME
-    miscRegs[MISCREG_ID_AA64PFR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64PFR1_EL1], 27, 24,
-        release->has(ArmExtension::FEAT_SME) ? 0x1 : 0x0);
-    // SecEL2
-    miscRegs[MISCREG_ID_AA64PFR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64PFR0_EL1], 39, 36,
-        release->has(ArmExtension::FEAT_SEL2) ? 0x1 : 0x0);
-
-    // Large ASID support
-    miscRegs[MISCREG_ID_AA64MMFR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR0_EL1], 7, 4,
-        haveLargeAsid64 ? 0x2 : 0x0);
-    // Physical address size
-    miscRegs[MISCREG_ID_AA64MMFR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR0_EL1], 3, 0,
-        encodePhysAddrRange64(physAddrRange));
-
-    /** MISCREG_ID_AA64ISAR0_EL1 */
-    // Crypto
-    miscRegs[MISCREG_ID_AA64ISAR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR0_EL1], 19, 4,
-        release->has(ArmExtension::CRYPTO) ? 0x1112 : 0x0);
-    // LSE
-    miscRegs[MISCREG_ID_AA64ISAR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR0_EL1], 23, 20,
-        release->has(ArmExtension::FEAT_LSE) ? 0x2 : 0x0);
-    // RDM
-    miscRegs[MISCREG_ID_AA64ISAR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR0_EL1], 31, 28,
-        release->has(ArmExtension::FEAT_RDM) ? 0x1 : 0x0);
-
-    /** MISCREG_ID_AA64ISAR1_EL1 */
-    // PAuth, APA
-    miscRegs[MISCREG_ID_AA64ISAR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR1_EL1], 7, 4,
-        release->has(ArmExtension::FEAT_PAuth) ? 0x1 : 0x0);
-    // JSCVT
-    miscRegs[MISCREG_ID_AA64ISAR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR1_EL1], 15, 12,
-        release->has(ArmExtension::FEAT_JSCVT) ? 0x1 : 0x0);
-    // FCMA
-    miscRegs[MISCREG_ID_AA64ISAR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR1_EL1], 19, 16,
-        release->has(ArmExtension::FEAT_FCMA) ? 0x1 : 0x0);
-    // PAuth, GPA
-    miscRegs[MISCREG_ID_AA64ISAR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR1_EL1], 27, 24,
-        release->has(ArmExtension::FEAT_PAuth) ? 0x1 : 0x0);
-
-    /** MISCREG_ID_AA64MMFR1_EL1 */
-    // VMID16
-    miscRegs[MISCREG_ID_AA64MMFR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR1_EL1], 7, 4,
-        release->has(ArmExtension::FEAT_VMID16) ? 0x2 : 0x0);
-    // VHE
-    miscRegs[MISCREG_ID_AA64MMFR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR1_EL1], 11, 8,
-        release->has(ArmExtension::FEAT_VHE) ? 0x1 : 0x0);
-    // HPDS
-    miscRegs[MISCREG_ID_AA64MMFR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR1_EL1], 15, 12,
-        release->has(ArmExtension::FEAT_HPDS) ? 0x1 : 0x0);
-    // PAN
-    miscRegs[MISCREG_ID_AA64MMFR1_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR1_EL1], 23, 20,
-        release->has(ArmExtension::FEAT_PAN) ? 0x1 : 0x0);
-
-    /** MISCREG_ID_AA64MMFR2_EL1 */
-    // UAO
-    miscRegs[MISCREG_ID_AA64MMFR2_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR2_EL1], 7, 4,
-        release->has(ArmExtension::FEAT_UAO) ? 0x1 : 0x0);
-    // LVA
-    miscRegs[MISCREG_ID_AA64MMFR2_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64MMFR2_EL1], 19, 16,
-        release->has(ArmExtension::FEAT_LVA) ? 0x1 : 0x0);
-
-
-    // TME
-    miscRegs[MISCREG_ID_AA64ISAR0_EL1] = insertBits(
-        miscRegs[MISCREG_ID_AA64ISAR0_EL1], 27, 24,
-        release->has(ArmExtension::TME) ? 0x1 : 0x0);
+    updateRegMap(miscRegs[MISCREG_CPSR]);
 }
 
 void
@@ -870,12 +463,11 @@ ISA::readMiscReg(RegIndex idx)
       case MISCREG_ID_AFR0: // not implemented, so alias MIDR
       case MISCREG_REVIDR:  // not implemented, so alias MIDR
       case MISCREG_MIDR:
-        cpsr = readMiscRegNoEffect(MISCREG_CPSR);
-        scr  = readMiscRegNoEffect(MISCREG_SCR_EL3);
-        if ((cpsr.mode == MODE_HYP) || isSecure(tc)) {
-            return readMiscRegNoEffect(idx);
-        } else {
+      case MISCREG_MIDR_EL1:
+        if (currEL() == EL1 && EL2Enabled(tc)) {
             return readMiscRegNoEffect(MISCREG_VPIDR);
+        } else {
+            return readMiscRegNoEffect(idx);
         }
         break;
       case MISCREG_JOSCR: // Jazelle trivial implementation, RAZ/WI
@@ -2080,6 +1672,20 @@ ISA::setMiscReg(RegIndex idx, RegVal val)
         }
         setMiscRegNoEffect(idx, newVal);
     }
+}
+
+RegVal
+ISA::readMiscRegReset(RegIndex idx) const
+{
+    int flat_idx = flattenMiscIndex(idx);
+    return lookUpMiscReg[flat_idx].reset();
+}
+
+void
+ISA::setMiscRegReset(RegIndex idx, RegVal val)
+{
+    int flat_idx = flattenMiscIndex(idx);
+    InitReg(flat_idx).reset(val);
 }
 
 BaseISADevice &

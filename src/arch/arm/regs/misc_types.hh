@@ -75,6 +75,27 @@ namespace ArmISA
         Bitfield<0> sp;         // AArch64
     EndBitUnion(CPSR)
 
+    BitUnion32(ISAR5)
+        Bitfield<31, 28> vcma;
+        Bitfield<27, 24> rdm;
+        Bitfield<19, 16> crc32;
+        Bitfield<15, 12> sha2;
+        Bitfield<11, 8> sha1;
+        Bitfield<7, 4> aes;
+        Bitfield<3, 0> sevl;
+    EndBitUnion(ISAR5)
+
+    BitUnion32(ISAR6)
+        Bitfield<31, 28> clrbhb;
+        Bitfield<27, 24> i8mm;
+        Bitfield<23, 20> bf16;
+        Bitfield<19, 16> specres;
+        Bitfield<15, 12> sb;
+        Bitfield<11, 8> fhm;
+        Bitfield<7, 4> dp;
+        Bitfield<3, 0> jscvt;
+    EndBitUnion(ISAR6)
+
     BitUnion64(AA64DFR0)
         Bitfield<43, 40> tracefilt;
         Bitfield<39, 36> doublelock;
@@ -97,6 +118,7 @@ namespace ArmISA
         Bitfield<39, 36> sm3;
         Bitfield<35, 32> sha3;
         Bitfield<31, 28> rdm;
+        Bitfield<27, 24> tme;
         Bitfield<23, 20> atomic;
         Bitfield<19, 16> crc32;
         Bitfield<15, 12> sha2;
@@ -180,6 +202,17 @@ namespace ArmISA
         Bitfield<7, 4> el1;
         Bitfield<3, 0> el0;
     EndBitUnion(AA64PFR0)
+
+    BitUnion64(AA64SMFR0)
+        Bitfield<63> fa64;
+        Bitfield<59, 56> smEver;
+        Bitfield<55, 52> i16i64;
+        Bitfield<48> f64f64;
+        Bitfield<39, 36> i8i32;
+        Bitfield<35> f16f32;
+        Bitfield<34> b16f32;
+        Bitfield<32> f32f32;
+    EndBitUnion(AA64SMFR0)
 
     BitUnion32(HDCR)
         Bitfield<27>   tdcc;
