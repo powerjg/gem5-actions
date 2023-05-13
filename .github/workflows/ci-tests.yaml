@@ -29,6 +29,11 @@ jobs:
       - name: nightly unit test debug
         run: scons build/ALL/unittests.opt --ignore-style
 
+      - name: quick tests
+        run: |
+          cd tests
+          ./main.py run --length=quick -vv
+
       - name: Run Pre Commit Tests
         run: |
           cd tests
@@ -44,9 +49,9 @@ jobs:
     steps:
     # checks out repository, should be more useful when
     # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      # - uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0
 
       - name: Compiler Tests
         run: |
