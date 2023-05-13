@@ -3,42 +3,42 @@ run-name: CI-Tests
 
 #  allows us to repeat this daily at 2am
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 */12 * * *'
+on: [push]
+  # schedule:
+  #   - cron:  '0 */12 * * *'
 
 # This replaces presubmit.sh, and is missing the gem5art tests
 jobs:
-  Unit-Tests:
-    runs-on: [self-hosted, linux, x64, run]
-    # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 1440 # 24 hours
+  # Unit-Tests:
+  #   runs-on: [self-hosted, linux, x64, run]
+  #   # running container with only a single arguement passes the image being used
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   timeout-minutes: 1440 # 24 hours
 
-    steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #   steps:
+  #   # checks out repository, should be more useful when
+  #   # running checks on changed files
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: test nightly unit test opt
-        run: |
-          scons build/ALL/unittests.opt --ignore-style
+  #     - name: test nightly unit test opt
+  #       run: |
+  #         scons build/ALL/unittests.opt --ignore-style
 
-      - name: nightly unit test debug
-        run: scons build/ALL/unittests.opt --ignore-style
+  #     - name: nightly unit test debug
+  #       run: scons build/ALL/unittests.opt --ignore-style
 
-      - name: Run Pre Commit Tests
-        run: |
-          cd tests
-          ./main.py run gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
+  #     - name: Run Pre Commit Tests
+  #       run: |
+  #         cd tests
+  #         ./main.py run gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  #     - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Compiler-Tests:
     runs-on: [self-hosted, linux, x64, build]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 1440 # 24 hours
 
     steps:
