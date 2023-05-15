@@ -1,5 +1,8 @@
-name: Github Artifacting Tests
-run-name: Testing artifact usage
+name: gem5art
+run-name: gem5art tests
+
+# name: Github Artifacting Tests
+# run-name: Testing artifact usage
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
 on: [push]
   # schedule:
@@ -8,56 +11,92 @@ on: [push]
 # This file is an example of using artifacts in different runs, for us to utilize in
 # separating jobs amongst different runners
 jobs:
-  Test-Upload:
-    runs-on: [self-hosted, linux, x64, run]
-    # running container with only a single arguement passes the image being used
+
+  gem5art-unittests:
+    runs-on: [self-hosted, Linux, X64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-
+    timeout-minutes: 15
     steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v3
+    - name: Setup the virtual environment
+      working-directory: ${{ github.workspace }}
+      run: |
+        mkdir -p .pyenv
+        python3 -m venv .pyenv
+        source .pyenv/bin/activate
+    - name: Install the packages
+      working-directory: ${{ github.workspace }}
+      run: |
+        pip install -e util/gem5art/artifact
+        pip install -e util/gem5art/run
+        pip install -e util/gem5art/tasks
+    - run: echo "This job's status is ${{ job.status }}."
+    - name: The gem5art.artifact Unittests
+      working-directory: ${{ github.workspace }}/util/gem5art/artifact
+      run: |
+        python3 -m unittest
+        mypy -p gem5art.artifact
+    - name: The gem5art.run Unittests
+      working-directory: ${{ github.workspace }}/util/gem5art/run
+      run: |
+        python3 -m unittest
+        mypy -p gem5art.run
+    - name: The gem5art.tasks Unittests
+      working-directory: ${{ github.workspace }}/util/gem5art/tasks
+      run: |
+        python3 -m unittest
+        mypy -p gem5art.tasks
+    - run: echo "This job's status is ${{ job.status }}."
+  # Test-Upload:
+  #   runs-on: [self-hosted, linux, x64, run]
+  #   # running container with only a single arguement passes the image being used
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
 
-      - name: Build and run gem5
-        run: |
-          scons build/ALL/gem5.opt -j $(nproc)
+  #   steps:
+  #   # checks out repository, should be more useful when
+  #   # running checks on changed files
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: gem5-artifact
-          path: build/ALL/gem5.opt
+  #     - name: Build and run gem5
+  #       run: |
+  #         scons build/ALL/gem5.opt -j $(nproc)
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: gem5-artifact
+  #         path: build/ALL/gem5.opt
 
-  Test-Download:
-    runs-on: [self-hosted, linux, x64, run]
-    # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: Test-Upload
+  #     - run: echo "🍏 This job's status is ${{ job.status }}."
 
-    steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  # Test-Download:
+  #   runs-on: [self-hosted, linux, x64, run]
+  #   # running container with only a single arguement passes the image being used
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   needs: Test-Upload
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: gem5-artifact
-          path: build/ALL/gem5.opt
+  #   steps:
+  #   # checks out repository, should be more useful when
+  #   # running checks on changed files
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Display structure of downloaded files
-        run: ls -R
-        # working-directory: build/X86
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: gem5-artifact
+  #         path: build/ALL/gem5.opt
 
-      # double checking that steps are run chronologically
-      - name: Run gem5 separately (memory_traffic.py)
-        run: |
-          chmod u+x build/ALL/gem5.opt
-          cd tests
-          ./main.py run --length=long gem5/cpu_tests/ --skip-build
+  #     - name: Display structure of downloaded files
+  #       run: ls -R
+  #       # working-directory: build/X86
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  #     # double checking that steps are run chronologically
+  #     - name: Run gem5 separately (memory_traffic.py)
+  #       run: |
+  #         chmod u+x build/ALL/gem5.opt
+  #         cd tests
+  #         ./main.py run --length=long gem5/cpu_tests/ --skip-build
+
+  #     - run: echo "🍏 This job's status is ${{ job.status }}."
