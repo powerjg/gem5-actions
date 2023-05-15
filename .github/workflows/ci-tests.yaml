@@ -3,9 +3,9 @@
 name: CI Tests
 run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 
-on: [push]
-  # schedule:
-  #   - cron:  '0 0 1 1 *'
+on:
+  schedule:
+    - cron:  '0 0 1 1 *'
 
 jobs:
   Test-Upload:
