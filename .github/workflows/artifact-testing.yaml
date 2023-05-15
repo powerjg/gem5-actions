@@ -18,12 +18,12 @@ jobs:
     timeout-minutes: 15
     steps:
     - uses: actions/checkout@v3
-    - name: Setup the virtual environment
-      working-directory: ${{ github.workspace }}
-      run: |
-        # mkdir -p .pyenv
-        # python3 -m venv .pyenv
-        source .pyenv/bin/activate
+    # - name: Setup the virtual environment
+    #   working-directory: ${{ github.workspace }}
+    #   run: |
+    #     mkdir -p .pyenv
+    #     python3 -m venv .pyenv
+    #     source .pyenv/bin/activate
     - name: Install the packages
       working-directory: ${{ github.workspace }}
       run: |
