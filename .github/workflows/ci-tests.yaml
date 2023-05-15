@@ -1,79 +1,11 @@
-# name: CI Tests
-# run-name: CI-Tests
-
-# #  allows us to repeat this daily at 2am
-# #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on:
-#   schedule:
-#     - cron:  '0 */12 * * *'
-
-# # This replaces presubmit.sh, and is missing the gem5art tests
-# jobs:
-#   Unit-Tests:
-#     runs-on: [self-hosted, linux, x64, run]
-#     # running container with only a single arguement passes the image being used
-#     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-#     timeout-minutes: 1440 # 24 hours
-
-#     steps:
-#     # checks out repository, should be more useful when
-#     # running checks on changed files
-#       - uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       - name: test nightly unit test opt
-#         run: |
-#           scons build/ALL/unittests.opt --ignore-style
-
-#       - name: nightly unit test debug
-#         run: scons build/ALL/unittests.opt --ignore-style
-
-#       - name: quick tests
-#         run: |
-#           cd tests
-#           ./main.py run --length=quick -vv
-
-#       - name: Run Pre Commit Tests
-#         run: |
-#           cd tests
-#           ./main.py run gem5 -vv && scons -C .. --no-compress-debug --ignore-style build/ARM/unittests.opt
-
-#       - run: echo "🍏 This job's status is ${{ job.status }}."
-
-#   Compiler-Tests:
-#     runs-on: [self-hosted, linux, x64, build]
-#     # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-#     timeout-minutes: 1440 # 24 hours
-
-#     steps:
-#     # checks out repository, should be more useful when
-#     # running checks on changed files
-#       # - uses: actions/checkout@v3
-#       #   with:
-#       #     fetch-depth: 0
-
-#       - name: Compiler Tests
-#         run: |
-#           cd tests
-#           chmod u+x compiler-tests.sh
-#           ./compiler-tests.sh -j $(nproc)
-
-#       # upload test dir
-#       - uses: actions/upload-artifact@v3
-#         with:
-#           name: compiler-test-artifact
-#           path: .compile-test-out
-
-
 # This workflow runs after a pull-request has been approved by a reviewer.
 
 name: CI Tests
 run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 
-on: [push]
-  # schedule:
-  #   - cron:  '0 */12 * * *'
+on:
+  schedule:
+    - cron:  '0 0 1 1 *'
 
 jobs:
   Test-Upload:
@@ -83,17 +15,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Build and run gem5
+      - name: Build gem5
         run: |
           scons build/ALL/gem5.opt -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
           name: gem5-artifact
-          path: build/ALL
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          path: build/ALL/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
 
   unittests-all-opt:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted, Linux, X64, run]
     container:
       image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 60
@@ -105,7 +37,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-quick:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted, Linux, X64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: Test-Upload
     timeout-minutes: 360     # 6 hours
@@ -114,7 +46,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: gem5-artifact
-        path: build/ALL
+        path: build/ALL/gem5.opt
     - run: chmod u+x build/ALL/gem5.opt
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
@@ -122,7 +54,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   gem5art-unittests:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted, Linux, X64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 15
     steps:

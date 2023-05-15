@@ -1,15 +1,15 @@
 name: Github Artifacting Tests
 run-name: Testing artifact usage
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+on: [push]
+  # schedule:
+  #   - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
 # This file is an example of using artifacts in different runs, for us to utilize in
 # separating jobs amongst different runners
 jobs:
   Test-Upload:
-    runs-on: [self-hosted, linux, x64, build]
+    runs-on: [self-hosted, linux, x64, run]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
 
@@ -27,12 +27,12 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: gem5-artifact
-          path: build/ALL
+          path: build/ALL/gem5.opt
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
   Test-Download:
-    runs-on: [self-hosted, linux, x64, build]
+    runs-on: [self-hosted, linux, x64, run]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: Test-Upload
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: gem5-artifact
-          path: build/ALL
+          path: build/ALL/gem5.opt
 
       - name: Display structure of downloaded files
         run: ls -R
