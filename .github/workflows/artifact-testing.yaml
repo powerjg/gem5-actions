@@ -66,7 +66,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: gem5-artifact
+          name: gem5-artifact1
           path: build/ALL/gem5.opt
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
@@ -86,7 +86,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: gem5-artifact
+          name: gem5-artifact1
           path: build/ALL/gem5.opt
 
       - name: Display structure of downloaded files
