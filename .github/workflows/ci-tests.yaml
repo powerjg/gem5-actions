@@ -52,7 +52,10 @@ jobs:
         name: ${{needs.build-gem5.outputs.output1}}
         path: build/ALL/gem5.opt
     - run: chmod u+x build/ALL/gem5.opt
+    - name: Display structure of downloaded files
+      run: ls -R
+    - run: build/ALL/gem5.opt
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run --skip-build        # How to add threads here?
+      run: ./main.py run --skip-build  -vvv      # How to add threads here?
     - run: echo "This job's status is ${{ job.status }}."
