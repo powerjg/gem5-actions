@@ -14,10 +14,14 @@ jobs:
   build-gem5:
     runs-on: [self-hosted, linux, x64, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - id: step1
+        run: echo "test=$(date +"%Y-%m-%d_%H.%M.%S")-artifact" >> $GITHUB_OUTPUT
       - name: Build gem5
         run: |
           scons build/ALL/gem5.opt -j $(nproc)

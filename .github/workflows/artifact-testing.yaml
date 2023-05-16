@@ -58,6 +58,7 @@ jobs:
     steps:
       - id: step1
         run: echo "test=$(date +"%Y-%m-%d_%H.%M.%S")-artifact" >> $GITHUB_OUTPUT
+      - run: echo ${{ steps.step1.outputs.test }}
     # steps:
     # # checks out repository, should be more useful when
     # # running checks on changed files
