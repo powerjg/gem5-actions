@@ -3,12 +3,12 @@
 name: CI Tests
 run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 
-on:
-  schedule:
-    - cron:  '0 */6 * * *'
+on: [push]
+  # schedule:
+  #   - cron:  '0 */6 * * *'
 
 env:
-  artifact-name: $(date +'%Y-%m-%d_%H.%M.%S')
+  artifact-name: "$(date +'%Y-%m-%d_%H.%M.%S')"
 
 jobs:
   build-gem5:
