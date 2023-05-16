@@ -50,7 +50,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: ${{needs.build-gem5.outputs.output1}}
-        path: build/ALL/gem5.opt
+        path: build/ALL/
     - run: chmod u+x build/ALL/gem5.opt
     - name: Display structure of downloaded files
       run: ls -R
