@@ -3,9 +3,9 @@
 name: Running main.py
 run-name: ${{ github.actor }} is running main.py tests
 
-on: [push]
-  # schedule:
-  #   - cron:  '0 0 * * *'
+on:
+  schedule:
+    - cron:  '0 0 * * *'
 
 env:
   artifact-name: "$(date +'%Y-%m-%d_%H.%M.%S')"
