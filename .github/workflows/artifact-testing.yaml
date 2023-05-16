@@ -64,7 +64,7 @@ jobs:
         # id: generate-name
         run: |
           echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
-          echo ${{ env.NOW }}
+          echo ${{ NOW }}
       # - name: Build and run gem5
       #   run: |
       #     scons build/ALL/gem5.opt -j $(nproc)
@@ -89,12 +89,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate artifact name
-        id: generate-name
-        run: |
-          # echo $NOW
-          # echo ${{ env.NOW }}
-          # echo ${{ NOW }}
+      # - name: Generate artifact name
+      #   id: generate-name
+      #   run: |
+
 
       # - uses: actions/download-artifact@v3
       #   with:
