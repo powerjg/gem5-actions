@@ -4,7 +4,7 @@ run-name: gem5art tests
 # name: Github Artifacting Tests
 # run-name: Testing artifact usage
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-# on: [push]
+on:
   schedule:
     - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 
