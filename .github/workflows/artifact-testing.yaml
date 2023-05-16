@@ -49,25 +49,34 @@ jobs:
   #       python3 -m unittest
   #       mypy -p gem5art.tasks
   #   - run: echo "This job's status is ${{ job.status }}."
-  Test-Upload:
+  job1:
     runs-on: [self-hosted, linux, x64, build]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
+      output2: ${{ steps.step2.outputs.test }}
     steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Generate artifact name
-        # id: generate-name
-        run: |
-          echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
-          echo $NOW
+      - id: step1
+        run: echo "test=$(date +"%d-%m-%Y")-asdfads223" >> $GITHUB_OUTPUT
+      - id: step2
+        run: echo "test=world" >> $GITHUB_OUTPUT
+    # steps:
+    # # checks out repository, should be more useful when
+    # # running checks on changed files
+    #   - uses: actions/checkout@v3
+    #     with:
+    #       fetch-depth: 0
+    #       outputs:
 
-          echo "NOW=hello" >> $GITHUB_ENV
-          echo $NOW
+      # - name: Generate artifact name
+      #   # id: generate-name
+      #   run: |
+      #     echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+      #     echo $NOW
+
+      #     echo NOW=hello >> $GITHUB_ENV
+      #     echo $NOW
       # - name: Build and run gem5
       #   run: |
       #     scons build/ALL/gem5.opt -j $(nproc)
@@ -83,14 +92,16 @@ jobs:
     runs-on: [self-hosted, linux, x64, run]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: Test-Upload
+    needs: job1
 
     steps:
-    # checks out repository, should be more useful when
-    # running checks on changed files
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - run: echo ${{needs.job1.outputs.output1}} ${{needs.job1.outputs.output2}}
+    # steps:
+    # # checks out repository, should be more useful when
+    # # running checks on changed files
+    #   - uses: actions/checkout@v3
+    #     with:
+    #       fetch-depth: 0
 
       # - name: Generate artifact name
       #   id: generate-name
@@ -102,8 +113,8 @@ jobs:
       #     name: gem5-artifact1
       #     path: build/ALL/gem5.opt
 
-      - name: Display structure of downloaded files
-        run: ls -R
+      # - name: Display structure of downloaded files
+      #   run: ls -R
         # working-directory: build/X86
 
       # double checking that steps are run chronologically
