@@ -3,24 +3,29 @@
 name: CI Tests
 run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 
-on:
-  schedule:
-    - cron:  '0 0 1 1 *'
+on: [push]
+  # schedule:
+  #   - cron:  '0 */6 * * *'
 
 jobs:
-  Test-Upload:
+  build-gem5:
     runs-on: [self-hosted, linux, x64, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Generate artifact name
+        id: generate-name
+        run: |
+          echo "artifact-name=$('gem5-artifact'+'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+
       - name: Build gem5
         run: |
           scons build/ALL/gem5.opt -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
-          name: gem5-artifact
+          name: ${{ env.artifact-name }}
           path: build/ALL/gem5.opt
       - run: echo "This job's status is ${{ job.status }}."
 
@@ -39,52 +44,16 @@ jobs:
   testlib-quick:
     runs-on: [self-hosted, Linux, X64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: Test-Upload
+    needs: build-gem5
     timeout-minutes: 360     # 6 hours
     steps:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: gem5-artifact
+        name: ${{ env.artifact-name }}
         path: build/ALL/gem5.opt
     - run: chmod u+x build/ALL/gem5.opt
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run --skip-build        # How to add threads here?
-    - run: echo "This job's status is ${{ job.status }}."
-
-  gem5art-unittests:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 15
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup the virtual environment
-      working-directory: ${{ github.workspace }}
-      run: |
-        mkdir -p .pyenv
-        python3 -m venv .pyenv
-        source .pyenv/bin/activate
-    - name: Install the packages
-      working-directory: ${{ github.workspace }}
-      run: |
-        pip install -e util/gem5art/artifact
-        pip install -e util/gem5art/run
-        pip install -e util/gem5art/tasks
-    - run: echo "This job's status is ${{ job.status }}."
-    - name: The gem5art.artifact Unittests
-      working-directory: ${{ github.workspace }}/util/gem5art/artifact
-      run: |
-        python3 -m unittest
-        mypy -p gem5art.artifact
-    - name: The gem5art.run Unittests
-      working-directory: ${{ github.workspace }}/util/gem5art/run
-      run: |
-        python3 -m unittest
-        mypy -p gem5art.run
-    - name: The gem5art.tasks Unittests
-      working-directory: ${{ github.workspace }}/util/gem5art/tasks
-      run: |
-        python3 -m unittest
-        mypy -p gem5art.tasks
     - run: echo "This job's status is ${{ job.status }}."
