@@ -93,8 +93,8 @@ jobs:
         id: generate-name
         run: |
           echo $NOW
-          echo ${{ env.NOW }}
-          echo ${{ NOW }}
+          # echo ${{ env.NOW }}
+          # echo ${{ NOW }}
 
       # - uses: actions/download-artifact@v3
       #   with:
