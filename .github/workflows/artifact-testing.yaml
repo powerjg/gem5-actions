@@ -4,9 +4,9 @@ run-name: gem5art tests
 # name: Github Artifacting Tests
 # run-name: Testing artifact usage
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+on: [push]
+  # schedule:
+  #   - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 env:
   artifact-name: "$(date +'%Y-%m-%d_%H.%M.%S')"
 # This file is an example of using artifacts in different runs, for us to utilize in
@@ -63,7 +63,7 @@ jobs:
       - name: Generate artifact name
         # id: generate-name
         run: |
-          echo "hello"
+          echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
       # - name: Build and run gem5
       #   run: |
       #     scons build/ALL/gem5.opt -j $(nproc)
@@ -91,7 +91,7 @@ jobs:
       - name: Generate artifact name
         id: generate-name
         run: |
-          echo ${{ env.artifact-name }}
+          echo $NOW
 
       # - uses: actions/download-artifact@v3
       #   with:
