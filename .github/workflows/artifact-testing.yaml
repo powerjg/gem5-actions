@@ -92,7 +92,7 @@ jobs:
       - name: Generate artifact name
         id: generate-name
         run: |
-          echo $NOW
+          # echo $NOW
           # echo ${{ env.NOW }}
           # echo ${{ NOW }}
 
