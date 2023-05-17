@@ -229,3 +229,28 @@ From https://gem5.googlesource.com/public/gem5
  * branch                  develop    -> FETCH_HEAD
 Already up to date.
 Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+   aff1ddb196..c4d61ca143  develop    -> upstream/develop
+Auto-merging tests/nightly.sh
+Merge made by the 'recursive' strategy.
+ SConstruct                     | 8 +++++++-
+ ext/sst/INSTALL.md             | 5 ++++-
+ src/arch/riscv/isa/decoder.isa | 3 ++-
+ tests/nightly.sh               | 2 +-
+ 4 files changed, 14 insertions(+), 4 deletions(-)
+remote: Resolving deltas:   0% (0/19)        remote: Resolving deltas:   5% (1/19)        remote: Resolving deltas:  10% (2/19)        remote: Resolving deltas:  15% (3/19)        remote: Resolving deltas:  21% (4/19)        remote: Resolving deltas:  26% (5/19)        remote: Resolving deltas:  31% (6/19)        remote: Resolving deltas:  36% (7/19)        remote: Resolving deltas:  42% (8/19)        remote: Resolving deltas:  47% (9/19)        remote: Resolving deltas:  52% (10/19)        remote: Resolving deltas:  57% (11/19)        remote: Resolving deltas:  63% (12/19)        remote: Resolving deltas:  68% (13/19)        remote: Resolving deltas:  73% (14/19)        remote: Resolving deltas:  78% (15/19)        remote: Resolving deltas:  84% (16/19)        remote: Resolving deltas:  89% (17/19)        remote: Resolving deltas:  94% (18/19)        remote: Resolving deltas: 100% (19/19)        remote: Resolving deltas: 100% (19/19), completed with 12 local objects.        
+To github.com:mkjost0/gem5-actions.git
+   182211197d..53bdb2b14c  develop -> develop
+   aff1ddb196..c4d61ca143  upstream/develop -> upstream/develop
+ * [new branch]            testing/develop -> testing/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   114e8292cb..53bdb2b14c  origin/develop -> origin/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Warning: Permanently added the RSA host key for IP address '192.30.255.113' to the list of known hosts.
+Everything up-to-date
