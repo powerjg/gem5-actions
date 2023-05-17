@@ -25,7 +25,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.step1.outputs.test }}
-          path: build/ALL/gem5.opt
+          path: build/ALL
       - run: echo "This job's status is ${{ job.status }}."
 
   unittests-all-opt:
