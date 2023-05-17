@@ -254,3 +254,13 @@ From https://gem5.googlesource.com/public/gem5
 Already up to date.
 Warning: Permanently added the RSA host key for IP address '192.30.255.113' to the list of known hosts.
 Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   182211197d..50d2dac84c  testing/develop -> testing/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   53bdb2b14c..50d2dac84c  origin/develop -> origin/develop
