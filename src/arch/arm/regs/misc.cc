@@ -753,6 +753,12 @@ std::unordered_map<MiscRegNum64, MiscRegIndex> miscRegNumToIdx{
     { MiscRegNum64(1, 0, 7, 8, 3), MISCREG_AT_S1E0W_Xt },
     { MiscRegNum64(1, 0, 7, 10, 2), MISCREG_DC_CSW_Xt },
     { MiscRegNum64(1, 0, 7, 14, 2), MISCREG_DC_CISW_Xt },
+    { MiscRegNum64(1, 0, 8, 1, 0), MISCREG_TLBI_VMALLE1OS },
+    { MiscRegNum64(1, 0, 8, 1, 1), MISCREG_TLBI_VAE1OS_Xt },
+    { MiscRegNum64(1, 0, 8, 1, 2), MISCREG_TLBI_ASIDE1OS_Xt },
+    { MiscRegNum64(1, 0, 8, 1, 3), MISCREG_TLBI_VAAE1OS_Xt },
+    { MiscRegNum64(1, 0, 8, 1, 5), MISCREG_TLBI_VALE1OS_Xt },
+    { MiscRegNum64(1, 0, 8, 1, 7), MISCREG_TLBI_VAALE1OS_Xt },
     { MiscRegNum64(1, 0, 8, 3, 0), MISCREG_TLBI_VMALLE1IS },
     { MiscRegNum64(1, 0, 8, 3, 1), MISCREG_TLBI_VAE1IS_Xt },
     { MiscRegNum64(1, 0, 8, 3, 2), MISCREG_TLBI_ASIDE1IS_Xt },
@@ -778,12 +784,19 @@ std::unordered_map<MiscRegNum64, MiscRegIndex> miscRegNumToIdx{
     { MiscRegNum64(1, 4, 7, 8, 7), MISCREG_AT_S12E0W_Xt },
     { MiscRegNum64(1, 4, 8, 0, 1), MISCREG_TLBI_IPAS2E1IS_Xt },
     { MiscRegNum64(1, 4, 8, 0, 5), MISCREG_TLBI_IPAS2LE1IS_Xt },
+    { MiscRegNum64(1, 4, 8, 1, 0), MISCREG_TLBI_ALLE2OS },
+    { MiscRegNum64(1, 4, 8, 1, 1), MISCREG_TLBI_VAE2OS_Xt },
+    { MiscRegNum64(1, 4, 8, 1, 4), MISCREG_TLBI_ALLE1OS },
+    { MiscRegNum64(1, 4, 8, 1, 5), MISCREG_TLBI_VALE2OS_Xt },
+    { MiscRegNum64(1, 4, 8, 1, 6), MISCREG_TLBI_VMALLS12E1OS },
     { MiscRegNum64(1, 4, 8, 3, 0), MISCREG_TLBI_ALLE2IS },
     { MiscRegNum64(1, 4, 8, 3, 1), MISCREG_TLBI_VAE2IS_Xt },
     { MiscRegNum64(1, 4, 8, 3, 4), MISCREG_TLBI_ALLE1IS },
     { MiscRegNum64(1, 4, 8, 3, 5), MISCREG_TLBI_VALE2IS_Xt },
     { MiscRegNum64(1, 4, 8, 3, 6), MISCREG_TLBI_VMALLS12E1IS },
+    { MiscRegNum64(1, 4, 8, 4, 0), MISCREG_TLBI_IPAS2E1OS_Xt },
     { MiscRegNum64(1, 4, 8, 4, 1), MISCREG_TLBI_IPAS2E1_Xt },
+    { MiscRegNum64(1, 4, 8, 4, 4), MISCREG_TLBI_IPAS2LE1OS_Xt },
     { MiscRegNum64(1, 4, 8, 4, 5), MISCREG_TLBI_IPAS2LE1_Xt },
     { MiscRegNum64(1, 4, 8, 7, 0), MISCREG_TLBI_ALLE2 },
     { MiscRegNum64(1, 4, 8, 7, 1), MISCREG_TLBI_VAE2_Xt },
@@ -792,6 +805,9 @@ std::unordered_map<MiscRegNum64, MiscRegIndex> miscRegNumToIdx{
     { MiscRegNum64(1, 4, 8, 7, 6), MISCREG_TLBI_VMALLS12E1 },
     { MiscRegNum64(1, 6, 7, 8, 0), MISCREG_AT_S1E3R_Xt },
     { MiscRegNum64(1, 6, 7, 8, 1), MISCREG_AT_S1E3W_Xt },
+    { MiscRegNum64(1, 6, 8, 1, 0), MISCREG_TLBI_ALLE3OS },
+    { MiscRegNum64(1, 6, 8, 1, 1), MISCREG_TLBI_VAE3OS_Xt },
+    { MiscRegNum64(1, 6, 8, 1, 5), MISCREG_TLBI_VALE3OS_Xt },
     { MiscRegNum64(1, 6, 8, 3, 0), MISCREG_TLBI_ALLE3IS },
     { MiscRegNum64(1, 6, 8, 3, 1), MISCREG_TLBI_VAE3IS_Xt },
     { MiscRegNum64(1, 6, 8, 3, 5), MISCREG_TLBI_VALE3IS_Xt },
@@ -2199,6 +2215,7 @@ ISA::initializeMiscRegMetadata()
       .reset(p.fpsid)
       .allPrivileges();
     InitReg(MISCREG_FPSCR)
+      .res0(mask(14, 13) | mask(6, 5))
       .allPrivileges();
     InitReg(MISCREG_MVFR1)
       .reset([] () {
@@ -2273,6 +2290,7 @@ ISA::initializeMiscRegMetadata()
 
     // AArch32 CP14 registers
     InitReg(MISCREG_DBGDIDR)
+      .reset(0x6 << 16) // Armv8 Debug architecture
       .allPrivileges().monSecureWrite(0).monNonSecureWrite(0);
     InitReg(MISCREG_DBGDSCRint)
       .allPrivileges().monSecureWrite(0).monNonSecureWrite(0);
@@ -2501,12 +2519,15 @@ ISA::initializeMiscRegMetadata()
       .unimplemented()
       .allPrivileges();
     InitReg(MISCREG_JIDR)
+      .raz() // Jazelle trivial implementation, RAZ/WI
       .allPrivileges();
     InitReg(MISCREG_TEEHBR)
       .allPrivileges();
     InitReg(MISCREG_JOSCR)
+      .raz() // Jazelle trivial implementation, RAZ/WI
       .allPrivileges();
     InitReg(MISCREG_JMCR)
+      .raz() // Jazelle trivial implementation, RAZ/WI
       .allPrivileges();
 
     // AArch32 CP15 registers
@@ -2514,8 +2535,37 @@ ISA::initializeMiscRegMetadata()
       .reset(midr)
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_CTR)
+      .reset([system=p.system](){
+          //all caches have the same line size in gem5
+          //4 byte words in ARM
+          unsigned line_size_words =
+              system->cacheLineSize() / 4;
+          unsigned log2_line_size_words = 0;
+
+          while (line_size_words >>= 1) {
+              ++log2_line_size_words;
+          }
+
+          CTR ctr = 0;
+          //log2 of minimun i-cache line size (words)
+          ctr.iCacheLineSize = log2_line_size_words;
+          //b11 - gem5 uses pipt
+          ctr.l1IndexPolicy = 0x3;
+          //log2 of minimum d-cache line size (words)
+          ctr.dCacheLineSize = log2_line_size_words;
+          //log2 of max reservation size (words)
+          ctr.erg = log2_line_size_words;
+          //log2 of max writeback size (words)
+          ctr.cwg = log2_line_size_words;
+          //b100 - gem5 format is ARMv7
+          ctr.format = 0x4;
+
+          return ctr;
+      }())
+      .unserialize(0)
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_TCMTR)
+      .raz() // No TCM's
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_TLBTR)
       .reset(1) // Separate Instruction and Data TLBs
@@ -2528,8 +2578,20 @@ ISA::initializeMiscRegMetadata()
       .warnNotFail()
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_ID_PFR0)
+      .reset(0x00000031) // !ThumbEE | !Jazelle | Thumb | ARM
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_ID_PFR1)
+      .reset([release=release,system=system](){
+          // Timer | Virti | !M Profile | TrustZone | ARMv4
+          bool have_timer = (system && system->getGenericTimer() != nullptr);
+          return 0x00000001 |
+              (release->has(ArmExtension::SECURITY) ?
+                  0x00000010 : 0x0) |
+              (release->has(ArmExtension::VIRTUALIZATION) ?
+                  0x00001000 : 0x0) |
+              (have_timer ? 0x00010000 : 0x0);
+      }())
+      .unserialize(0)
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_ID_DFR0)
       .reset(p.pmu ? 0x03000000 : 0)
@@ -2602,6 +2664,7 @@ ISA::initializeMiscRegMetadata()
     InitReg(MISCREG_CLIDR)
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_AIDR)
+      .raz() // AUX ID set to 0
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_CSSELR)
       .banked();
@@ -2616,6 +2679,7 @@ ISA::initializeMiscRegMetadata()
       .reset(midr)
       .hyp().monNonSecure();
     InitReg(MISCREG_VMPIDR)
+      .res1(mask(31, 31))
       .hyp().monNonSecure();
     InitReg(MISCREG_SCTLR)
       .banked()
@@ -2693,13 +2757,17 @@ ISA::initializeMiscRegMetadata()
       .hyp().monNonSecure();
     InitReg(MISCREG_HCR)
       .hyp().monNonSecure()
-      .res0(0x90000000);
+      .res0(release->has(ArmExtension::VIRTUALIZATION) ?
+          0x90000000 : mask(31, 0));
     InitReg(MISCREG_HCR2)
       .hyp().monNonSecure()
-      .res0(0xffa9ff8c);
+      .res0(release->has(ArmExtension::VIRTUALIZATION) ?
+          0xffa9ff8c : mask(31, 0));
     InitReg(MISCREG_HDCR)
       .hyp().monNonSecure();
     InitReg(MISCREG_HCPTR)
+      .res0(mask(29, 21) | mask(19, 16) | mask(14, 14))
+      .res1(mask(13, 12) | mask(9, 0))
       .hyp().monNonSecure();
     InitReg(MISCREG_HSTR)
       .hyp().monNonSecure();
@@ -2748,7 +2816,8 @@ ISA::initializeMiscRegMetadata()
       .bankedChild()
       .secure().exceptUserMode();
     InitReg(MISCREG_DFSR)
-      .banked();
+      .banked()
+      .res0(mask(31, 14) | mask(8, 8));
     InitReg(MISCREG_DFSR_NS)
       .bankedChild()
       .privSecure(!aarch32EL3)
@@ -2757,7 +2826,8 @@ ISA::initializeMiscRegMetadata()
       .bankedChild()
       .secure().exceptUserMode();
     InitReg(MISCREG_IFSR)
-      .banked();
+      .banked()
+      .res0(mask(31, 13) | mask(11, 11) | mask(8, 6));
     InitReg(MISCREG_IFSR_NS)
       .bankedChild()
       .privSecure(!aarch32EL3)
@@ -3072,6 +3142,7 @@ ISA::initializeMiscRegMetadata()
       .bankedChild()
       .secure().exceptUserMode();
     InitReg(MISCREG_AMAIR0)
+      .res0(release->has(ArmExtension::LPAE) ? 0 : mask(31, 0))
       .banked();
     InitReg(MISCREG_AMAIR0_NS)
       .bankedChild()
@@ -3081,6 +3152,7 @@ ISA::initializeMiscRegMetadata()
       .bankedChild()
       .secure().exceptUserMode();
     InitReg(MISCREG_AMAIR1)
+      .res0(release->has(ArmExtension::LPAE) ? 0 : mask(31, 0))
       .banked();
     InitReg(MISCREG_AMAIR1_NS)
       .bankedChild()
@@ -3772,9 +3844,13 @@ ISA::initializeMiscRegMetadata()
           pfr0_el1.gic = FullSystem && getGICv3CPUInterface(tc) ? 0x1 : 0;
           return pfr0_el1;
       }())
+      .unserialize(0)
       .faultRead(EL1, HCR_TRAP(tid3))
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_ID_AA64PFR1_EL1)
+      .reset(release->has(ArmExtension::FEAT_SME) ?
+          0x1 << 24 : 0)
+      .unserialize(0)
       .faultRead(EL1, HCR_TRAP(tid3))
       .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_ID_AA64DFR0_EL1)
@@ -3814,6 +3890,7 @@ ISA::initializeMiscRegMetadata()
           isar0_el1.atomic = release->has(ArmExtension::FEAT_LSE) ? 0x2 : 0x0;
           isar0_el1.rdm = release->has(ArmExtension::FEAT_RDM) ? 0x1 : 0x0;
           isar0_el1.tme = release->has(ArmExtension::TME) ? 0x1 : 0x0;
+          isar0_el1.tlb = release->has(ArmExtension::FEAT_TLBIOS) ? 0x1 : 0x0;
           return isar0_el1;
       }())
       .faultRead(EL1, HCR_TRAP(tid3))
@@ -3919,12 +3996,15 @@ ISA::initializeMiscRegMetadata()
       .reads(1)
       .mapsTo(MISCREG_CTR);
     InitReg(MISCREG_DCZID_EL0)
+      .reset(0x04) // DC ZVA clear 64-byte chunks
       .reads(1);
     InitReg(MISCREG_VPIDR_EL2)
       .hyp().mon()
       .mapsTo(MISCREG_VPIDR);
     InitReg(MISCREG_VMPIDR_EL2)
       .hyp().mon()
+      .res0(mask(63, 40) | mask(29, 25))
+      .res1(mask(31, 31))
       .mapsTo(MISCREG_VMPIDR);
     InitReg(MISCREG_SCTLR_EL1)
       .allPrivileges().exceptUserMode()
@@ -4276,6 +4356,24 @@ ISA::initializeMiscRegMetadata()
       .monSecureWrite().monNonSecureWrite();
     InitReg(MISCREG_AT_S1E3W_Xt)
       .monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_VMALLE1OS)
+      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .writes(1).exceptUserMode();
+    InitReg(MISCREG_TLBI_VAE1OS_Xt)
+      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .writes(1).exceptUserMode();
+    InitReg(MISCREG_TLBI_ASIDE1OS_Xt)
+      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .writes(1).exceptUserMode();
+    InitReg(MISCREG_TLBI_VAAE1OS_Xt)
+      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .writes(1).exceptUserMode();
+    InitReg(MISCREG_TLBI_VALE1OS_Xt)
+      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .writes(1).exceptUserMode();
+    InitReg(MISCREG_TLBI_VAALE1OS_Xt)
+      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VMALLE1IS)
       .faultWrite(EL1, HCR_TRAP(ttlb))
       .writes(1).exceptUserMode();
@@ -4312,6 +4410,20 @@ ISA::initializeMiscRegMetadata()
     InitReg(MISCREG_TLBI_VAALE1_Xt)
       .faultWrite(EL1, HCR_TRAP(ttlb))
       .writes(1).exceptUserMode();
+    InitReg(MISCREG_TLBI_IPAS2E1OS_Xt)
+      .hypWrite().monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_IPAS2LE1OS_Xt)
+      .hypWrite().monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_ALLE2OS)
+      .monNonSecureWrite().hypWrite();
+    InitReg(MISCREG_TLBI_VAE2OS_Xt)
+      .monNonSecureWrite().hypWrite();
+    InitReg(MISCREG_TLBI_ALLE1OS)
+      .hypWrite().monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_VALE2OS_Xt)
+      .monNonSecureWrite().hypWrite();
+    InitReg(MISCREG_TLBI_VMALLS12E1OS)
+      .hypWrite().monSecureWrite().monNonSecureWrite();
     InitReg(MISCREG_TLBI_IPAS2E1IS_Xt)
       .hypWrite().monSecureWrite().monNonSecureWrite();
     InitReg(MISCREG_TLBI_IPAS2LE1IS_Xt)
@@ -4340,6 +4452,12 @@ ISA::initializeMiscRegMetadata()
       .monNonSecureWrite().hypWrite();
     InitReg(MISCREG_TLBI_VMALLS12E1)
       .hypWrite().monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_ALLE3OS)
+      .monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_VAE3OS_Xt)
+      .monSecureWrite().monNonSecureWrite();
+    InitReg(MISCREG_TLBI_VALE3OS_Xt)
+      .monSecureWrite().monNonSecureWrite();
     InitReg(MISCREG_TLBI_ALLE3IS)
       .monSecureWrite().monNonSecureWrite();
     InitReg(MISCREG_TLBI_VAE3IS_Xt)
@@ -5212,6 +5330,12 @@ ISA::initializeMiscRegMetadata()
         }())
         .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_SVCR)
+        .res0([](){
+            SVCR svcr_mask = 0;
+            svcr_mask.sm = 1;
+            svcr_mask.za = 1;
+            return ~svcr_mask;
+        }())
         .allPrivileges();
     InitReg(MISCREG_SMIDR_EL1)
         .reset([](){
@@ -5223,6 +5347,7 @@ ISA::initializeMiscRegMetadata()
         }())
         .allPrivileges().exceptUserMode().writes(0);
     InitReg(MISCREG_SMPRI_EL1)
+        .res0(mask(63, 4))
         .allPrivileges().exceptUserMode().reads(1);
     InitReg(MISCREG_SMPRIMAP_EL2)
         .hyp().mon();
