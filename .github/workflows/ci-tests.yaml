@@ -1,7 +1,10 @@
 # This workflow runs after a pull-request has been approved by a reviewer.
 
-name: CI Tests
-run-name: ${{ github.actor }} is running Pull Request pre-merge tests
+# name: CI Tests
+# run-name: ${{ github.actor }} is running Pull Request pre-merge tests
+
+name: Test Failing Runs
+run-name: ${{ github.actor }} is testing failing runs
 
 on: [push]
   # schedule:
@@ -22,37 +25,42 @@ jobs:
       - name: Build gem5
         run: |
           scons build/ALL/gem5.opt -j $(nproc)
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.step1.outputs.test }}
-          path: build/ALL/gem5.opt
+      - name: The TestLib CI Tests
+        working-directory: ${{ github.workspace }}/tests
+        run: |
+          /__w/gem5-actions/gem5-actions/build/ALL/gem5.opt /__w/gem5-actions/gem5-actions/tests/gem5/configs/simple_binary_run.py x86-hello64-static timing x86 -b
+          /__w/gem5-actions/gem5-actions/build/ALL/gem5.opt /__w/gem5-actions/gem5-actions/tests/pyunit/../run_pyunit.py
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ steps.step1.outputs.test }}
+      #     path: build/ALL/gem5.opt
       - run: echo "This job's status is ${{ job.status }}."
 
-  unittests-all-opt:
-    runs-on: [self-hosted, Linux, X64, run]
-    container:
-      image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    timeout-minutes: 60
-    steps:
-    - uses: actions/checkout@v3
-    - name: CI Unittests
-      working-directory: ${{ github.workspace }}
-      run: scons build/ALL/unittests.opt -j $(nproc)        # How to add threads here?
-    - run: echo "This job's status is ${{ job.status }}."
+  # unittests-all-opt:
+  #   runs-on: [self-hosted, Linux, X64, run]
+  #   container:
+  #     image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   timeout-minutes: 60
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: CI Unittests
+  #     working-directory: ${{ github.workspace }}
+  #     run: scons build/ALL/unittests.opt -j $(nproc)        # How to add threads here?
+  #   - run: echo "This job's status is ${{ job.status }}."
 
-  testlib-quick:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5
-    timeout-minutes: 360     # 6 hours
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.build-gem5.outputs.output1}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
-    - name: The TestLib CI Tests
-      working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run --skip-build  -vvv      # How to add threads here?
-    - run: echo "This job's status is ${{ job.status }}."
+  # testlib-quick:
+  #   runs-on: [self-hosted, Linux, X64, run]
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   needs: build-gem5
+  #   timeout-minutes: 360     # 6 hours
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/download-artifact@v3
+  #     with:
+  #       name: ${{needs.build-gem5.outputs.output1}}
+  #       path: build/ALL
+  #   - run: chmod u+x build/ALL/gem5.opt
+  #   - name: The TestLib CI Tests
+  #     working-directory: ${{ github.workspace }}/tests
+  #     run: ./main.py run --skip-build  -vvv      # How to add threads here?
+  #   - run: echo "This job's status is ${{ job.status }}."
