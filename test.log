@@ -1,0 +1,231 @@
+fatal: not a git repository (or any parent up to mount point /home)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+fatal: not a git repository (or any parent up to mount point /home)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+/bin/sh: 1: /gitcron.sh: not found
+/bin/sh: 1: ./gitcron.sh: not found
+/bin/sh: 1: ./gitcron.sh: not found
+adding-faq
+analyze-stats
+checking-testing
+compiler-check
+compiler-test
+Desktop
+Documents
+Downloads
+dramctrl-check
+lupio
+lupio-crystal
+LupIO-RISCV-fs
+Music
+Pictures
+Public
+qemu+os
+riscv-board
+riscv-confirmation
+runner-test
+snap
+stdlib-documentation
+Templates
+testing-directory
+testing-drain
+test-weeklies
+vagrant-test
+vendor-testing
+Videos
+VirtualBox VMs
+vm-testing
+/bin/sh: 1: ./gitcron.sh: not found
+adding-faq
+analyze-stats
+checking-testing
+compiler-check
+compiler-test
+Desktop
+Documents
+Downloads
+dramctrl-check
+lupio
+lupio-crystal
+LupIO-RISCV-fs
+Music
+Pictures
+Public
+qemu+os
+riscv-board
+riscv-confirmation
+runner-test
+snap
+stdlib-documentation
+Templates
+testing-directory
+testing-drain
+test-weeklies
+vagrant-test
+vendor-testing
+Videos
+VirtualBox VMs
+vm-testing
+/bin/sh: 1: ./gitcron.sh: Permission denied
+adding-faq
+analyze-stats
+checking-testing
+compiler-check
+compiler-test
+Desktop
+Documents
+Downloads
+dramctrl-check
+gitcron.sh
+lupio
+lupio-crystal
+LupIO-RISCV-fs
+Music
+Pictures
+Public
+qemu+os
+riscv-board
+riscv-confirmation
+runner-test
+snap
+stdlib-documentation
+Templates
+testing-directory
+testing-drain
+test-weeklies
+vagrant-test
+vendor-testing
+Videos
+VirtualBox VMs
+vm-testing
+/bin/sh: 1: ./gitcron.sh: Permission denied
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: 'git@github.user/project.git' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: 'git@github.user/project.git' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: could not read Username for 'https://github.com': No such device or address
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: 'git@github.mkjost0/gem5-actions.git' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: 'git@github.mkjost0/gem5-actions.git' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+fatal: 'git@github.mkjost0/gem5-actions.git' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Host key verification failed.
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Warning: Permanently added the RSA host key for IP address '192.30.255.112' to the list of known hosts.
+To github.com:mkjost0/gem5-actions.git
+ - [deleted]               origin/HEAD
+ - [deleted]               origin/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+ * [new branch]            origin/develop -> origin/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
