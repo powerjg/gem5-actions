@@ -1,7 +1,7 @@
 # This workflow runs after a pull-request has been approved by a reviewer.
 
 name: CI Tests
-run-name: ${{ github.actor }} is testing second fail w/ opt
+run-name: ${{ github.actor }} is testing normally w/ opt
 
 on: [push]
   # schedule:
@@ -52,13 +52,13 @@ jobs:
         name: ${{needs.build-gem5.outputs.artifactname}}
         path: build/ALL
     - run: chmod u+x build/ALL/gem5.opt
-    # - name: The TestLib CI Tests 1
-    #   working-directory: ${{ github.workspace }}/tests
-    #   run: ./main.py run --skip-build      # How to add threads here?
-      # run: /__w/gem5-actions/gem5-actions/build/ALL/gem5.opt /__w/gem5-actions/gem5-actions/tests/pyunit/../run_pyunit.py
-    - name: The TestLib CI Tests 2
+    - name: The TestLib CI Tests 1
       working-directory: ${{ github.workspace }}/tests
+      run: ./main.py run --skip-build      # How to add threads here?
+      # run: /__w/gem5-actions/gem5-actions/build/ALL/gem5.opt /__w/gem5-actions/gem5-actions/tests/pyunit/../run_pyunit.py
+    # - name: The TestLib CI Tests 2
+    #   working-directory: ${{ github.workspace }}/tests
       # run: ./main.py run --skip-build      # How to add threads here?
-      run: /__w/gem5-actions/gem5-actions/build/ALL/gem5.opt /__w/gem5-actions/gem5-actions/tests/gem5/configs/simple_binary_run.py x86-hello64-static timing x86 -b
+      # run: /__w/gem5-actions/gem5-actions/build/ALL/gem5.opt /__w/gem5-actions/gem5-actions/tests/gem5/configs/simple_binary_run.py x86-hello64-static timing x86 -b
 
     - run: echo "This job's status is ${{ job.status }}."

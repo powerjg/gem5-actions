@@ -406,3 +406,8 @@ From https://gem5.googlesource.com/public/gem5
  * branch                  develop    -> FETCH_HEAD
 Already up to date.
 Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   6ba4045e04..e3ce4f9109  testing/develop -> testing/develop
