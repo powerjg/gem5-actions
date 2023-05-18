@@ -1,13 +1,14 @@
-# This workflow runs all of the tests within main.py, and unittests
+# This workflow runs all of the long tests within main.py, and unittests
 
 name: Running main.py
-run-name: ${{ github.actor }} is running main.py tests
+run-name: ${{ github.actor }} is running long main.py tests
 
 on:
   schedule:
     - cron:  '0 0 * * *'
 
 jobs:
+# building all necessary versions of gem5
   build-gem5:
     runs-on: [self-hosted, linux, x64, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
@@ -18,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: artifact-name
-        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-artifact" >> $GITHUB_OUTPUT
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL" >> $GITHUB_OUTPUT
       - name: Build gem5
         run: |
           scons build/ALL/gem5.opt -j $(nproc)
@@ -27,6 +28,167 @@ jobs:
           name: ${{ steps.artifact-name.outputs.name }}
           path: build/ALL/gem5.opt
       - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-ALL_CHI:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL_CHI" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/ALL_CHI/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/ALL_CHI/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-ARM:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ARM" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/ARM/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/ARM/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-ALL_MSI:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL_MSI" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/ALL_MSI/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/ALL_MSI/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-ALL_MESI_Two_Level:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL_MESI_Two_Level" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/ALL_MESI_Two_Level/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/ALL_MESI_Two_Level/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-NULL:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-NULL" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/NULL/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/NULL/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-NULL_MI_example:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-NULL_MI_example" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/NULL_MI_example/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/NULL_MI_example/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-RISCV:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-RISCV" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/RISCV/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/RISCV/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
+  build-gem5-VEGA_X86:
+    runs-on: [self-hosted, linux, x64, build]
+    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      build-name: ${{ steps.artifact-name.outputs.name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: artifact-name
+        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-VEGA_X86" >> $GITHUB_OUTPUT
+      - name: Build gem5
+        run: |
+          scons build/VEGA_X86/gem5.opt -j $(nproc)
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: build/VEGA_X86/gem5.opt
+      - run: echo "This job's status is ${{ job.status }}."
+
 
   # This runs the unit tests for the build/ALL/unittests.debug build.
   unittests-all-debug:
@@ -54,23 +216,7 @@ jobs:
     - name: ALL/unittests.fast UnitTests
       run: scons build/ALL/unittests.fast
 
-  # testlib-quick: #runs all quick tests, could be sorted if needed
-  #   runs-on: [self-hosted, Linux, X64, run]
-  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-  #   needs: build-gem5
-  #   timeout-minutes: 1440 # 24 hours
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: actions/download-artifact@v3
-  #     with:
-  #       name: ${{ env.artifact-name }}
-  #       path: build/ALL/gem5.opt
-  #   - run: chmod u+x build/ALL/gem5.opt
-  #   - name: The TestLib CI Tests
-  #     working-directory: ${{ github.workspace }}/tests
-  #     run: ./main.py run --length=quick --skip-build -vv
-  #   - run: echo "This job's status is ${{ job.status }}."
-
+# start running all of the long tests
   testlib-long-arm-boot-tests:
     runs-on: [self-hosted, Linux, X64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
@@ -83,6 +229,11 @@ jobs:
         name: ${{needs.build-gem5.outputs.build-name}}
         path: build/ALL
     - run: chmod u+x build/ALL/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-ALL_CHI.outputs.build-name}}
+        path: build/ALL_CHI
+    - run: chmod u+x build/ALL_CHI/gem5.opt
     - name: long arm-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/arm-boot-tests --length=long --skip-build -vv
@@ -100,6 +251,11 @@ jobs:
         name: ${{needs.build-gem5.outputs.build-name}}
         path: build/ALL
     - run: chmod u+x build/ALL/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-ARM.outputs.build-name}}
+        path: build/ARM
+    - run: chmod u+x build/ARM/gem5.opt
     - name: long fs
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/fs --length=long --skip-build -vv
@@ -117,6 +273,11 @@ jobs:
         name: ${{needs.build-gem5.outputs.build-name}}
         path: build/ALL
     - run: chmod u+x build/ALL/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-ALL_MESI_Two_Level.outputs.build-name}}
+        path: build/ALL_MESI_Two_Level
+    - run: chmod u+x build/ALL_MESI_Two_Level/gem5.opt
     - name: long gem5_library_example_tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gem5_library_example_tests --length=long --skip-build -vv
@@ -131,9 +292,9 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
+        name: ${{needs.build-gem5-VEGA_X86.outputs.build-name}}
+        path: build/VEGA_X86
+    - run: chmod u+x build/VEGA_X86/gem5.opt
     - name: long gpu
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gpu --length=long --skip-build -vv
@@ -156,6 +317,7 @@ jobs:
       run: ./main.py run gem5/insttest_se --length=long --skip-build -vv
     - run: echo "This job's status is ${{ job.status }}."
 
+# kvm tests don't work on github actions
   # testlib-long-kvm-fork-tests:
   #   runs-on: [self-hosted, Linux, X64, run]
   #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
@@ -199,9 +361,9 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
+        name: ${{needs.build-gem5-ALL_MSI.outputs.build-name}}
+        path: build/ALL_MSI
+    - run: chmod u+x build/ALL_MSI/gem5.opt
     - name: long learning_gem5
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/learning_gem5 --length=long --skip-build -vv
@@ -221,7 +383,7 @@ jobs:
     - run: chmod u+x build/ALL/gem5.opt
     - name: long m5_threads
       working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run gem5/m5_threads --length=long --skip-build -vv
+      run: ./main.py run gem5/m5threads_test_atomic --length=long --skip-build -vv
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-memory:
@@ -233,9 +395,9 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
+        name: ${{needs.build-gem5-NULL.outputs.build-name}}
+        path: build/NULL
+    - run: chmod u+x build/NULL/gem5.opt
     - name: long memory
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/memory --length=long --skip-build -vv
@@ -250,9 +412,19 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
+        name: ${{needs.build-gem5-ARM.outputs.build-name}}
+        path: build/ARM
+    - run: chmod u+x build/ARM/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-VEGA_X86.outputs.build-name}}
+        path: build/VEGA_X86
+    - run: chmod u+x build/VEGA_X86/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-RISCV.outputs.build-name}}
+        path: build/RISCV
+    - run: chmod u+x build/RISCV/gem5.opt
     - name: long multi_isa
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/multi_isa --length=long --skip-build -vv
@@ -267,9 +439,9 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
+        name: ${{needs.build-gem5-NULL_MI_example.outputs.build-name}}
+        path: build/NULL_MI_example
+    - run: chmod u+x build/NULL_MI_example/gem5.opt
     - name: long replacement-policies
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/replacement-policies --length=long --skip-build -vv
@@ -301,9 +473,19 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
+        name: ${{needs.build-gem5-ARM.outputs.build-name}}
+        path: build/ARM
+    - run: chmod u+x build/ARM/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-VEGA_X86.outputs.build-name}}
+        path: build/VEGA_X86
+    - run: chmod u+x build/VEGA_X86/gem5.opt
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.build-gem5-RISCV.outputs.build-name}}
+        path: build/RISCV
+    - run: chmod u+x build/RISCV/gem5.opt
     - name: long stdlib
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/stdlib --length=long --skip-build -vv
@@ -324,72 +506,4 @@ jobs:
     - name: long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv
-    - run: echo "This job's status is ${{ job.status }}."
-
-  testlib-very-long-gem5_library:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5
-    timeout-minutes: 1440 # 24 hours
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
-    - name: very-long gem5_library_example_tests
-      working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run gem5/gem5_library_example_tests --length=very-long --skip-build -vv
-    - run: echo "This job's status is ${{ job.status }}."
-
-  testlib-very-long-gem5_resources:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5
-    timeout-minutes: 1440 # 24 hours
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
-    - name: very-long gem5-resources
-      working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run gem5/gem5-resources --length=very-long --skip-build -vv
-    - run: echo "This job's status is ${{ job.status }}."
-
-  testlib-very-long-parsec-benchmarks:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5
-    timeout-minutes: 1440 # 24 hours
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
-    - name: very-long parsec-benchmarks
-      working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run gem5/parsec-benchmarks --length=very-long --skip-build -vv
-    - run: echo "This job's status is ${{ job.status }}."
-
-  testlib-very-long-x86-boot-tests:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5
-    timeout-minutes: 1440 # 24 hours
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
-    - name: very-long x86-boot-tests
-      working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run gem5/x86-boot-tests --length=very-long --skip-build -vv
     - run: echo "This job's status is ${{ job.status }}."
