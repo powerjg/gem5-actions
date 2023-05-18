@@ -3,9 +3,9 @@
 name: Running main.py
 run-name: ${{ github.actor }} is running main.py tests
 
-on:
-  schedule:
-    - cron:  '0 0 * * *'
+on: [push]
+  # schedule:
+  #   - cron:  '0 0 * * *'
 
 jobs:
   build-gem5:
@@ -24,7 +24,7 @@ jobs:
           scons build/ALL/gem5.opt -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.artifact-name }}
+          name: ${{ steps.artifact-name.outputs.name }}
           path: build/ALL/gem5.opt
       - run: echo "This job's status is ${{ job.status }}."
 
