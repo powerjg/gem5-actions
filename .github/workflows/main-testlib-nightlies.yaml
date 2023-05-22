@@ -43,7 +43,7 @@ jobs:
         run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL_CHI" >> $GITHUB_OUTPUT
       - name: Build gem5
         run: |
-          scons build/ALL_CHI/gem5.opt -j $(nproc)
+          scons build/ALL_CHI/gem5.opt --default=ALL PROTOCOL=CHI -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.artifact-name.outputs.name }}
@@ -85,7 +85,7 @@ jobs:
         run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL_MSI" >> $GITHUB_OUTPUT
       - name: Build gem5
         run: |
-          scons build/ALL_MSI/gem5.opt -j $(nproc)
+          scons build/ALL_MSI/gem5.opt --default=ALL PROTOCOL=MSI -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.artifact-name.outputs.name }}
@@ -106,7 +106,7 @@ jobs:
         run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL_MESI_Two_Level" >> $GITHUB_OUTPUT
       - name: Build gem5
         run: |
-          scons build/ALL_MESI_Two_Level/gem5.opt -j $(nproc)
+          scons build/ALL_MESI_Two_Level/gem5.opt --default=ALL PROTOCOL=MESI_Two_Level -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.artifact-name.outputs.name }}
@@ -148,7 +148,7 @@ jobs:
         run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-NULL_MI_example" >> $GITHUB_OUTPUT
       - name: Build gem5
         run: |
-          scons build/NULL_MI_example/gem5.opt -j $(nproc)
+          scons build/NULL_MI_example/gem5.opt --default=NULL PROTOCOL=MI_example -j $(nproc)
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.artifact-name.outputs.name }}
@@ -201,7 +201,7 @@ jobs:
 
   # This runs the unit tests for the build/ALL/unittests.debug build.
   unittests-all-debug:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 30
 
@@ -214,7 +214,7 @@ jobs:
 
   # This runs the unit tests for the build/ALL/unittests.fast build.
   unittests-all-fast:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 30
 
@@ -227,7 +227,7 @@ jobs:
 
 # start running all of the long tests
   testlib-long-arm-boot-tests:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: [build-gem5, build-gem5-ALL_CHI]
     timeout-minutes: 1440 # 24 hours
@@ -249,7 +249,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-fs:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: [build-gem5, build-gem5-ARM]
     timeout-minutes: 1440 # 24 hours
@@ -271,7 +271,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-gem5_library_example_tests:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: [build-gem5, build-gem5-ALL_MESI_Two_Level]
     timeout-minutes: 1440 # 24 hours
@@ -293,7 +293,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-gpu:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: [build-gem5, build-gem5-VEGA_X86]
     timeout-minutes: 1440 # 24 hours
@@ -310,7 +310,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-insttest_se:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5
     timeout-minutes: 1440 # 24 hours
@@ -328,7 +328,7 @@ jobs:
 
 # kvm tests don't work on github actions
   # testlib-long-kvm-fork-tests:
-  #   runs-on: [self-hosted, linux, x64, run, build]
+  #   runs-on: [self-hosted, linux, x64, run]
   #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
   #   needs: build-gem5
   #   timeout-minutes: 1440 # 24 hours
@@ -345,7 +345,7 @@ jobs:
   #   - run: echo "This job's status is ${{ job.status }}."
 
   # testlib-long-kvm-switch-tests:
-  #   runs-on: [self-hosted, linux, x64, run, build]
+  #   runs-on: [self-hosted, linux, x64, run]
   #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
   #   needs: build-gem5
   #   timeout-minutes: 1440 # 24 hours
@@ -362,7 +362,7 @@ jobs:
   #   - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-learning_gem5:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5-ALL_MSI
     timeout-minutes: 1440 # 24 hours
@@ -379,7 +379,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-m5_threads:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5
     timeout-minutes: 1440 # 24 hours
@@ -396,7 +396,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-memory:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5-NULL
     timeout-minutes: 1440 # 24 hours
@@ -413,7 +413,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-multi_isa:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: [build-gem5-ARM, build-gem5-VEGA_X86, build-gem5-RISCV]
     timeout-minutes: 1440 # 24 hours
@@ -440,7 +440,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-replacement-policies:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5-NULL_MI_example
     timeout-minutes: 1440 # 24 hours
@@ -457,7 +457,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-riscv-boot-tests:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5
     timeout-minutes: 1440 # 24 hours
@@ -474,7 +474,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-stdlib:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: [build-gem5-ARM, build-gem5-VEGA_X86, build-gem5-RISCV]
     timeout-minutes: 1440 # 24 hours
@@ -501,7 +501,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-x86-boot-tests:
-    runs-on: [self-hosted, linux, x64, run, build]
+    runs-on: [self-hosted, linux, x64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5
     timeout-minutes: 1440 # 24 hours
@@ -515,4 +515,9 @@ jobs:
     - name: long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv
+    - uses: actions/upload-artifact@v3
+        with:
+          name: long-x86-boot-tests-output
+          path: tests/testing-results
+          retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
