@@ -229,7 +229,7 @@ jobs:
   testlib-long-arm-boot-tests:
     runs-on: [self-hosted, linux, x64, run, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5, build-gem5-ALL_CHI
+    needs: [build-gem5, build-gem5-ALL_CHI]
     timeout-minutes: 1440 # 24 hours
     steps:
     - uses: actions/checkout@v3
@@ -251,7 +251,7 @@ jobs:
   testlib-long-fs:
     runs-on: [self-hosted, linux, x64, run, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5, build-gem5-ARM
+    needs: [build-gem5, build-gem5-ARM]
     timeout-minutes: 1440 # 24 hours
     steps:
     - uses: actions/checkout@v3
@@ -273,7 +273,7 @@ jobs:
   testlib-long-gem5_library_example_tests:
     runs-on: [self-hosted, linux, x64, run, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5, build-gem5-ALL_MESI_Two_Level
+    needs: [build-gem5, build-gem5-ALL_MESI_Two_Level]
     timeout-minutes: 1440 # 24 hours
     steps:
     - uses: actions/checkout@v3
@@ -295,7 +295,7 @@ jobs:
   testlib-long-gpu:
     runs-on: [self-hosted, linux, x64, run, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5, build-gem5-VEGA_X86
+    needs: [build-gem5, build-gem5-VEGA_X86]
     timeout-minutes: 1440 # 24 hours
     steps:
     - uses: actions/checkout@v3
@@ -415,7 +415,7 @@ jobs:
   testlib-long-multi_isa:
     runs-on: [self-hosted, linux, x64, run, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5-ARM, build-gem5-VEGA_X86, build-gem5-RISCV
+    needs: [build-gem5-ARM, build-gem5-VEGA_X86, build-gem5-RISCV]
     timeout-minutes: 1440 # 24 hours
     steps:
     - uses: actions/checkout@v3
@@ -476,7 +476,7 @@ jobs:
   testlib-long-stdlib:
     runs-on: [self-hosted, linux, x64, run, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5-ARM, build-gem5-VEGA_X86, build-gem5-RISCV
+    needs: [build-gem5-ARM, build-gem5-VEGA_X86, build-gem5-RISCV]
     timeout-minutes: 1440 # 24 hours
     steps:
     - uses: actions/checkout@v3
