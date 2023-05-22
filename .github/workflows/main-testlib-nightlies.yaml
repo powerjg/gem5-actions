@@ -515,9 +515,9 @@ jobs:
     - name: long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv
-    - uses: actions/upload-artifact@v3
-        with:
-          name: long-x86-boot-tests-output
-          path: tests/testing-results
-          retention-days: 7
+    # - uses: actions/upload-artifact@v3
+    #     with:
+    #       name: long-x86-boot-tests-output
+    #       path: tests/testing-results
+    #       retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
