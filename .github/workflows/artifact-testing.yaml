@@ -50,7 +50,7 @@ jobs:
   #       mypy -p gem5art.tasks
   #   - run: echo "This job's status is ${{ job.status }}."
   job1:
-    runs-on: [self-hosted, linux, x64, build]
+    runs-on: [self-hosted, linux, x64, run]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     outputs:
@@ -68,6 +68,14 @@ jobs:
           fetch-depth: 0
           outputs:
 
+      - name: Show default environment variables
+        run: |
+          echo "The job_id is: $GITHUB_JOB"   # reference the default environment variables
+          echo "The id of this action is: $GITHUB_ACTION"   # reference the default environment variables
+          echo "The run id is: $GITHUB_RUN_ID"
+          echo "The GitHub Actor's username is: $GITHUB_ACTOR"
+          echo "GitHub SHA: $GITHUB_SHA"
+
       # - name: Generate artifact name
       #   # id: generate-name
       #   run: |
@@ -76,16 +84,16 @@ jobs:
 
       #     echo NOW=hello >> $GITHUB_ENV
       #     echo $NOW
-      - name: Build and run gem5
-        run: |
-          scons build/ALL/gem5.fast -j $(nproc)
-      - id: artifact-name
-        run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL" >> $GITHUB_OUTPUT
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.artifact-name.outputs.name }}
-          path: build/ALL/gem5.fast
-          retention-days: 7
+      # - name: Build and run gem5
+      #   run: |
+      #     scons build/ALL/gem5.fast -j $(nproc)
+      # - id: artifact-name
+      #   run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL" >> $GITHUB_OUTPUT
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ steps.artifact-name.outputs.name }}
+      #     path: build/ALL/gem5.fast
+      #     retention-days: 7
       # - name: Set current date as env variable
       #   run: echo ${{ env.GITHUB_JOB }}
       # - name: Echo current date
