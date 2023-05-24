@@ -56,4 +56,11 @@ jobs:
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run --skip-build      # How to add threads here?
+    - id: artifact-name
+      run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-quick-test-results" >> $GITHUB_OUTPUT
+    - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.artifact-name.outputs.name }}
+          path: tests/testing-results
+          retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
