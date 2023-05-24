@@ -71,7 +71,7 @@ jobs:
       - name: Show default environment variables
         id: test
         env:
-          MY_STEP_VAR: ${{github.job}}_COMMIT${{github.sha}}_RUN${{github.run_id}}_ATTEMPT${{github.run_attempt}}
+          MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
         run: |
           # echo "The job_id is: $GITHUB_JOB"   # reference the default environment variables
           # echo "The id of this action is: $GITHUB_ACTION"   # reference the default environment variables
@@ -91,16 +91,19 @@ jobs:
 
       #     echo NOW=hello >> $GITHUB_ENV
       #     echo $NOW
-      # - name: Build and run gem5
-      #   run: |
-      #     scons build/ALL/gem5.fast -j $(nproc)
+      - name: Build and run gem5
+        run: |
+          touch test.py
+          # scons build/ALL/gem5.fast -j $(nproc)
       # - id: artifact-name
       #   run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-ALL" >> $GITHUB_OUTPUT
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ steps.artifact-name.outputs.name }}
-      #     path: build/ALL/gem5.fast
-      #     retention-days: 7
+      - uses: actions/upload-artifact@v3
+        env:
+          MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+        with:
+          name: ${{ env.MY_STEP_VAR }}
+          path: test.py
+          retention-days: 7
       # - name: Set current date as env variable
       #   run: echo ${{ env.GITHUB_JOB }}
       # - name: Echo current date
