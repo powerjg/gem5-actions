@@ -81,7 +81,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ GITHUB_SHA }}-artifact
+          name: $GITHUB_SHA
           path: MAINTAINERS.yaml
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
@@ -108,7 +108,7 @@ jobs:
 
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ GITHUB_SHA }}-artifact
+          name: $GITHUB_SHA
           # path: build/ALL/gem5.opt
 
       # - name: Display structure of downloaded files
