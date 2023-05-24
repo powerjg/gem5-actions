@@ -82,7 +82,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: $GITHUB_SHA
-          path: MAINTAINERS.yaml
+          path: configs/dist
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
