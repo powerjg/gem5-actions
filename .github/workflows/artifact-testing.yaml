@@ -78,7 +78,7 @@ jobs:
           echo "GitHub SHA: $GITHUB_SHA"
           echo "name=${GITHUB_SHA}.${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}.${GITHUB_JOB}" >> $GITHUB_OUTPUT
           echo $name
-          ${{ steps.test.outputs.name }}
+          echo ${{ steps.test.outputs.name }}
       # - name: Generate artifact name
       #   # id: generate-name
       #   run: |
