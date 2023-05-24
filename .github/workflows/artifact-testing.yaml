@@ -77,7 +77,6 @@ jobs:
           # echo "The GitHub Actor's username is: $GITHUB_ACTOR"
           # echo "GitHub SHA: $GITHUB_SHA"
           echo format('Hello {0} {1} {2}', 'Mona', 'the', 'Octocat')
-          # echo ${{ format('{0}.commit-{1},run-{2}.attempt-{3}', ${{GITHUB_JOB}}, ${{GITHUB_SHA}}, ${{GITHUB_RUN_ID}}, ${{GITHUB_RUN_ATTEMPT}}) }}
           echo "name=${GITHUB_JOB}.commit-${GITHUB_SHA}.run-${GITHUB_RUN_ID}.attempt-${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
           # echo $NOW
           echo ${{ steps.test.outputs.name }}
