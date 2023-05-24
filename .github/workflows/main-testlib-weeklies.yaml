@@ -44,6 +44,13 @@ jobs:
     - name: very-long gem5_library_example_tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gem5_library_example_tests --length=very-long --skip-build -vv -t $(nproc)
+    - uses: actions/upload-artifact@v3
+      env:
+        MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+      with:
+        name: ${{ env.MY_STEP_VAR }}
+        path: tests/testing-results
+        retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-very-long-gem5_resources:
@@ -61,6 +68,13 @@ jobs:
     - name: very-long gem5-resources
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gem5-resources --length=very-long --skip-build -vv -t $(nproc)
+    - uses: actions/upload-artifact@v3
+      env:
+        MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+      with:
+        name: ${{ env.MY_STEP_VAR }}
+        path: tests/testing-results
+        retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
   # testlib-very-long-parsec-benchmarks:
@@ -95,4 +109,11 @@ jobs:
     - name: very-long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=very-long --skip-build -vv -t $(nproc)
+    - uses: actions/upload-artifact@v3
+      env:
+        MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+      with:
+        name: ${{ env.MY_STEP_VAR }}
+        path: tests/testing-results
+        retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
