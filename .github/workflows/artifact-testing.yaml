@@ -70,16 +70,19 @@ jobs:
 
       - name: Show default environment variables
         id: test
+        env:
+          MY_STEP_VAR: ${{ GITHUB_JOB }}-commit
         run: |
           # echo "The job_id is: $GITHUB_JOB"   # reference the default environment variables
           # echo "The id of this action is: $GITHUB_ACTION"   # reference the default environment variables
           # echo "The run id is: $GITHUB_RUN_ID"
           # echo "The GitHub Actor's username is: $GITHUB_ACTOR"
           # echo "GitHub SHA: $GITHUB_SHA"
-          format('Hello {0} {1} {2}', 'Mona', 'the', 'Octocat')
-          echo "name=${GITHUB_JOB}.commit-${GITHUB_SHA}.run-${GITHUB_RUN_ID}.attempt-${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
+          # format('Hello {0} {1} {2}', 'Mona', 'the', 'Octocat')
+          # echo "name=${GITHUB_JOB}.commit-${GITHUB_SHA}.run-${GITHUB_RUN_ID}.attempt-${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
           # echo $NOW
-          echo ${{ steps.test.outputs.name }}
+          # echo ${{ steps.test.outputs.name }}
+          echo MY_STEP_VAR
       # - name: Generate artifact name
       #   # id: generate-name
       #   run: |
