@@ -82,7 +82,7 @@ jobs:
           # echo "name=${GITHUB_JOB}.commit-${GITHUB_SHA}.run-${GITHUB_RUN_ID}.attempt-${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
           # echo $NOW
           # echo ${{ steps.test.outputs.name }}
-          echo MY_STEP_VAR
+          echo ${{ env.MY_STEP_VAR }}
       # - name: Generate artifact name
       #   # id: generate-name
       #   run: |
