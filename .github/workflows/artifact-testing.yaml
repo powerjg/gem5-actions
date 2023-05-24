@@ -76,7 +76,7 @@ jobs:
           echo "The run id is: $GITHUB_RUN_ID"
           echo "The GitHub Actor's username is: $GITHUB_ACTOR"
           echo "GitHub SHA: $GITHUB_SHA"
-          echo "${GITHUB_SHA}.${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}.${GITHUB_JOB}"
+          echo ${GITHUB_SHA} ${GITHUB_RUN_ID} ${GITHUB_RUN_ATTEMPT} ${GITHUB_JOB}
           echo $name
           echo ${{ steps.test.outputs.name }}
       # - name: Generate artifact name
