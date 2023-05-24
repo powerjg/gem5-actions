@@ -471,6 +471,13 @@ jobs:
     - name: long riscv-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/riscv-boot-tests --length=long --skip-build -vv
+    - id: artifact-name
+      run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-riscv-boot-tests" >> $GITHUB_OUTPUT
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.artifact-name.outputs.name }}
+        path: tests/testing-results
+        retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-stdlib:
@@ -498,6 +505,13 @@ jobs:
     - name: long stdlib
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/stdlib --length=long --skip-build -vv
+    - id: artifact-name
+      run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-stdlib" >> $GITHUB_OUTPUT
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.artifact-name.outputs.name }}
+        path: tests/testing-results
+        retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-x86-boot-tests:
@@ -515,9 +529,11 @@ jobs:
     - name: long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv
+    - id: artifact-name
+      run: echo "name=$(date +"%Y-%m-%d_%H.%M.%S")-x86-boot-tests" >> $GITHUB_OUTPUT
     - uses: actions/upload-artifact@v3
       with:
-        name: $GITHUB_JOB $GITHUB_SHA
+        name: ${{ steps.artifact-name.outputs.name }}
         path: tests/testing-results
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
