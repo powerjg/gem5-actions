@@ -79,14 +79,14 @@ jobs:
       #   run: |
       #     scons build/ALL/gem5.fast -j $(nproc)
       - name: Set current date as env variable
-        run: echo "artifact-name=${{ env.GITHUB_JOB }}.${{ env.GITHUB_SHA }}" >> $GITHUB_ENV
-      - name: Echo current date
-        run: echo $artifact-name # Gives "2022-12-11T01:42:20"
+        run: echo ${{ env.GITHUB_JOB }} + ${{ env.GITHUB_JOB }}
+      # - name: Echo current date
+      #   run: echo $artifact-name # Gives "2022-12-11T01:42:20"
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: $artifact-name
-          path: build/ALL/gem5.fast
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: $artifact-name
+      #     path: build/ALL/gem5.fast
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
