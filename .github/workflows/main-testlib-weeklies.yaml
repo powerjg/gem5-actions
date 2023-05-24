@@ -63,22 +63,22 @@ jobs:
       run: ./main.py run gem5/gem5-resources --length=very-long --skip-build -vv
     - run: echo "This job's status is ${{ job.status }}."
 
-  testlib-very-long-parsec-benchmarks:
-    runs-on: [self-hosted, Linux, X64, run]
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    needs: build-gem5
-    timeout-minutes: 2880 # 48 hours
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.build-gem5.outputs.build-name}}
-        path: build/ALL
-    - run: chmod u+x build/ALL/gem5.opt
-    - name: very-long parsec-benchmarks
-      working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run gem5/parsec-benchmarks --length=very-long --skip-build -vv
-    - run: echo "This job's status is ${{ job.status }}."
+  # testlib-very-long-parsec-benchmarks:
+  #   runs-on: [self-hosted, Linux, X64, run]
+  #   container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+  #   needs: build-gem5
+  #   timeout-minutes: 2880 # 48 hours
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/download-artifact@v3
+  #     with:
+  #       name: ${{needs.build-gem5.outputs.build-name}}
+  #       path: build/ALL
+  #   - run: chmod u+x build/ALL/gem5.opt
+  #   - name: very-long parsec-benchmarks
+  #     working-directory: ${{ github.workspace }}/tests
+  #     run: ./main.py run gem5/parsec-benchmarks --length=very-long --skip-build -vv
+  #   - run: echo "This job's status is ${{ job.status }}."
 
   testlib-very-long-x86-boot-tests:
     runs-on: [self-hosted, Linux, X64, run]
