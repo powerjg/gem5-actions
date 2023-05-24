@@ -54,7 +54,7 @@ jobs:
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     outputs:
-      output1: ${{ steps.step1.outputs.test }}
+      build-name: ${{ steps.artifact-name.outputs.name }}
     steps:
       # - id: step1
       #   run: echo "test=$(date +"%Y-%m-%d_%H.%M.%S")-artifact" >> $GITHUB_OUTPUT
@@ -76,8 +76,8 @@ jobs:
           # echo "The run id is: $GITHUB_RUN_ID"
           # echo "The GitHub Actor's username is: $GITHUB_ACTOR"
           # echo "GitHub SHA: $GITHUB_SHA"
-          echo "NOW=${GITHUB_JOB}.commit-${GITHUB_SHA}.run-${GITHUB_RUN_ID}.attempt-${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
-          echo $NOW
+          echo "name=${GITHUB_JOB}.commit-${GITHUB_SHA}.run-${GITHUB_RUN_ID}.attempt-${GITHUB_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
+          # echo $NOW
           echo ${{ steps.test.outputs.name }}
       # - name: Generate artifact name
       #   # id: generate-name
