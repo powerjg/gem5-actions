@@ -50,7 +50,7 @@ jobs:
   #       mypy -p gem5art.tasks
   #   - run: echo "This job's status is ${{ job.status }}."
   job1:
-    runs-on: [self-hosted, linux, x64, run]
+    runs-on: [self-hosted, linux, x64, build]
     # running container with only a single arguement passes the image being used
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     outputs:
@@ -75,14 +75,14 @@ jobs:
 
       #     echo NOW=hello >> $GITHUB_ENV
       #     echo $NOW
-      # - name: Build and run gem5
-      #   run: |
-      #     scons build/ALL/gem5.opt -j $(nproc)
+      - name: Build and run gem5
+        run: |
+          scons build/ALL/gem5.fast -j $(nproc)
 
       - uses: actions/upload-artifact@v3
         with:
           name: $GITHUB_SHA $GITHUB_RUN_ID $GITHUB_RUN_ATTEMPT
-          path: configs/dist
+          path: build/ALL/gem5.fast
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: $GITHUB_SHA $GITHUB_RUN_ID $GITHUB_RUN_ATTEMPT
-          # path: build/ALL/gem5.opt
+          path: build/ALL/gem5.fast
 
       # - name: Display structure of downloaded files
       #   run: ls -R
