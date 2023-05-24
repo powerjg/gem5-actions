@@ -517,7 +517,7 @@ jobs:
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv
     - uses: actions/upload-artifact@v3
       with:
-        name: long-x86-boot-tests-output
+        name: $GITHUB_JOB $GITHUB_SHA
         path: tests/testing-results
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
