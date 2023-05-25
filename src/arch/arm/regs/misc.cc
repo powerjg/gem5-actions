@@ -1445,7 +1445,8 @@ faultPouEL0(const MiscRegLUTEntry &entry,
         }
     } else if (el2_enabled && !in_host && hcr.tpu) {
         return inst.generateTrap(EL2);
-    } else if (el2_enabled && !in_host && hcr.tocu) {
+    } else if (el2_enabled && !in_host &&
+               HaveExt(tc, ArmExtension::FEAT_EVT) && hcr.tocu) {
         return inst.generateTrap(EL2);
     } else if (el2_enabled && in_host && !sctlr2.uci) {
         return inst.generateTrap(EL2);
@@ -1462,7 +1463,8 @@ faultPouEL1(const MiscRegLUTEntry &entry,
     const bool el2_enabled = EL2Enabled(tc);
     if (el2_enabled && hcr.tpu) {
         return inst.generateTrap(EL2);
-    } else if (el2_enabled && hcr.tocu) {
+    } else if (el2_enabled && HaveExt(tc, ArmExtension::FEAT_EVT) &&
+               hcr.tocu) {
         return inst.generateTrap(EL2);
     } else {
         return NoFault;
@@ -1477,7 +1479,8 @@ faultPouIsEL1(const MiscRegLUTEntry &entry,
     const bool el2_enabled = EL2Enabled(tc);
     if (el2_enabled && hcr.tpu) {
         return inst.generateTrap(EL2);
-    } else if (el2_enabled && hcr.ticab) {
+    } else if (el2_enabled && HaveExt(tc, ArmExtension::FEAT_EVT) &&
+               hcr.ticab) {
         return inst.generateTrap(EL2);
     } else {
         return NoFault;
@@ -1590,6 +1593,18 @@ faultDebugEL2(const MiscRegLUTEntry &entry,
 {
     const HDCR mdcr_el3 = tc->readMiscReg(MISCREG_MDCR_EL3);
     if (ArmSystem::haveEL(tc, EL3) && mdcr_el3.tda) {
+        return inst.generateTrap(EL3);
+    } else {
+        return NoFault;
+    }
+}
+
+Fault
+faultHcrxEL2(const MiscRegLUTEntry &entry,
+    ThreadContext *tc, const MiscRegOp64 &inst)
+{
+    const SCR scr = tc->readMiscReg(MISCREG_SCR_EL3);
+    if (ArmSystem::haveEL(tc, EL3) && !scr.hxen) {
         return inst.generateTrap(EL3);
     } else {
         return NoFault;
@@ -1747,6 +1762,54 @@ faultCpacrVheEL2(const MiscRegLUTEntry &entry,
     } else {                                                 \
         return NoFault;                                      \
     }                                                        \
+}
+
+Fault
+faultTlbiOsEL1(const MiscRegLUTEntry &entry,
+    ThreadContext *tc, const MiscRegOp64 &inst)
+{
+    const HCR hcr = tc->readMiscRegNoEffect(MISCREG_HCR_EL2);
+    const bool el2_enabled = EL2Enabled(tc);
+    if (el2_enabled && hcr.ttlb) {
+        return inst.generateTrap(EL2);
+    } else if (el2_enabled && HaveExt(tc, ArmExtension::FEAT_EVT) &&
+               hcr.ttlbos) {
+        return inst.generateTrap(EL2);
+    } else {
+        return NoFault;
+    }
+}
+
+Fault
+faultTlbiIsEL1(const MiscRegLUTEntry &entry,
+    ThreadContext *tc, const MiscRegOp64 &inst)
+{
+    const HCR hcr = tc->readMiscRegNoEffect(MISCREG_HCR_EL2);
+    const bool el2_enabled = EL2Enabled(tc);
+    if (el2_enabled && hcr.ttlb) {
+        return inst.generateTrap(EL2);
+    } else if (el2_enabled && HaveExt(tc, ArmExtension::FEAT_EVT) &&
+               hcr.ttlbis) {
+        return inst.generateTrap(EL2);
+    } else {
+        return NoFault;
+    }
+}
+
+Fault
+faultCacheEL1(const MiscRegLUTEntry &entry,
+    ThreadContext *tc, const MiscRegOp64 &inst)
+{
+    const HCR hcr = tc->readMiscRegNoEffect(MISCREG_HCR_EL2);
+    const bool el2_enabled = EL2Enabled(tc);
+    if (el2_enabled && hcr.tid2) {
+        return inst.generateTrap(EL2);
+    } else if (el2_enabled && HaveExt(tc, ArmExtension::FEAT_EVT) &&
+               hcr.tid4) {
+        return inst.generateTrap(EL2);
+    } else {
+        return NoFault;
+    }
 }
 
 Fault
@@ -3988,6 +4051,7 @@ ISA::initializeMiscRegMetadata()
               isar0_el1.sha1 = 0;
               isar0_el1.aes = 0;
           }
+          isar0_el1.dp = release->has(ArmExtension::FEAT_DOTPROD) ? 0x1 : 0x0;
           isar0_el1.atomic = release->has(ArmExtension::FEAT_LSE) ? 0x2 : 0x0;
           isar0_el1.rdm = release->has(ArmExtension::FEAT_RDM) ? 0x1 : 0x0;
           isar0_el1.tme = release->has(ArmExtension::TME) ? 0x1 : 0x0;
@@ -4004,6 +4068,7 @@ ISA::initializeMiscRegMetadata()
     InitReg(MISCREG_ID_AA64ISAR1_EL1)
       .reset([p,release=release](){
           AA64ISAR1 isar1_el1 = p.id_aa64isar1_el1;
+          isar1_el1.i8mm = release->has(ArmExtension::FEAT_I8MM) ? 0x1 : 0x0;
           isar1_el1.apa = release->has(ArmExtension::FEAT_PAuth) ? 0x1 : 0x0;
           isar1_el1.jscvt = release->has(ArmExtension::FEAT_JSCVT) ? 0x1 : 0x0;
           isar1_el1.fcma = release->has(ArmExtension::FEAT_FCMA) ? 0x1 : 0x0;
@@ -4030,6 +4095,7 @@ ISA::initializeMiscRegMetadata()
           mmfr1_el1.vh = release->has(ArmExtension::FEAT_VHE) ? 0x1 : 0x0;
           mmfr1_el1.hpds = release->has(ArmExtension::FEAT_HPDS) ? 0x1 : 0x0;
           mmfr1_el1.pan = release->has(ArmExtension::FEAT_PAN) ? 0x1 : 0x0;
+          mmfr1_el1.hcx = release->has(ArmExtension::FEAT_HCX) ? 0x1 : 0x0;
           return mmfr1_el1;
       }())
       .faultRead(EL0, faultIdst)
@@ -4041,6 +4107,7 @@ ISA::initializeMiscRegMetadata()
           mmfr2_el1.uao = release->has(ArmExtension::FEAT_UAO) ? 0x1 : 0x0;
           mmfr2_el1.varange = release->has(ArmExtension::FEAT_LVA) ? 0x1 : 0x0;
           mmfr2_el1.ids = release->has(ArmExtension::FEAT_IDST) ? 0x1 : 0x0;
+          mmfr2_el1.evt = release->has(ArmExtension::FEAT_EVT) ? 0x2 : 0x0;
           return mmfr2_el1;
       }())
       .faultRead(EL0, faultIdst)
@@ -4090,11 +4157,11 @@ ISA::initializeMiscRegMetadata()
 
     InitReg(MISCREG_CCSIDR_EL1)
       .faultRead(EL0, faultIdst)
-      .faultRead(EL1, HCR_TRAP(tid2))
+      .faultRead(EL1, faultCacheEL1)
       .allPrivileges().writes(0);
     InitReg(MISCREG_CLIDR_EL1)
       .faultRead(EL0, faultIdst)
-      .faultRead(EL1, HCR_TRAP(tid2))
+      .faultRead(EL1, faultCacheEL1)
       .allPrivileges().writes(0);
     InitReg(MISCREG_AIDR_EL1)
       .faultRead(EL0, faultIdst)
@@ -4102,7 +4169,7 @@ ISA::initializeMiscRegMetadata()
       .allPrivileges().writes(0);
     InitReg(MISCREG_CSSELR_EL1)
       .allPrivileges().exceptUserMode()
-      .fault(EL1, HCR_TRAP(tid2))
+      .fault(EL1, faultCacheEL1)
       .mapsTo(MISCREG_CSSELR_NS);
     InitReg(MISCREG_CTR_EL0)
       .faultRead(EL0, faultCtrEL0)
@@ -4173,6 +4240,9 @@ ISA::initializeMiscRegMetadata()
     InitReg(MISCREG_HCR_EL2)
       .hyp().mon()
       .mapsTo(MISCREG_HCR, MISCREG_HCR2);
+    InitReg(MISCREG_HCRX_EL2)
+      .hyp().mon()
+      .fault(EL2, faultHcrxEL2);
     InitReg(MISCREG_MDCR_EL2)
       .hyp().mon()
       .fault(EL2, faultDebugEL2)
@@ -4471,40 +4541,40 @@ ISA::initializeMiscRegMetadata()
     InitReg(MISCREG_AT_S1E3W_Xt)
       .monSecureWrite().monNonSecureWrite();
     InitReg(MISCREG_TLBI_VMALLE1OS)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiOsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VAE1OS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiOsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_ASIDE1OS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiOsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VAAE1OS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiOsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VALE1OS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiOsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VAALE1OS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiOsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VMALLE1IS)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiIsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VAE1IS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiIsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_ASIDE1IS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiIsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VAAE1IS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiIsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VALE1IS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiIsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VAALE1IS_Xt)
-      .faultWrite(EL1, HCR_TRAP(ttlb))
+      .faultWrite(EL1, faultTlbiIsEL1)
       .writes(1).exceptUserMode();
     InitReg(MISCREG_TLBI_VMALLE1)
       .faultWrite(EL1, HCR_TRAP(ttlb))
@@ -5403,6 +5473,13 @@ ISA::initializeMiscRegMetadata()
 
     // SVE
     InitReg(MISCREG_ID_AA64ZFR0_EL1)
+        .reset([this](){
+            AA64ZFR0 zfr0_el1 = 0;
+            zfr0_el1.f32mm = release->has(ArmExtension::FEAT_F32MM) ? 1 : 0;
+            zfr0_el1.f64mm = release->has(ArmExtension::FEAT_F64MM) ? 1 : 0;
+            zfr0_el1.i8mm = release->has(ArmExtension::FEAT_I8MM) ? 1 : 0;
+            return zfr0_el1;
+        }())
         .faultRead(EL0, faultIdst)
         .faultRead(EL1, HCR_TRAP(tid3))
         .allPrivileges().exceptUserMode().writes(0);
@@ -5592,11 +5669,6 @@ ISA::initializeMiscRegMetadata()
     InitReg(MISCREG_VDISR_EL2)
       .warnNotFail()
       .fault(faultUnimplemented);
-
-    // HCX extension (unimplemented)
-    InitReg(MISCREG_HCRX_EL2)
-      .unimplemented()
-      .warnNotFail();
 
     // FGT extension (unimplemented)
     InitReg(MISCREG_HFGRTR_EL2)

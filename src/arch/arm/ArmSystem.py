@@ -78,6 +78,10 @@ class ArmExtension(ScopedEnum):
         "FEAT_UAO",
         "FEAT_LVA",  # Optional in Armv8.2
         "FEAT_LPA",  # Optional in Armv8.2
+        "FEAT_F32MM",  # Optional in Armv8.2
+        "FEAT_F64MM",  # Optional in Armv8.2
+        "FEAT_I8MM",  # Optional in Armv8.2
+        "FEAT_DOTPROD",  # Optional in Armv8.2
         # Armv8.3
         "FEAT_FCMA",
         "FEAT_JSCVT",
@@ -91,6 +95,9 @@ class ArmExtension(ScopedEnum):
         "FEAT_FLAGM2",
         "FEAT_RNG",
         "FEAT_RNG_TRAP",
+        "FEAT_EVT",
+        # Armv8.7
+        "FEAT_HCX",
         # Armv9.2
         "FEAT_SME",  # Optional in Armv9.2
         # Others
@@ -163,6 +170,10 @@ class ArmDefaultRelease(Armv8):
         "FEAT_LVA",
         "FEAT_LPA",
         "FEAT_SVE",
+        "FEAT_F32MM",
+        "FEAT_F64MM",
+        "FEAT_I8MM",
+        "FEAT_DOTPROD",
         # Armv8.3
         "FEAT_FCMA",
         "FEAT_JSCVT",
@@ -174,6 +185,9 @@ class ArmDefaultRelease(Armv8):
         "FEAT_IDST",
         # Armv8.5
         "FEAT_FLAGM2",
+        "FEAT_EVT",
+        # Armv8.7
+        "FEAT_HCX",
         # Armv9.2
         "FEAT_SME",
     ]
@@ -196,6 +210,10 @@ class Armv82(Armv81):
         "FEAT_LVA",
         "FEAT_LPA",
         "FEAT_SVE",
+        "FEAT_F32MM",
+        "FEAT_F64MM",
+        "FEAT_I8MM",
+        "FEAT_DOTPROD",
     ]
 
 
@@ -217,11 +235,18 @@ class Armv85(Armv84):
         "FEAT_FLAGM2",
         "FEAT_RNG",
         "FEAT_RNG_TRAP",
+        "FEAT_EVT",
     ]
 
 
-class Armv92(Armv85):
-    extensions = Armv85.extensions + ["FEAT_SME"]
+class Armv87(Armv85):
+    extensions = Armv85.extensions + [
+        "FEAT_HCX",
+    ]
+
+
+class Armv92(Armv87):
+    extensions = Armv87.extensions + ["FEAT_SME"]
 
 
 class ArmAllRelease(ArmRelease):
