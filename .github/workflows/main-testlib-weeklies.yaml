@@ -92,6 +92,13 @@ jobs:
   #   - name: very-long parsec-benchmarks
   #     working-directory: ${{ github.workspace }}/tests
   #     run: ./main.py run gem5/parsec-benchmarks --length=very-long --skip-build -vv -t $(nproc)
+  #   - uses: actions/upload-artifact@v3
+  #     env:
+  #       MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+  #     with:
+  #       name: ${{ env.MY_STEP_VAR }}
+  #       path: tests/testing-results
+  #       retention-days: 7
   #   - run: echo "This job's status is ${{ job.status }}."
 
   testlib-very-long-x86-boot-tests:

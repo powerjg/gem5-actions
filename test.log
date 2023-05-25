@@ -3163,3 +3163,165 @@ Already up to date.
 To github.com:mkjost0/gem5-actions.git
    ad899435ba..de7b6182d0  origin/develop -> origin/develop
    de7b6182d0..857fd86c61  testing/develop -> testing/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   de7b6182d0..857fd86c61  origin/develop -> origin/develop
+   857fd86c61..8953160bf9  testing/develop -> testing/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   857fd86c61..8953160bf9  origin/develop -> origin/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+   dfa3c073cf..dc76c00c9b  develop    -> upstream/develop
+Merge made by the 'recursive' strategy.
+ src/arch/arm/ArmSystem.py | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+remote: Resolving deltas:   0% (0/6)        remote: Resolving deltas:  16% (1/6)        remote: Resolving deltas:  33% (2/6)        remote: Resolving deltas:  50% (3/6)        remote: Resolving deltas:  66% (4/6)        remote: Resolving deltas:  83% (5/6)        remote: Resolving deltas: 100% (6/6)        remote: Resolving deltas: 100% (6/6), completed with 6 local objects.        
+To github.com:mkjost0/gem5-actions.git
+   8953160bf9..101c96523a  develop -> develop
+   dfa3c073cf..dc76c00c9b  upstream/develop -> upstream/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+To github.com:mkjost0/gem5-actions.git
+   8953160bf9..101c96523a  origin/develop -> origin/develop
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date
+From https://gem5.googlesource.com/public/gem5
+ * branch                  develop    -> FETCH_HEAD
+Already up to date.
+Everything up-to-date

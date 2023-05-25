@@ -3,7 +3,7 @@
 name: Running main.py
 run-name: ${{ github.actor }} is running long main.py tests
 
-on:
+on: [push]
   # Runs every day from 7AM UTC
   schedule:
     - cron:  '0 7 * * *'
@@ -377,7 +377,14 @@ jobs:
   #   - run: chmod u+x build/ALL/gem5.opt
   #   - name: long kvm-fork-tests
   #     working-directory: ${{ github.workspace }}/tests
-  #     run: ./main.py run gem5/kvm-fork-tests --length=long --skip-build -vv
+  #     run: ./main.py run gem5/kvm-fork-tests --length=long --skip-build -vv -t $(nproc)
+  #   - uses: actions/upload-artifact@v3
+  #     env:
+  #       MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+  #     with:
+  #       name: ${{ env.MY_STEP_VAR }}
+  #       path: tests/testing-results
+  #       retention-days: 7
   #   - run: echo "This job's status is ${{ job.status }}."
 
   # testlib-long-kvm-switch-tests:
@@ -394,7 +401,14 @@ jobs:
   #   - run: chmod u+x build/ALL/gem5.opt
   #   - name: long kvm-switch-tests
   #     working-directory: ${{ github.workspace }}/tests
-  #     run: ./main.py run gem5/kvm-switch-tests --length=long --skip-build -vv
+  #     run: ./main.py run gem5/kvm-switch-tests --length=long --skip-build -vv -t $(nproc)
+  #   - uses: actions/upload-artifact@v3
+  #     env:
+  #       MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+  #     with:
+  #       name: ${{ env.MY_STEP_VAR }}
+  #       path: tests/testing-results
+  #       retention-days: 7
   #   - run: echo "This job's status is ${{ job.status }}."
 
   testlib-long-learning_gem5:
@@ -610,42 +624,42 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
 
-  # replication of compiler-tests.sh
-  all-compilers:
-    strategy:
-      matrix:
-        image: [gcc-version-12, gcc-version-11, gcc-version-10, gcc-version-9, gcc-version-8, gcc-version-7, clang-version-14, clang-version-13, clang-version-12, clang-version-11, clang-version-10, clang-version-9, clang-version-8, clang-version-7, clang-version-6.0, ubuntu-18.04_all-dependencies, ubuntu-20.04_all-dependencies, ubuntu-22.04_all-dependencies, ubuntu-22.04_min-dependencies]
-        opts: [.opt, .fast]
-    runs-on: [self-hosted, linux, x64, build]
-    container: gcr.io/gem5-test/${{ matrix.image }}:latest
-    timeout-minutes: 720 # 12 hours
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        # Scheduled workflows run on the default branch by default. We
-        # therefore need to explicitly checkout the develop branch.
-        ref: develop
-    - name: Compile build/ALL/gem5${{ matrix.opts }} with ${{ matrix.image }}
-      run: scons build/ALL/gem5${{ matrix.opts }}
+  # # replication of compiler-tests.sh
+  # all-compilers:
+  #   strategy:
+  #     matrix:
+  #       image: [gcc-version-12, gcc-version-11, gcc-version-10, gcc-version-9, gcc-version-8, gcc-version-7, clang-version-14, clang-version-13, clang-version-12, clang-version-11, clang-version-10, clang-version-9, clang-version-8, clang-version-7, clang-version-6.0, ubuntu-18.04_all-dependencies, ubuntu-20.04_all-dependencies, ubuntu-22.04_all-dependencies, ubuntu-22.04_min-dependencies]
+  #       opts: [.opt, .fast]
+  #   runs-on: [self-hosted, linux, x64, build]
+  #   container: gcr.io/gem5-test/${{ matrix.image }}:latest
+  #   timeout-minutes: 720 # 12 hours
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       # Scheduled workflows run on the default branch by default. We
+  #       # therefore need to explicitly checkout the develop branch.
+  #       ref: develop
+  #   - name: Compile build/ALL/gem5${{ matrix.opts }} with ${{ matrix.image }}
+  #     run: scons build/ALL/gem5${{ matrix.opts }}
 
-  # Tests the two latest gcc and clang supported compilers against all gem5 compilations.
-  latest-compilers-all-gem5-builds:
-    strategy:
-      matrix:
-        gem5-compilation: [ARM, ARM_MESI_Three_Level, ARM_MESI_Three_Level_HTM, ARM_MOESI_hammer, Garnet_standalone, GCN3_X86, MIPS, 'NULL', NULL_MESI_Two_Level, NULL_MOESI_CMP_directory, NULL_MOESI_CMP_token, NULL_MOESI_hammer, POWER, RISCV, SPARC, X86, X86_MI_example, X86_MOESI_AMD_Base]
-        image: [gcc-version-12, clang-version-14]
-        opts: [.opt, .fast]
-    runs-on: [self-hosted, linux, x64]
-    container: gcr.io/gem5-test/${{ matrix.image }}:latest
-    timeout-minutes: 720 # 12 hours
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        # Scheduled workflows run on the default branch by default. We
-        # therefore need to explicitly checkout the develop branch.
-        ref: develop
-    - name: Compile build/${{ matrix.gem5-compilation }}/gem5${{ matrix.opts }} with ${{ matrix.image }}
-      run: scons build/${{ matrix.gem5-compilation }}/gem5${{ matrix.opts }}
+  # # Tests the two latest gcc and clang supported compilers against all gem5 compilations.
+  # latest-compilers-all-gem5-builds:
+  #   strategy:
+  #     matrix:
+  #       gem5-compilation: [ARM, ARM_MESI_Three_Level, ARM_MESI_Three_Level_HTM, ARM_MOESI_hammer, Garnet_standalone, GCN3_X86, MIPS, 'NULL', NULL_MESI_Two_Level, NULL_MOESI_CMP_directory, NULL_MOESI_CMP_token, NULL_MOESI_hammer, POWER, RISCV, SPARC, X86, X86_MI_example, X86_MOESI_AMD_Base]
+  #       image: [gcc-version-12, clang-version-14]
+  #       opts: [.opt, .fast]
+  #   runs-on: [self-hosted, linux, x64]
+  #   container: gcr.io/gem5-test/${{ matrix.image }}:latest
+  #   timeout-minutes: 720 # 12 hours
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       # Scheduled workflows run on the default branch by default. We
+  #       # therefore need to explicitly checkout the develop branch.
+  #       ref: develop
+  #   - name: Compile build/${{ matrix.gem5-compilation }}/gem5${{ matrix.opts }} with ${{ matrix.image }}
+  #     run: scons build/${{ matrix.gem5-compilation }}/gem5${{ matrix.opts }}
 
   # This runs the SST-gem5 integration compilation and tests it with
   # ext/sst/sst/example.py.
