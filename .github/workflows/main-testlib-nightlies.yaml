@@ -247,12 +247,14 @@ jobs:
     - name: long arm-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/arm-boot-tests --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -276,12 +278,14 @@ jobs:
     - name: long fs
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/fs --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -305,12 +309,14 @@ jobs:
     - name: long gem5_library_example_tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gem5_library_example_tests --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -329,12 +335,14 @@ jobs:
     - name: long gpu
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gpu --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -353,12 +361,14 @@ jobs:
     - name: long insttest_se
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/insttest_se --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -426,12 +436,14 @@ jobs:
     - name: long learning_gem5
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/learning_gem5 --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -450,12 +462,14 @@ jobs:
     - name: long m5_threads
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/m5threads_test_atomic --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -474,12 +488,14 @@ jobs:
     - name: long memory
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/memory --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -508,12 +524,14 @@ jobs:
     - name: long multi_isa
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/multi_isa --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -532,12 +550,14 @@ jobs:
     - name: long replacement-policies
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/replacement-policies --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -556,12 +576,14 @@ jobs:
     - name: long riscv-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/riscv-boot-tests --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -590,12 +612,14 @@ jobs:
     - name: long stdlib
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/stdlib --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -614,12 +638,14 @@ jobs:
     - name: long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv -t $(nproc)
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
 
@@ -664,7 +690,7 @@ jobs:
   # This runs the SST-gem5 integration compilation and tests it with
   # ext/sst/sst/example.py.
   sst-test:
-    runs-on: [self-hosted, linux, x64, run]
+    runs-on: [self-hosted, linux, x64, build]
     container: gcr.io/gem5-test/sst-env:latest
     timeout-minutes: 180
 
@@ -686,7 +712,7 @@ jobs:
   # This runs the gem5 within SystemC ingration and runs a simple hello-world
   # simulation with it.
   systemc-test:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, build]
     container: gcr.io/gem5-test/systemc-env:latest
     timeout-minutes: 180
 
@@ -716,7 +742,7 @@ jobs:
 
   # Runs the gem5 Nighyly GPU tests.
   gpu-tests:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: [self-hosted, linux, x64, build]
     container: gcr.io/gem5-test/gcn-gpu:latest
     timeout-minutes: 720 # 12 hours
 

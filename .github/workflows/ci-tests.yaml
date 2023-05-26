@@ -56,11 +56,13 @@ jobs:
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run --skip-build      # How to add threads here?
+    - run: |
+        zip -r output.zip tests/testing-results
     - uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
         name: ${{ env.MY_STEP_VAR }}
-        path: tests/testing-results
+        path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
