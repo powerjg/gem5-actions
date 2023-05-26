@@ -3,10 +3,10 @@
 name: Running main.py
 run-name: ${{ github.actor }} is running long main.py tests
 
-on: [push]
+on:
   # Runs every day from 7AM UTC
-  # schedule:
-  #   - cron:  '0 7 * * *'
+  schedule:
+    - cron:  '0 7 * * *'
 
 jobs:
 # building all necessary versions of gem5
