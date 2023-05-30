@@ -5,7 +5,6 @@ run-name: ${{ github.actor }} is running long main.py tests
 
 on:
   # Runs every day from 7AM UTC
-  push:
   schedule:
     - cron:  '0 7 * * *'
 

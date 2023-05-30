@@ -4,9 +4,9 @@ run-name: testing artifact naming
 # name: Github Artifacting Tests
 # run-name: Testing artifact usage
 #  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-on:
-  schedule:
-    - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
+on: [push]
+  # schedule:
+  #   - cron:  '0 * * 1 *' # this only runs once a year, for files that aren't being tested
 env:
   artifact-name: "$(date +'%Y-%m-%d_%H.%M.%S')"
 # This file is an example of using artifacts in different runs, for us to utilize in
@@ -52,7 +52,7 @@ jobs:
   job1:
     runs-on: [self-hosted, linux, x64, run]
     # running container with only a single arguement passes the image being used
-    container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    # container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     outputs:
       build-name: ${{ steps.test.outputs.name }}
     steps:
@@ -84,7 +84,7 @@ jobs:
           # echo ${{ steps.test.outputs.name }}
       - name: test
         run: |
-          apt-get -y install zip
+          # apt-get -y install zip
           zip -help
           touch test.txt
           zip -r test.zip test.txt
