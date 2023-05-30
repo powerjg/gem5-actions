@@ -84,7 +84,7 @@ jobs:
           # echo ${{ steps.test.outputs.name }}
       - name: test
         run: |
-          echo -ne 'y' | apt install zip
+          apt-get -y install zip
           zip -help
           touch test.txt
           zip -r test.zip test.txt
