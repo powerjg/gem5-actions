@@ -247,10 +247,14 @@ jobs:
     - name: long arm-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/arm-boot-tests --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -279,10 +283,14 @@ jobs:
     - name: long fs
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/fs --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -311,10 +319,14 @@ jobs:
     - name: long gem5_library_example_tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gem5_library_example_tests --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -338,10 +350,14 @@ jobs:
     - name: long gpu
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/gpu --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -365,10 +381,14 @@ jobs:
     - name: long insttest_se
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/insttest_se --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -441,10 +461,14 @@ jobs:
     - name: long learning_gem5
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/learning_gem5 --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -468,10 +492,14 @@ jobs:
     - name: long m5_threads
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/m5threads_test_atomic --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -495,10 +523,14 @@ jobs:
     - name: long memory
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/memory --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -532,10 +564,14 @@ jobs:
     - name: long multi_isa
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/multi_isa --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -559,10 +595,14 @@ jobs:
     - name: long replacement-policies
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/replacement-policies --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -586,10 +626,14 @@ jobs:
     - name: long riscv-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/riscv-boot-tests --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -623,10 +667,14 @@ jobs:
     - name: long stdlib
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/stdlib --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
@@ -650,10 +698,14 @@ jobs:
     - name: long x86-boot-tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run gem5/x86-boot-tests --length=long --skip-build -vv -t $(nproc)
-    - run: |
+    - name: create zip of results
+      if: success() || failure()
+      run: |
         apt-get -y install zip
         zip -r output.zip tests/testing-results
-    - uses: actions/upload-artifact@v3
+    - name: upload zip
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
       env:
         MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
       with:
