@@ -7,7 +7,7 @@ run-name: ${{ github.actor }} is testing unit tests
 
 on:
   # Runs every day from 7AM UTC
-  push:
+  # push:
   schedule:
     - cron:  '0 7 * * *'
 
@@ -773,7 +773,7 @@ jobs:
   #       # therefore need to explicitly checkout the develop branch.
   #       ref: develop
   #   - name: Build RISCV/libgem5_opt.so with SST
-  #     run: scons build/RISCV/libgem5_opt.so
+  #     run: scons build/RISCV/libgem5_opt.so -j $(nproc)
   #   - name: Compile ext/sst
   #     working-directory: ${{ github.workspace }}/ext/sst
   #     run: make
@@ -798,12 +798,12 @@ jobs:
   #     uses: docker://gcr.io/gem5-test/ubuntu-22.04_min-dependencies:latest
   #     # This is a bit of a hack so we can run a different docker container.
   #     with:
-  #       args: scons build/ARM/gem5.opt
+  #       args: scons build/ARM/gem5.opt -j $(nproc)
   #   - name: Build ARM/libgem5_opt.so
   #     uses: docker://gcr.io/gem5-test/ubuntu-22.04_min-dependencies:latest
   #     # This is a bit of a hack so we can run a different docker container.
   #     with:
-  #       args: scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 build/ARM/libgem5_opt.so
+  #       args: scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 build/ARM/libgem5_opt.so -j $(nproc)
   #   - name: Compile gem5 withing SystemC
   #     working-directory: ${{ github.workspace }}/ext/systemc/gem5_within_systemc
   #     run: make
@@ -825,7 +825,7 @@ jobs:
   #       # therefore need to explicitly checkout the develop branch.
   #       ref: develop
   #   - name: Compile build/GCN3_X86/gem5.opt
-  #     run: scons build/GCN3_X86/gem5.opt     # How to add threads here?
+  #     run: scons build/GCN3_X86/gem5.opt -j $(nproc)
   #   - name: Get Square test-prog from gem5-resources
   #     uses: wei/wget@v1
   #     with:

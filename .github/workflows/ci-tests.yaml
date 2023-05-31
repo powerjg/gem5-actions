@@ -4,7 +4,7 @@ name: CI Tests
 run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 
 on:
-  # push:
+  push:
   schedule:
     - cron: '0 */6 * * *'
 
@@ -56,18 +56,18 @@ jobs:
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
       run: ./main.py run --skip-build      # How to add threads here?
-    - name: create zip of results
-      if: success() || failure()
-      run: |
-        apt-get -y install zip
-        zip -r output.zip tests/testing-results
-    - name: upload zip
-      if: success() || failure()
-      uses: actions/upload-artifact@v3
-      env:
-        MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
-      with:
-        name: ${{ env.MY_STEP_VAR }}
-        path: output.zip
-        retention-days: 7
+    # - name: create zip of results
+    #   if: success() || failure()
+    #   run: |
+    #     apt-get -y install zip
+    #     zip -r output.zip tests/testing-results
+    # - name: upload zip
+    #   if: success() || failure()
+    #   uses: actions/upload-artifact@v3
+    #   env:
+    #     MY_STEP_VAR: ${{github.job}}_COMMIT.${{github.sha}}_RUN.${{github.run_id}}_ATTEMPT.${{github.run_attempt}}
+    #   with:
+    #     name: ${{ env.MY_STEP_VAR }}
+    #     path: output.zip
+    #     retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
