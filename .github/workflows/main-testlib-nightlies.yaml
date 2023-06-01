@@ -798,12 +798,12 @@ jobs:
       uses: docker://gcr.io/gem5-test/ubuntu-22.04_min-dependencies:latest
       # This is a bit of a hack so we can run a different docker container.
       with:
-        args: scons build/ARM/gem5.opt -j 4  --ignore-style --duplicate-sources
+        args: scons --ignore-style --duplicate-sources -j4 build/ARM/gem5.opt
     - name: Build ARM/libgem5_opt.so
       uses: docker://gcr.io/gem5-test/ubuntu-22.04_min-dependencies:latest
       # This is a bit of a hack so we can run a different docker container.
       with:
-        args: scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 --duplicate-sources build/ARM/libgem5_opt.so -j 4
+        args: scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 -j4 --duplicate-sources build/ARM/libgem5_opt.so
     - name: Compile gem5 withing SystemC
       working-directory: ${{ github.workspace }}/util/systemc/gem5_within_systemc
       run: make
