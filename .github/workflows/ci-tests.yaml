@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-gem5:
-    runs-on: [self-hosted, linux, x64, build]
+    runs-on: [self-hosted, linux, x64, build, works]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     outputs:
       artifactname: ${{ steps.name.outputs.test }}
@@ -44,7 +44,7 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
 
   unittests-all-opt:
-    runs-on: [self-hosted, Linux, X64, run]
+    runs-on: [self-hosted, Linux, X64, run, works]
     container:
       image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 60
@@ -56,7 +56,7 @@ jobs:
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-quick:
-    runs-on: [self-hosted, Linux, X64, run]
+    runs-on: [self-hosted, Linux, X64, run, works]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5
     timeout-minutes: 360     # 6 hours
@@ -85,3 +85,5 @@ jobs:
         path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
+
+# build/ALL/gem5.opt tests/gem5/configs/simple_binary_run.py x86-hello64-static atomic x86 --num-cores 4 --resource-directory tests/gem5/resources
