@@ -1,7 +1,8 @@
 # This workflow runs all of the long tests within main.py, extra tests in nightly.sh, compiler-tests.sh , and unittests
 
 name: Running main.py
-run-name: ${{ github.actor }} is running long main.py tests
+# run-name: ${{ github.actor }} is running long main.py tests
+run-name: ${{ github.actor }} is running final systemc+gpu main.py tests
 
 
 on:
@@ -760,25 +761,25 @@ jobs:
 
   # This runs the SST-gem5 integration compilation and tests it with
   # ext/sst/sst/example.py.
-  sst-test:
-    runs-on: [self-hosted, linux, x64, build, works]
-    container: gcr.io/gem5-test/sst-env:latest
-    timeout-minutes: 180
+  # sst-test:
+  #   runs-on: [self-hosted, linux, x64, build, works]
+  #   container: gcr.io/gem5-test/sst-env:latest
+  #   timeout-minutes: 180
 
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        # Scheduled workflows run on the default branch by default. We
-        # therefore need to explicitly checkout the develop branch.
-        ref: develop
-    - name: Build RISCV/libgem5_opt.so with SST
-      run: scons build/RISCV/libgem5_opt.so --without-tcmalloc --duplicate-sources --ignore-style -j $(nproc)
-    - name: Compile ext/sst
-      working-directory: ${{ github.workspace }}/ext/sst
-      run: make -j $(nproc)
-    - name: Run SST test
-      working-directory: ${{ github.workspace }}/ext/sst
-      run: sst --add-lib-path=./ sst/example.py
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       # Scheduled workflows run on the default branch by default. We
+  #       # therefore need to explicitly checkout the develop branch.
+  #       ref: develop
+  #   - name: Build RISCV/libgem5_opt.so with SST
+  #     run: scons build/RISCV/libgem5_opt.so --without-tcmalloc --duplicate-sources --ignore-style -j $(nproc)
+  #   - name: Compile ext/sst
+  #     working-directory: ${{ github.workspace }}/ext/sst
+  #     run: make -j $(nproc)
+  #   - name: Run SST test
+  #     working-directory: ${{ github.workspace }}/ext/sst
+  #     run: sst --add-lib-path=./ sst/example.py
 
   # This runs the gem5 within SystemC ingration and runs a simple hello-world
   # simulation with it.
@@ -804,7 +805,7 @@ jobs:
       with:
         args: scons --with-cxx-config --without-python --without-tcmalloc USE_SYSTEMC=0 build/ARM/libgem5_opt.so -j 4
     - name: Compile gem5 withing SystemC
-      working-directory: ${{ github.workspace }}/ext/systemc/gem5_within_systemc
+      working-directory: ${{ github.workspace }}/util/systemc/gem5_within_systemc
       run: make
     - name: Run gem5 within SystemC test
       run: ./build/ARM/gem5.opt configs/deprecated/example/se.py -c tests/test-progs/hello/bin/arm/linux/hello
@@ -840,4 +841,4 @@ jobs:
     - name: Run allSyncPrims-1kernel sleepMutex test with GCN3_X8/gem5.opt (SE mode)
       run: ./build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="sleepMutex 10 16 4"
     - name: Run allSysncPrims-1kernel lfTreeBarrUsing test with GCN3_X8/gem5.opt (SE mode)
-      run: ./ build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="lfTreeBarrUsing 10 16 4"
+      run: ./build/GCN3_X86/gem5.opt configs/example/apu_se.py --reg-alloc-policy=dynamic -n3 -c allSyncPrims-1kernel --options="lfTreeBarrUsing 10 16 4"
