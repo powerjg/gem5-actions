@@ -4,7 +4,7 @@ name: CI Tests
 run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 
 on:
-  # push:
+  push:
   schedule:
     - cron: '0 */6 * * *'
 
@@ -44,7 +44,7 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
 
   unittests-all-opt:
-    runs-on: [self-hosted, Linux, X64, run, works]
+    runs-on: [self-hosted, Linux, X64, run, testing]
     container:
       image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 60
