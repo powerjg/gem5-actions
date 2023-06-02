@@ -46,7 +46,7 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
 
   unittests-all-opt:
-    runs-on: [self-hosted, Linux, X64, run, testing]
+    runs-on: [self-hosted, Linux, X64, run, works]
     container:
       image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 60

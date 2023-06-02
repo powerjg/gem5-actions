@@ -758,8 +758,8 @@ jobs:
   #   - name: Compile build/${{ matrix.gem5-compilation }}/gem5${{ matrix.opts }} with ${{ matrix.image }}
   #     run: scons build/${{ matrix.gem5-compilation }}/gem5${{ matrix.opts }}
 
-  This runs the SST-gem5 integration compilation and tests it with
-  ext/sst/sst/example.py.
+  # This runs the SST-gem5 integration compilation and tests it with
+  # ext/sst/sst/example.py.
   sst-test:
     runs-on: [self-hosted, linux, x64, build, works]
     container: gcr.io/gem5-test/sst-env:latest
