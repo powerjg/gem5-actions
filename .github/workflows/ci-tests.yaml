@@ -6,35 +6,17 @@ run-name: ${{ github.actor }} is running Pull Request pre-merge tests
 on:
   pull_request:
     types: [opened, reopened, edited]
-  push:
-  schedule:
-    - cron: '0 */6 * * *'
 
 jobs:
   build-gem5:
-    runs-on: [self-hosted, linux, x64, build, works]
+    runs-on: [self-hosted, Linux, X64, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
-    outputs:
-      artifactname: ${{ steps.name.outputs.test }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - id: name
         run: echo "test=$(date +"%Y-%m-%d_%H.%M.%S")-artifact" >> $GITHUB_OUTPUT
-
-      - name: Install black and reorder-python-imports
-        run: pip install black reorder-python-imports
-
-      - name: Black and Sort changed files
-        run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo $file
-            if [[ $file == *.py ]]; then
-              black $file --check
-              reorder-python-imports $file
-            fi
-          done
 
       - name: Build gem5
         run: |
@@ -46,7 +28,7 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
 
   unittests-all-opt:
-    runs-on: [self-hosted, Linux, X64, run, works]
+    runs-on: [self-hosted, Linux, X64, run]
     container:
       image: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     timeout-minutes: 60
@@ -54,11 +36,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: CI Unittests
       working-directory: ${{ github.workspace }}
-      run: scons build/ALL/unittests.opt -j $(nproc)        # How to add threads here?
+      run: scons build/ALL/unittests.opt -j $(nproc)
     - run: echo "This job's status is ${{ job.status }}."
 
   testlib-quick:
-    runs-on: [self-hosted, Linux, X64, run, works]
+    runs-on: [self-hosted, Linux, X64, run]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
     needs: build-gem5
     timeout-minutes: 360     # 6 hours
@@ -71,7 +53,7 @@ jobs:
     - run: chmod u+x build/ALL/gem5.opt
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run --skip-build -vv     # How to add threads here?
+      run: ./main.py run --skip-build -vv
     - name: create zip of results
       if: success() || failure()
       run: |
@@ -87,5 +69,3 @@ jobs:
         path: output.zip
         retention-days: 7
     - run: echo "This job's status is ${{ job.status }}."
-
-# build/ALL/gem5.opt tests/gem5/configs/simple_binary_run.py x86-hello64-static atomic x86 --num-cores 4 --resource-directory tests/gem5/resources
