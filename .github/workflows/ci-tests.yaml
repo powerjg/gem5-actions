@@ -14,6 +14,8 @@ jobs:
   build-gem5:
     runs-on: [self-hosted, Linux, X64, build]
     container: gcr.io/gem5-test/ubuntu-22.04_all-dependencies:latest
+    outputs:
+      artifactname: ${{ steps.name.outputs.test }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -56,7 +58,9 @@ jobs:
     - run: chmod u+x build/ALL/gem5.opt
     - name: The TestLib CI Tests
       working-directory: ${{ github.workspace }}/tests
-      run: ./main.py run --skip-build -vv
+      run: |
+        ./main.py run --skip-build -vv
+        ./main.py rerun --skip-build -vv
     - name: create zip of results
       if: success() || failure()
       run: |
