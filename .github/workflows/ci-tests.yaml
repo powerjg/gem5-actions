@@ -57,6 +57,7 @@ jobs:
         path: build/ALL
     - run: chmod u+x build/ALL/gem5.opt
     - name: The TestLib CI Tests
+      if: success() || failure()
       working-directory: ${{ github.workspace }}/tests
       run: |
         ./main.py run --skip-build -vv
